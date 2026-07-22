@@ -28,6 +28,9 @@ class CircleDoodle:
         self.image = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
         self.regionfull = np.zeros((size,size), dtype=bool) # tracks occupied regions
         self.negativespace = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles
+        self.ncircles = 0 # Total circles = Big + small
+        self.nbig = 0 # Total Big 
+        self.nsmall = 0 # Total Small
 
     def fill_space(self):
         """
@@ -37,10 +40,9 @@ class CircleDoodle:
 
         # Start by filling in the units with big circles that are at most 1/5 of the page 
         # and at least 1/20th of the page
-        quit = False
         trycap = 200
         ntry = 0
-        while (not quit) and (ntry < trycap):
+        while (ntry < trycap):
             self.generate_circle_doodle_unit()
             ntry += 1
         
@@ -69,7 +71,7 @@ class CircleDoodle:
             cy = yavail[idx]
             R = np.random.randint(self.size//20, self.size//5)
             # Small circles on perimeter at random positons
-            r = np.random.randint(R//30 + 1 , R//6)
+            r = np.random.randint(R//30 + 1 , R//6 + 2)
             num_small = 2*np.pi * R // (2*r + 4) # offset so that small circles have some spacebetween
 
             position_found = not self.intersect(cx, cy, R, r)
@@ -85,6 +87,7 @@ class CircleDoodle:
         # Actually draw the circles into the calculated region
         # Big Circle
         cv2.circle(self.image, (cx, cy), R, 255, 1)
+        self.nbig += 1
         # Small evenly spaced circles with no overlap
         #print("Hello!" + str(r))
 
@@ -106,6 +109,7 @@ class CircleDoodle:
                 small_circles.append((sx, sy, r))
                 self.add_local_hitbox(sx, sy, r)
                 cv2.circle(self.image, (sx, sy), r, 255, 1)
+                self.nsmall += 1
         
 
     
@@ -187,4 +191,10 @@ class CircleDoodle:
 
         self.image[ypoints, xpoints] = 255
 
+    def label_datapoint_with_ncircles(self):
+        self.ncircles = self.nsmall + self.nbig
         
+        return [self.ncircles, self.nsmall, self.nbig]
+    
+    def label_datapoints_with_area(self):
+        return sum(self.negativespace)        
