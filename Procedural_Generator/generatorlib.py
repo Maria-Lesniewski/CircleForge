@@ -23,14 +23,19 @@ class CircleDoodle:
         doodle = CircleDoodle(size=300)
         doodle.fillspace()
     """
-    def __init__(self, size=300):
-        self.size = size # Canvas length and width
-        self.image = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
-        self.regionfull = np.zeros((size,size), dtype=bool) # tracks occupied regions
-        self.negativespace = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles
-        self.ncircles = 0 # Total circles = Big + small
-        self.nbig = 0 # Total Big 
-        self.nsmall = 0 # Total Small
+    def __init__(self, size : int = 300, fill_percent : float = 1/20, max_circle : int = 200 ):
+        self.size : int = size # Canvas length and width
+        self.image : int = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
+        self.regionfull : int = np.zeros((size,size), dtype=bool) # tracks occupied regions
+        self.negativespace : int = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles
+        self.ncircles : int = 0 # Total circles = Big + small
+        self.nbig : int = 0 # Total Big 
+        self.nsmall : int = 0 # Total Small
+        self.area_of_circles : float = 0
+        self.area_of_negative_space : float = size*size
+        self.fill_fraction : float = fill_percent
+        self.category : str = "Procedural"
+        self.max_circle_units : int = max_circle
 
     def fill_space(self):
         """
@@ -40,9 +45,8 @@ class CircleDoodle:
 
         # Start by filling in the units with big circles that are at most 1/5 of the page 
         # and at least 1/20th of the page
-        trycap = 200
         ntry = 0
-        while (ntry < trycap):
+        while (ntry < self.max_circle_units):
             self.generate_circle_doodle_unit()
             ntry += 1
         
@@ -69,9 +73,9 @@ class CircleDoodle:
             # Big Circle Center and Size
             cx = xavail[idx]
             cy = yavail[idx]
-            R = np.random.randint(self.size//20, self.size//5)
+            R = np.random.randint(self.size//20, self.size//3)
             # Small circles on perimeter at random positons
-            r = np.random.randint(R//30 + 1 , R//6 + 2)
+            r = np.random.randint(R//30 + 1 , R//6)
             num_small = 2*np.pi * R // (2*r + 4) # offset so that small circles have some spacebetween
 
             position_found = not self.intersect(cx, cy, R, r)
@@ -180,11 +184,11 @@ class CircleDoodle:
 
     def fill_negative_space(self):
         """
-        Speckles 1/10 of the negative space 
+        Speckles the fill fraction of the leftover negative space 
         """
         xavail, yavail = np.where(~self.negativespace)
         
-        sample_size = len(xavail) // 20
+        sample_size = (int) (len(xavail) * self.fill_fraction ) // 1
         indices = np.random.choice(len(xavail), sample_size, replace=False)
         xpoints = xavail[indices]
         ypoints = yavail[indices]
@@ -197,4 +201,4 @@ class CircleDoodle:
         return [self.ncircles, self.nsmall, self.nbig]
     
     def label_datapoints_with_area(self):
-        return sum(self.negativespace)        
+        return (self.size**2 - np.sum(self.negativespace))/self.size**2
