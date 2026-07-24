@@ -3,7 +3,6 @@
 # @desc This is the driver for my silly physics based diffusion experiment
 
 import generatorlib as gen
-import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -20,9 +19,4 @@ doodle_obj = gen.CircleDoodle(size=600, max_circle = 1, fill_percent = 0.01)
 # Fill the page with circles and the negative space with a random density of speckles
 doodle_obj.fill_space()
 doodle_obj.label_datapoint_with_ncircles()
-q = doodle_obj.label_datapoints_with_area()
-print(q)
-plt.title( str(doodle_obj.nsmall) + " " +  str(doodle_obj.nbig) + " " + str(doodle_obj.ncircles))
-plt.imshow(doodle_obj.image, cmap='gray')
-plt.axis('off')
-plt.show()
+doodle_obj.show_obj()

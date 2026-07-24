@@ -4,7 +4,7 @@
 
 import numpy as np
 import cv2 # This is opencv 
-
+import matplotlib.pyplot as plt
 class CircleDoodle:
     """
     Generates non-overlapping circular patterns on a discrete grid.
@@ -15,27 +15,40 @@ class CircleDoodle:
 
     Attributes:
         size (int): Grid dimension.
-        image (np.ndarray) : 
-        regionfull (np.ndarray): Regional Occupancy map for avoiding intersections
+        image (np.ndarray) : black and white pixel demarkations
+        regionfull (np.ndarray): Regional Occupancy map for avoiding global unit intersections
         negativespace (np.ndarray):  Local Occupancy map for coloring negative space
+        ncircles (int) : total number of circles
+        nbig (int) : total number of big circles placed
+        nsmall (int) : total number of small circles encompassing large circles
+        area_of_circles (int) : pixel space enclosed by circle
+        area_of_negative_space (int) : pixel space excluded from circles
+        fill_fraction (float) : fraction of excluded space to be speckled with black points
+        category (str) : categorical label for image, here: procedurally generated. (As opposed to later when we build a generative model)
+        max_circle_units (int) : number of tries the procedural algorithm will make to place a circle unit
+        circle_offset (int) : Space between small and large circles in each circle unit, also space between small circles surrounding large circle  
+
 
     Example:
-        doodle = CircleDoodle(size=300)
-        doodle.fillspace()
+        doodle = CircleDoodle(size=300) # Creates Doodle Structure
+        doodle.fillspace() # Draws actual image / fills attributes
+        doodle.add_to_data_base() # Adds image and labels to a csv data file
+        doodle.sanity_check() # Checks if "physical principles" were honored within doodle. 
     """
     def __init__(self, size : int = 300, fill_percent : float = 1/20, max_circle : int = 200 ):
         self.size : int = size # Canvas length and width
-        self.image : int = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
-        self.regionfull : int = np.zeros((size,size), dtype=bool) # tracks occupied regions
-        self.negativespace : int = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles
+        self.image : np.ndarray = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
+        self.regionfull : int = np.zeros((size,size), dtype=bool) # tracks occupied regions including offset space and between (circular holes)
+        self.negativespace : int = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles excluding offsets / between space (circled circles)
         self.ncircles : int = 0 # Total circles = Big + small
         self.nbig : int = 0 # Total Big 
         self.nsmall : int = 0 # Total Small
-        self.area_of_circles : float = 0
-        self.area_of_negative_space : float = size*size
+        self.area_of_circles : int = 0
+        self.area_of_negative_space : int = size*size
         self.fill_fraction : float = fill_percent
         self.category : str = "Procedural"
         self.max_circle_units : int = max_circle
+        self.circle_offset : int = 2
 
     def fill_space(self):
         """
@@ -51,7 +64,6 @@ class CircleDoodle:
             ntry += 1
         
         self.fill_negative_space()
-            
 
     def generate_circle_doodle_unit(self):
         """
@@ -76,7 +88,7 @@ class CircleDoodle:
             R = np.random.randint(self.size//20, self.size//3)
             # Small circles on perimeter at random positons
             r = np.random.randint(R//30 + 1 , R//6)
-            num_small = 2*np.pi * R // (2*r + 4) # offset so that small circles have some spacebetween
+            num_small = 2*np.pi * (R + 2) // (2*r + 4) # R offset by sit space, r offset by double between small circle space
 
             position_found = not self.intersect(cx, cy, R, r)
             ntry += 1
@@ -98,8 +110,8 @@ class CircleDoodle:
         angles = np.linspace(0, 2*np.pi, int(num_small), endpoint=False)
         small_circles = []
         for a in angles:
-            sx = int(cx + (R + r + 2) * np.cos(a)) # small circle centers
-            sy = int(cy + (R + r + 2) * np.sin(a))
+            sx = int(cx + (R + r + self.circle_offset) * np.cos(a)) # small circle centers
+            sy = int(cy + (R + r + self.circle_offset) * np.sin(a))
 
             # check overlap
             ok = True
@@ -135,7 +147,7 @@ class CircleDoodle:
         ylo, yhi = self.calc_square_doodle_bound(cy, R, r)
 
         # Trim to just the circle
-        hitbox_radius = R + r + 1
+        hitbox_radius = R + r + self.circle_offset
         x, y = np.ogrid[xlo:xhi, ylo:yhi]
         circle_mask = (x - cx)**2 + (y - cy)**2 <= hitbox_radius**2
 
@@ -166,10 +178,12 @@ class CircleDoodle:
         xlo, xhi = self.calc_square_doodle_bound(cx, R, r)
         ylo, yhi = self.calc_square_doodle_bound(cy, R, r)
 
-        hitbox_radius = R + 2*r + 2 
+        hitbox_radius = R + 2*r + self.circle_offset 
         x, y = np.ogrid[xlo:xhi, ylo:yhi]
         circlemask = (x - cx)**2 + (y - cy)**2 <= hitbox_radius**2
         self.regionfull[xlo:xhi, ylo:yhi][circlemask] = True
+        #print(f"analytic is {hitbox_radius**2*np.pi}")
+        # print(sum(self.regionfull[xlo:xhi, ylo:yhi][circlemask]))
 
     def add_local_hitbox(self, cx, cy, radius):
         """
@@ -181,6 +195,8 @@ class CircleDoodle:
 
         circlemask = (x - cx)**2 + (y - cy)**2 <= radius**2
         self.negativespace[xlo:xhi, ylo:yhi][circlemask] = True
+        self.area_of_circles += sum(self.negativespace[xlo:xhi, ylo:yhi][circlemask])
+        self.area_of_negative_space -= sum(self.negativespace[xlo:xhi, ylo:yhi][circlemask])
 
     def fill_negative_space(self):
         """
@@ -201,4 +217,19 @@ class CircleDoodle:
         return [self.ncircles, self.nsmall, self.nbig]
     
     def label_datapoints_with_area(self):
-        return (self.size**2 - np.sum(self.negativespace))/self.size**2
+        return (self.size**2 - np.sum(~self.negativespace))/self.size**2
+
+    def show_obj(self):
+        """
+        Shows the image generated by the procedural algorithm along with the attributes current values
+        """
+        print(f"{self.size} x  {self.size} Doodle Object")
+        print(f"N_circles=  {self.ncircles} = small: {self.nsmall} + big {self.nbig}")
+        print(f"Negative space sum = {self.negativespace.sum()} = {self.area_of_negative_space}")
+        print(f"Area of circles = {self.area_of_circles}")
+        print(f"Negative + Circles = {self.area_of_circles + self.area_of_negative_space}")
+
+
+        plt.imshow(self.image, cmap='gray')
+        plt.axis('off')
+        plt.show()
