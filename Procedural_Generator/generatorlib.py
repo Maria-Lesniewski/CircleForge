@@ -5,6 +5,8 @@
 import numpy as np
 import cv2 # This is opencv 
 import matplotlib.pyplot as plt
+import os 
+import csv
 class CircleDoodle:
     """
     Generates non-overlapping circular patterns on a discrete grid.
@@ -16,6 +18,7 @@ class CircleDoodle:
     Attributes:
         size (int): Grid dimension.
         image (np.ndarray) : black and white pixel demarkations
+        image_filename (str) : file for reading/writing .npy
         regionfull (np.ndarray): Regional Occupancy map for avoiding global unit intersections
         negativespace (np.ndarray):  Local Occupancy map for coloring negative space
         ncircles (int) : total number of circles
@@ -26,18 +29,20 @@ class CircleDoodle:
         fill_fraction (float) : fraction of excluded space to be speckled with black points
         category (str) : categorical label for image, here: procedurally generated. (As opposed to later when we build a generative model)
         max_circle_units (int) : number of tries the procedural algorithm will make to place a circle unit
-        circle_offset (int) : Space between small and large circles in each circle unit, also space between small circles surrounding large circle  
+        circle_offset (int) : Space between small and large circles in each circle unit, also space between small circles surrounding large circle 
+        access_filename (str) : root directory + filenamepath 
 
 
     Example:
         doodle = CircleDoodle(size=300) # Creates Doodle Structure
         doodle.fillspace() # Draws actual image / fills attributes
-        doodle.add_to_data_base() # Adds image and labels to a csv data file
-        doodle.sanity_check() # Checks if "physical principles" were honored within doodle. 
+        doodle.add_to_data_base() # Adds image path (saves as .npy) and labels to a csv data file
     """
-    def __init__(self, size : int = 300, fill_percent : float = 1/20, max_circle : int = 200 ):
+    def __init__(self, size : int = 300, fill_percent : float = 1/20, max_circle : int = 200, filename : str = "default.npy" ):
         self.size : int = size # Canvas length and width
         self.image : np.ndarray = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
+        self.image_filename : str = str(filename)
+        self.access_filename : sre = str(filename)
         self.regionfull : int = np.zeros((size,size), dtype=bool) # tracks occupied regions including offset space and between (circular holes)
         self.negativespace : int = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles excluding offsets / between space (circled circles)
         self.ncircles : int = 0 # Total circles = Big + small
@@ -233,3 +238,41 @@ class CircleDoodle:
         plt.imshow(self.image, cmap='gray')
         plt.axis('off')
         plt.show()
+
+    def add_to_data_base(self, rootdir):
+        """
+        Makes sure all labels associated with circle doodle object are populated
+        Saves image and labels to a CSV sheet folder / image directory in the roodir passed
+        """
+        self.access_filename = rootdir + "/" + self.image_filename
+        np.save(self.access_filename, self.image)
+        self.label_datapoints_with_area()
+        self.label_datapoint_with_ncircles()
+
+        csv_filename = rootdir + "/annotations.csv"
+        file_exists = os.path.isfile(csv_filename)
+
+
+        with open(csv_filename, "a", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+
+            if not file_exists:
+                writer.writerow([
+                    "access_filename", 
+                    "image_size",
+                    "ncircles",
+                    "nbig",
+                    "nsmall",
+                    "area_of_circles",
+                    "max_circle_units"
+                    ])
+            writer.writerow([
+                self.access_filename, 
+                self.size,
+                self.ncircles,
+                self.nbig,
+                self.nsmall,
+                self.area_of_circles,
+                self.max_circle_units
+                ])
+        

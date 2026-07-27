@@ -4,6 +4,7 @@
 
 import generatorlib as gen
 import numpy as np
+import os
 
 
 # Generate Data 
@@ -20,3 +21,5 @@ doodle_obj = gen.CircleDoodle(size=600, max_circle = 1, fill_percent = 0.01)
 doodle_obj.fill_space()
 doodle_obj.label_datapoint_with_ncircles()
 doodle_obj.show_obj()
+os.mkdir("data_folder")
+doodle_obj.add_to_data_base("data_folder")
