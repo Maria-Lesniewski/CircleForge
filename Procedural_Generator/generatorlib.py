@@ -4,7 +4,10 @@
 
 import numpy as np
 import cv2 # This is opencv 
-
+import matplotlib.pyplot as plt
+import os 
+import csv
+import pandas as pd
 class CircleDoodle:
     """
     Generates non-overlapping circular patterns on a discrete grid.
@@ -15,19 +18,43 @@ class CircleDoodle:
 
     Attributes:
         size (int): Grid dimension.
-        image (np.ndarray) : 
-        regionfull (np.ndarray): Regional Occupancy map for avoiding intersections
+        image (np.ndarray) : black and white pixel demarkations
+        image_filename (str) : file for reading/writing .npy
+        regionfull (np.ndarray): Regional Occupancy map for avoiding global unit intersections
         negativespace (np.ndarray):  Local Occupancy map for coloring negative space
+        ncircles (int) : total number of circles
+        nbig (int) : total number of big circles placed
+        nsmall (int) : total number of small circles encompassing large circles
+        area_of_circles (int) : pixel space enclosed by circle
+        area_of_negative_space (int) : pixel space excluded from circles
+        fill_fraction (float) : fraction of excluded space to be speckled with black points
+        category (str) : categorical label for image, here: procedurally generated. (As opposed to later when we build a generative model)
+        max_circle_units (int) : number of tries the procedural algorithm will make to place a circle unit
+        circle_offset (int) : Space between small and large circles in each circle unit, also space between small circles surrounding large circle 
+        access_filename (str) : root directory + filenamepath 
+
 
     Example:
-        doodle = CircleDoodle(size=300)
-        doodle.fillspace()
+        doodle = CircleDoodle(size=300) # Creates Doodle Structure
+        doodle.fillspace() # Draws actual image / fills attributes
+        doodle.add_to_data_base() # Adds image path (saves as .npy) and labels to a csv data file
     """
-    def __init__(self, size=300):
-        self.size = size # Canvas length and width
-        self.image = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
-        self.regionfull = np.zeros((size,size), dtype=bool) # tracks occupied regions
-        self.negativespace = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles
+    def __init__(self, size : int = 300, fill_percent : float = 1/20, max_circle : int = 200, filename : str = "default.npy" ):
+        self.size : int = size # Canvas length and width
+        self.image : np.ndarray = np.zeros((size,size), dtype=np.uint8) # Doodle content on canvas
+        self.image_filename : str = str(filename)
+        self.access_filename : str = str(filename)
+        self.regionfull : int = np.zeros((size,size), dtype=bool) # tracks occupied regions including offset space and between (circular holes)
+        self.negativespace : int = np.zeros((size, size), dtype=bool) # Tracks space outside of cv2 circles excluding offsets / between space (circled circles)
+        self.ncircles : int = 0 # Total circles = Big + small
+        self.nbig : int = 0 # Total Big 
+        self.nsmall : int = 0 # Total Small
+        self.area_of_circles : int = 0
+        self.area_of_negative_space : int = size*size
+        self.fill_fraction : float = fill_percent
+        self.category : str = "Procedural"
+        self.max_circle_units : int = max_circle
+        self.circle_offset : int = 2
 
     def fill_space(self):
         """
@@ -37,15 +64,12 @@ class CircleDoodle:
 
         # Start by filling in the units with big circles that are at most 1/5 of the page 
         # and at least 1/20th of the page
-        quit = False
-        trycap = 200
         ntry = 0
-        while (not quit) and (ntry < trycap):
+        while (ntry < self.max_circle_units):
             self.generate_circle_doodle_unit()
             ntry += 1
         
         self.fill_negative_space()
-            
 
     def generate_circle_doodle_unit(self):
         """
@@ -67,10 +91,10 @@ class CircleDoodle:
             # Big Circle Center and Size
             cx = xavail[idx]
             cy = yavail[idx]
-            R = np.random.randint(self.size//20, self.size//5)
+            R = np.random.randint(self.size//20, self.size//3)
             # Small circles on perimeter at random positons
             r = np.random.randint(R//30 + 1 , R//6)
-            num_small = 2*np.pi * R // (2*r + 4) # offset so that small circles have some spacebetween
+            num_small = 2*np.pi * (R + 2) // (2*r + 4) # R offset by sit space, r offset by double between small circle space
 
             position_found = not self.intersect(cx, cy, R, r)
             ntry += 1
@@ -85,14 +109,15 @@ class CircleDoodle:
         # Actually draw the circles into the calculated region
         # Big Circle
         cv2.circle(self.image, (cx, cy), R, 255, 1)
+        self.nbig += 1
         # Small evenly spaced circles with no overlap
         #print("Hello!" + str(r))
 
         angles = np.linspace(0, 2*np.pi, int(num_small), endpoint=False)
         small_circles = []
         for a in angles:
-            sx = int(cx + (R + r + 2) * np.cos(a)) # small circle centers
-            sy = int(cy + (R + r + 2) * np.sin(a))
+            sx = int(cx + (R + r + self.circle_offset) * np.cos(a)) # small circle centers
+            sy = int(cy + (R + r + self.circle_offset) * np.sin(a))
 
             # check overlap
             ok = True
@@ -106,6 +131,7 @@ class CircleDoodle:
                 small_circles.append((sx, sy, r))
                 self.add_local_hitbox(sx, sy, r)
                 cv2.circle(self.image, (sx, sy), r, 255, 1)
+                self.nsmall += 1
         
 
     
@@ -127,7 +153,7 @@ class CircleDoodle:
         ylo, yhi = self.calc_square_doodle_bound(cy, R, r)
 
         # Trim to just the circle
-        hitbox_radius = R + r + 1
+        hitbox_radius = R + r + self.circle_offset
         x, y = np.ogrid[xlo:xhi, ylo:yhi]
         circle_mask = (x - cx)**2 + (y - cy)**2 <= hitbox_radius**2
 
@@ -158,10 +184,12 @@ class CircleDoodle:
         xlo, xhi = self.calc_square_doodle_bound(cx, R, r)
         ylo, yhi = self.calc_square_doodle_bound(cy, R, r)
 
-        hitbox_radius = R + 2*r + 2 
+        hitbox_radius = R + 2*r + self.circle_offset 
         x, y = np.ogrid[xlo:xhi, ylo:yhi]
         circlemask = (x - cx)**2 + (y - cy)**2 <= hitbox_radius**2
         self.regionfull[xlo:xhi, ylo:yhi][circlemask] = True
+        #print(f"analytic is {hitbox_radius**2*np.pi}")
+        # print(sum(self.regionfull[xlo:xhi, ylo:yhi][circlemask]))
 
     def add_local_hitbox(self, cx, cy, radius):
         """
@@ -173,18 +201,148 @@ class CircleDoodle:
 
         circlemask = (x - cx)**2 + (y - cy)**2 <= radius**2
         self.negativespace[xlo:xhi, ylo:yhi][circlemask] = True
+        self.area_of_circles += sum(self.negativespace[xlo:xhi, ylo:yhi][circlemask])
+        self.area_of_negative_space -= sum(self.negativespace[xlo:xhi, ylo:yhi][circlemask])
 
     def fill_negative_space(self):
         """
-        Speckles 1/10 of the negative space 
+        Speckles the fill fraction of the leftover negative space 
         """
         xavail, yavail = np.where(~self.negativespace)
         
-        sample_size = len(xavail) // 20
+        sample_size = (int) (len(xavail) * self.fill_fraction ) // 1
         indices = np.random.choice(len(xavail), sample_size, replace=False)
         xpoints = xavail[indices]
         ypoints = yavail[indices]
 
         self.image[ypoints, xpoints] = 255
 
+    def label_datapoint_with_ncircles(self):
+        self.ncircles = self.nsmall + self.nbig
         
+        return [self.ncircles, self.nsmall, self.nbig]
+    
+    def label_datapoints_with_area(self):
+        return (self.size**2 - np.sum(~self.negativespace))/self.size**2
+
+    def show_obj(self):
+        """
+        Shows the image generated by the procedural algorithm along with the attributes current values
+        """
+        print(f"{self.size} x  {self.size} Doodle Object")
+        print(f"Filename {self.access_filename}")
+        print(f"N_circles=  {self.ncircles} = small: {self.nsmall} + big {self.nbig}")
+        print(f"Negative space sum = {self.negativespace.sum()} = {self.area_of_negative_space}")
+        print(f"Area of circles = {self.area_of_circles}")
+        print(f"Negative + Circles = {self.area_of_circles + self.area_of_negative_space}")
+        
+        fig, ax = plt.subplots()
+
+        ax.imshow(self.image, cmap='gray')
+        ax.axis('off')
+        plt.show(block=False)
+
+    def add_to_data_base(self, rootdir):
+        """
+        Makes sure all labels associated with circle doodle object are populated
+        Saves image and labels to a CSV sheet folder / image directory in the roodir passed
+        """
+        self.access_filename = rootdir + "/" + self.image_filename
+        np.save(self.access_filename, self.image)
+        self.label_datapoints_with_area()
+        self.label_datapoint_with_ncircles()
+
+        csv_filename = rootdir + "/annotations.csv"
+        file_exists = os.path.isfile(csv_filename)
+
+
+        with open(csv_filename, "a", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+
+            if not file_exists:
+                writer.writerow([
+                    "access_filename", 
+                    "image_filename",
+                    "image_size",
+                    "ncircles",
+                    "nbig",
+                    "nsmall",
+                    "area_of_circles",
+                    "area_of_negative",
+                    "max_circle_units"
+                    ])
+            writer.writerow([
+                self.access_filename,
+                self.image_filename,
+                self.size,
+                self.ncircles,
+                self.nbig,
+                self.nsmall,
+                self.area_of_circles,
+                self.area_of_negative_space,
+                self.max_circle_units
+                ])
+    def load_circle_obj_from_data(self, annotated_file, npy_access_filename):
+        """
+        Reads annotations.csv, finds the filename passed and loads existent stats into the object
+        """
+        df = pd.read_csv(annotated_file)
+        mask = (df["access_filename"] == npy_access_filename) # Note this assumes unique names/files
+        print(mask)
+        row_data = df[mask]
+        self.access_filename = npy_access_filename
+        self.image_filename = row_data["image_filename"]
+        self.size = row_data["image_size"]
+        self.image = np.load(npy_access_filename)
+
+        self.ncircles = row_data["ncircles"]
+        self.nbig = row_data["nbig"]
+        self.nsmall = row_data["nsmall"]
+        self.area_of_circles = row_data["area_of_circles"]
+        self.area_of_negative_space = row_data["area_of_negative"]
+        self.max_circle_units = row_data["max_circle_units"]
+
+    def is_equivalent(self, other):
+        """
+        Compare two CircleDoodle objects.
+
+        Returns:
+            True if all relevant doodle data is equivalent.
+            False otherwise.
+        """
+
+        if not isinstance(other, CircleDoodle):
+            return False
+
+        # Scalar attributes
+        scalar_attributes = [
+            "size",
+            "ncircles",
+            "nbig",
+            "nsmall",
+            "area_of_circles",
+     #       "area_of_negative_space", MCL commenting out because not usually read in
+     #       "fill_fraction",
+     #       "category",
+            "max_circle_units",
+    #       "circle_offset"
+        ]
+
+        for attr in scalar_attributes:
+            if not np.isclose(getattr(self, attr), getattr(other, attr)):
+                print(f"Failed equivalence on attribute {attr}")
+                return False
+
+        # Array attributes
+        array_attributes = [
+            "image",
+        #    "regionfull",
+        #    "negativespace"
+        ]
+
+        for attr in array_attributes:
+            if not np.array_equal(getattr(self, attr), getattr(other, attr)):
+                print(f"Failed equivalence on attribute {attr}")
+                return False
+
+        return True
