@@ -37,4 +37,9 @@ os.remove("data_folder/annotations.csv")
 os.remove("data_folder/default.npy")
 os.rmdir("data_folder")
 
+
+if (doodle_obj.is_equivalent(doodle_obj2)):
+    print("The two objects are equivalent")
+else:
+    print("NOPE")
 input("Press enter to end program")

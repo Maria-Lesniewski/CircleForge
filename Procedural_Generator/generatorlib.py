@@ -268,6 +268,7 @@ class CircleDoodle:
                     "nbig",
                     "nsmall",
                     "area_of_circles",
+                    "area_of_negative",
                     "max_circle_units"
                     ])
             writer.writerow([
@@ -278,6 +279,7 @@ class CircleDoodle:
                 self.nbig,
                 self.nsmall,
                 self.area_of_circles,
+                self.area_of_negative_space,
                 self.max_circle_units
                 ])
     def load_circle_obj_from_data(self, annotated_file, npy_access_filename):
@@ -297,4 +299,50 @@ class CircleDoodle:
         self.nbig = row_data["nbig"]
         self.nsmall = row_data["nsmall"]
         self.area_of_circles = row_data["area_of_circles"]
+        self.area_of_negative_space = row_data["area_of_negative"]
         self.max_circle_units = row_data["max_circle_units"]
+
+    def is_equivalent(self, other):
+        """
+        Compare two CircleDoodle objects.
+
+        Returns:
+            True if all relevant doodle data is equivalent.
+            False otherwise.
+        """
+
+        if not isinstance(other, CircleDoodle):
+            return False
+
+        # Scalar attributes
+        scalar_attributes = [
+            "size",
+            "ncircles",
+            "nbig",
+            "nsmall",
+            "area_of_circles",
+     #       "area_of_negative_space", MCL commenting out because not usually read in
+     #       "fill_fraction",
+     #       "category",
+            "max_circle_units",
+    #       "circle_offset"
+        ]
+
+        for attr in scalar_attributes:
+            if not np.isclose(getattr(self, attr), getattr(other, attr)):
+                print(f"Failed equivalence on attribute {attr}")
+                return False
+
+        # Array attributes
+        array_attributes = [
+            "image",
+        #    "regionfull",
+        #    "negativespace"
+        ]
+
+        for attr in array_attributes:
+            if not np.array_equal(getattr(self, attr), getattr(other, attr)):
+                print(f"Failed equivalence on attribute {attr}")
+                return False
+
+        return True
