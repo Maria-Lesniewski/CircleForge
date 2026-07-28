@@ -235,11 +235,12 @@ class CircleDoodle:
         print(f"Negative space sum = {self.negativespace.sum()} = {self.area_of_negative_space}")
         print(f"Area of circles = {self.area_of_circles}")
         print(f"Negative + Circles = {self.area_of_circles + self.area_of_negative_space}")
+        
+        fig, ax = plt.subplots()
 
-
-        plt.imshow(self.image, cmap='gray')
-        plt.axis('off')
-        plt.show()
+        ax.imshow(self.image, cmap='gray')
+        ax.axis('off')
+        plt.show(block=False)
 
     def add_to_data_base(self, rootdir):
         """
@@ -295,5 +296,5 @@ class CircleDoodle:
         self.ncircles = row_data["ncircles"]
         self.nbig = row_data["nbig"]
         self.nsmall = row_data["nsmall"]
-        self.area_of_circles["area_of_circles"]
+        self.area_of_circles = row_data["area_of_circles"]
         self.max_circle_units = row_data["max_circle_units"]

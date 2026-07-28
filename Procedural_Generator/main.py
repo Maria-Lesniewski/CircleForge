@@ -36,3 +36,5 @@ doodle_obj2.show_obj()
 os.remove("data_folder/annotations.csv")
 os.remove("data_folder/default.npy")
 os.rmdir("data_folder")
+
+input("Press enter to end program")
