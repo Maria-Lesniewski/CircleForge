@@ -109,7 +109,8 @@ class CircleDoodle:
         # Actually draw the circles into the calculated region
         # Big Circle
         cv2.circle(self.image, (cx, cy), R, 255, 1)
-        self.nbig += 1
+        if self.circle_is_visible(cx, cy, R):
+            self.nbig += 1
         # Small evenly spaced circles with no overlap
         #print("Hello!" + str(r))
 
@@ -131,7 +132,8 @@ class CircleDoodle:
                 small_circles.append((sx, sy, r))
                 self.add_local_hitbox(sx, sy, r)
                 cv2.circle(self.image, (sx, sy), r, 255, 1)
-                self.nsmall += 1
+                if self.circle_is_visible(sx, sy,r):
+                    self.nsmall += 1
         
 
     
@@ -351,3 +353,22 @@ class CircleDoodle:
                 return False
 
         return True
+
+    def circle_is_visible(self, sx, sy, r):
+        """
+        Checks if a circle added with center sx, sy, and radius r is visible within the image
+        """
+        # Closest point on image rectangle to circle center
+        closest_x = min(max(sx, 0), self.size - 1)
+        closest_y = min(max(sy, 0), self.size - 1)
+
+        # Distance from circle center to that point
+        dx = sx - closest_x
+        dy = sy - closest_y
+
+        # Closest point has its own radial distance 
+        # d_closest^2 = dx^2 + dy^2
+        # We want to know if that distance is greater than the radius of the circle drawn
+        # (If it is, the circle is visible. If its not the arc of the circle is too large.)
+        mask = (dx*dx + dy*dy <= r*r)
+        return mask
