@@ -288,8 +288,11 @@ class CircleDoodle:
         """
         df = pd.read_csv(annotated_file)
         mask = (df["access_filename"] == npy_access_filename) # Note this assumes unique names/files
-        print(mask)
-        row_data = df[mask]
+        if sum(mask) == 0:
+            print(f"Error: Unable to load file {npy_access_filename} not recognized in {annotated_file}")
+            exit()
+        #row_data = df[mask]
+        row_data = df[mask].iloc[0]
         self.access_filename = npy_access_filename
         self.image_filename = row_data["image_filename"]
         self.size = row_data["image_size"]
@@ -331,6 +334,7 @@ class CircleDoodle:
         for attr in scalar_attributes:
             if not np.isclose(getattr(self, attr), getattr(other, attr)):
                 print(f"Failed equivalence on attribute {attr}")
+                print(f"self: {getattr(self, attr)} other: {getattr(other, attr)}")
                 return False
 
         # Array attributes
@@ -343,6 +347,7 @@ class CircleDoodle:
         for attr in array_attributes:
             if not np.array_equal(getattr(self, attr), getattr(other, attr)):
                 print(f"Failed equivalence on attribute {attr}")
+                print(f"self: {getattr(self, attr)} other: {getattr(other, attr)}")
                 return False
 
         return True
