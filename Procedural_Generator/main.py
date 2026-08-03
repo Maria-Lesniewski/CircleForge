@@ -15,7 +15,7 @@ import os
 # Generate a blank canvas (all black, 0. White = 255)
 #doodle_obj = gen.CircleDoodle(600)
 #doodle_obj = gen.CircleDoodle(300)
-doodle_obj = gen.CircleDoodle(size=600, max_circle = 1, fill_percent = 0.01, filename="name.npy")
+doodle_obj = gen.CircleDoodle(size=600, max_circle = 2, fill_percent = 0.01, filename="name.npy")
 
 # Fill the page with circles and the negative space with a random density of speckles
 doodle_obj.fill_space()

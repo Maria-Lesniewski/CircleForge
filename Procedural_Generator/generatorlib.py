@@ -358,10 +358,11 @@ class CircleDoodle:
         """
         Checks if a circle added with center sx, sy, and radius r is visible within the image
         """
-        # Closest point on image rectangle to circle center
-        closest_x = min(max(sx, 0), self.size - 1)
-        closest_y = min(max(sy, 0), self.size - 1)
-
+        # Closest point on image rectangle to circle center  +---------+
+        closest_x = min(max(sx, 0), self.size - 1)        #  |         |
+        closest_y = min(max(sy, 0), self.size - 1)        #  |      ( *| *   )
+                                                          #  |         |
+                                                          #  +---------+
         # Distance from circle center to that point
         dx = sx - closest_x
         dy = sy - closest_y
@@ -369,6 +370,12 @@ class CircleDoodle:
         # Closest point has its own radial distance 
         # d_closest^2 = dx^2 + dy^2
         # We want to know if that distance is greater than the radius of the circle drawn
-        # (If it is, the circle is visible. If its not the arc of the circle is too large.)
+        # (If the distance to the closest point is bigger than the circle radius the circle is not visible. 
+        #  If its smaller, then we need to verify that the radial distance is still within the bounds of the image
+        
         mask = (dx*dx + dy*dy <= r*r)
+        if (mask == True):
+            mask = ( 
+                    (sx - r >= 0) and (sx + r < self.size) and (sy - r >= 0) and (sy + r < self.size)
+                    )
         return mask
