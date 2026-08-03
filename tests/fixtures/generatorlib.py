@@ -109,7 +109,8 @@ class CircleDoodle:
         # Actually draw the circles into the calculated region
         # Big Circle
         cv2.circle(self.image, (cx, cy), R, 255, 1)
-        self.nbig += 1
+        if self.circle_is_visible(cx, cy, R):
+            self.nbig += 1
         # Small evenly spaced circles with no overlap
         #print("Hello!" + str(r))
 
@@ -131,7 +132,8 @@ class CircleDoodle:
                 small_circles.append((sx, sy, r))
                 self.add_local_hitbox(sx, sy, r)
                 cv2.circle(self.image, (sx, sy), r, 255, 1)
-                self.nsmall += 1
+                if self.circle_is_visible(sx, sy,r):
+                    self.nsmall += 1
         
 
     
@@ -288,8 +290,11 @@ class CircleDoodle:
         """
         df = pd.read_csv(annotated_file)
         mask = (df["access_filename"] == npy_access_filename) # Note this assumes unique names/files
-        print(mask)
-        row_data = df[mask]
+        if sum(mask) == 0:
+            print(f"Error: Unable to load file {npy_access_filename} not recognized in {annotated_file}")
+            exit()
+        #row_data = df[mask]
+        row_data = df[mask].iloc[0]
         self.access_filename = npy_access_filename
         self.image_filename = row_data["image_filename"]
         self.size = row_data["image_size"]
@@ -344,6 +349,33 @@ class CircleDoodle:
         for attr in array_attributes:
             if not np.array_equal(getattr(self, attr), getattr(other, attr)):
                 print(f"Failed equivalence on attribute {attr}")
+                print(f"self: {getattr(self, attr)} other: {getattr(other, attr)}")
                 return False
 
         return True
+
+    def circle_is_visible(self, sx, sy, r):
+        """
+        Checks if a circle added with center sx, sy, and radius r is visible within the image
+        """
+        # Closest point on image rectangle to circle center  +---------+
+        closest_x = min(max(sx, 0), self.size - 1)        #  |         |
+        closest_y = min(max(sy, 0), self.size - 1)        #  |      ( *| *   )
+                                                          #  |         |
+                                                          #  +---------+
+        # Distance from circle center to that point
+        dx = sx - closest_x
+        dy = sy - closest_y
+
+        # Closest point has its own radial distance 
+        # d_closest^2 = dx^2 + dy^2
+        # We want to know if that distance is greater than the radius of the circle drawn
+        # (If the distance to the closest point is bigger than the circle radius the circle is not visible. 
+        #  If its smaller, then we need to verify that the radial distance is still within the bounds of the image
+        
+        mask = (dx*dx + dy*dy <= r*r)
+        if (mask == True):
+            mask = ( 
+                    (sx - r >= 0) and (sx + r < self.size) and (sy - r >= 0) and (sy + r < self.size)
+                    )
+        return mask
