@@ -120,3 +120,11 @@ def test_data_base_workflow():
     os.rmdir("test_data_folder")
 
 
+
+def test_circle_is_visible():
+    doodle_obj = CircleDoodle(size=300)
+    assert doodle_obj.circle_is_visible(150, 150, 1000) == False
+    assert doodle_obj.circle_is_visible(150, 150, 10) == True
+    assert doodle_obj.circle_is_visible(300, 300, 10) == True
+    assert doodle_obj.circle_is_visible(312, 312, 10) == False
+

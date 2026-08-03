@@ -109,7 +109,8 @@ class CircleDoodle:
         # Actually draw the circles into the calculated region
         # Big Circle
         cv2.circle(self.image, (cx, cy), R, 255, 1)
-        self.nbig += 1
+        if self.circle_is_visible(cx, cy, R):
+            self.nbig += 1
         # Small evenly spaced circles with no overlap
         #print("Hello!" + str(r))
 
@@ -131,7 +132,8 @@ class CircleDoodle:
                 small_circles.append((sx, sy, r))
                 self.add_local_hitbox(sx, sy, r)
                 cv2.circle(self.image, (sx, sy), r, 255, 1)
-                self.nsmall += 1
+                if self.circle_is_visible(sx, sy,r):
+                    self.nsmall += 1
         
 
     
@@ -351,3 +353,34 @@ class CircleDoodle:
                 return False
 
         return True
+
+    def circle_is_visible(self, sx, sy, r):
+        """
+        Checks if a circle added with center sx, sy, and radius r is visible within the image
+        """
+
+        # Create a small block around the circle
+        block_size = 2 * r + 3
+        block = np.zeros((block_size, block_size), dtype=np.uint8)
+
+        # Draw circle centered in the block
+        cv2.circle(
+            block,
+            (r + 1, r + 1),
+            r,
+            255,
+            1
+        )
+
+        # Coordinates of pixels belonging to circle
+        ys, xs = np.where(block > 0)
+
+        # Translate back to image coordinates
+        xs = xs + sx - r - 1
+        ys = ys + sy - r - 1
+
+        # Check if any pixel is inside image
+        return np.any(
+            (xs >= 0) & (xs < self.size) &
+            (ys >= 0) & (ys < self.size)
+        )
