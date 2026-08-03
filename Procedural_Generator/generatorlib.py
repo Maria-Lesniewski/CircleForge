@@ -358,24 +358,29 @@ class CircleDoodle:
         """
         Checks if a circle added with center sx, sy, and radius r is visible within the image
         """
-        # Closest point on image rectangle to circle center  +---------+
-        closest_x = min(max(sx, 0), self.size - 1)        #  |         |
-        closest_y = min(max(sy, 0), self.size - 1)        #  |      ( *| *   )
-                                                          #  |         |
-                                                          #  +---------+
-        # Distance from circle center to that point
-        dx = sx - closest_x
-        dy = sy - closest_y
 
-        # Closest point has its own radial distance 
-        # d_closest^2 = dx^2 + dy^2
-        # We want to know if that distance is greater than the radius of the circle drawn
-        # (If the distance to the closest point is bigger than the circle radius the circle is not visible. 
-        #  If its smaller, then we need to verify that the radial distance is still within the bounds of the image
-        
-        mask = (dx*dx + dy*dy <= r*r)
-        if (mask == True):
-            mask = ( 
-                    (sx - r >= 0) and (sx + r < self.size) and (sy - r >= 0) and (sy + r < self.size)
-                    )
-        return mask
+        # Create a small block around the circle
+        block_size = 2 * r + 3
+        block = np.zeros((block_size, block_size), dtype=np.uint8)
+
+        # Draw circle centered in the block
+        cv2.circle(
+            block,
+            (r + 1, r + 1),
+            r,
+            255,
+            1
+        )
+
+        # Coordinates of pixels belonging to circle
+        ys, xs = np.where(block > 0)
+
+        # Translate back to image coordinates
+        xs = xs + sx - r - 1
+        ys = ys + sy - r - 1
+
+        # Check if any pixel is inside image
+        return np.any(
+            (xs >= 0) & (xs < self.size) &
+            (ys >= 0) & (ys < self.size)
+        )
