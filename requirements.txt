@@ -21,3 +21,4 @@ tomli==2.4.1
 typing_extensions==4.16.0
 tzdata==2026.3
 torch==2.13.0
+mpi4py==4.1.2
