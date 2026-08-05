@@ -6,7 +6,7 @@ import generatorlib as gen
 import numpy as np
 import os
 from mpi4py import MPI
-
+import pandas as pd
 
 
 """
@@ -50,9 +50,9 @@ print(annotation_filenames)
 np.random.seed(rank)
 
 if rank == 0:
-    file_exists = os.path.exists("data_folder")
+    file_exists = os.path.exists("samples")
     if not file_exists:
-        os.mkdir("data_folder")
+        os.mkdir("samples")
 
 job_ids = []
 count = 0
@@ -65,7 +65,25 @@ for sample_no in range(0,samples_per_setting):
 for ele in job_ids:
     if (ele[0] % size ) == rank:
         writefilename = f"Nmax_{ele[1]}_p{ele[3]}_{ele[2]}.npy"
-        doodle_obj = gen.CircleDoodle(size=600, max_circle = max_N, fill_percent = 0.01, filename=writefilename, annotations=annotation_filenames[rank])
+        doodle_obj = gen.CircleDoodle(size=600, max_circle = ele[1], fill_percent = ele[3], filename=writefilename, annotations=annotation_filenames[rank])
         doodle_obj.fill_space()
         print(f"writing {writefilename}")
-        doodle_obj.add_to_data_base("data_folder")
+        doodle_obj.add_to_data_base("samples")
+
+
+comm.Barrier()
+# Rank 0 stitches files
+if rank == 0:
+    print("Combining CSVs...")
+
+    for i, ele in enumerate(annotation_filenames):
+        annotation_filenames[i] = "samples/" + annotation_filenames[i]
+        
+    combined = pd.concat(
+        [pd.read_csv(f) for f in annotation_filenames],
+        ignore_index=True
+    )
+
+    combined.to_csv("samples/annotations.csv", index=False)
+
+    print("Done")
