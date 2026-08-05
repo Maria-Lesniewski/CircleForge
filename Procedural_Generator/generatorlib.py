@@ -272,7 +272,8 @@ class CircleDoodle:
                     "nsmall",
                     "area_of_circles",
                     "area_of_negative",
-                    "max_circle_units"
+                    "max_circle_units",
+                    "fill_fraction"
                     ])
             writer.writerow([
                 self.access_filename,
@@ -283,7 +284,8 @@ class CircleDoodle:
                 self.nsmall,
                 self.area_of_circles,
                 self.area_of_negative_space,
-                self.max_circle_units
+                self.max_circle_units,
+                self.fill_fraction
                 ])
     def load_circle_obj_from_data(self, annotated_file, npy_access_filename):
         """
@@ -307,6 +309,7 @@ class CircleDoodle:
         self.area_of_circles = row_data["area_of_circles"]
         self.area_of_negative_space = row_data["area_of_negative"]
         self.max_circle_units = row_data["max_circle_units"]
+        self.fill_fraction = row_data["fill_fraction"]
 
     def is_equivalent(self, other):
         """
@@ -327,8 +330,8 @@ class CircleDoodle:
             "nbig",
             "nsmall",
             "area_of_circles",
-     #       "area_of_negative_space", MCL commenting out because not usually read in
-     #       "fill_fraction",
+            "area_of_negative_space",
+            "fill_fraction",
      #       "category",
             "max_circle_units",
     #       "circle_offset"
