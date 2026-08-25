@@ -4,7 +4,7 @@ import torch
 import matplotlib.pyplot as plt
 import pandas as pd 
 dataset = dd.CircleData(
-    csv_file="data_folder/annotations.csv",
+    csv_file="samples/annotations.csv",
     target_columns=[
         "ncircles",
         "nbig",
@@ -31,9 +31,10 @@ labels_map = {
         "nsmall" : 2 ,
         "area_of_circles" : 3,
         "area_of_negative" : 4,
-        "max_circle_units" : 5
+        "max_circle_units" : 5,
+        "fill_fraction" : 6
         }
-
+print(type(labels_map))
 cols, rows = 3,3
 figure = plt.figure(figsize=(cols*rows-1, cols*rows-1))
 for i in range(1, cols*rows +1):
@@ -59,7 +60,8 @@ for i in range(len(dataset)):
         "nsmall": label[labels_map["nsmall"]].item(),
         "area_of_circles": label[labels_map["area_of_circles"]].item(),
         "area_of_negative": label[labels_map["area_of_negative"]].item(),
-        "max_circle_units" : label[labels_map["max_circle_units"]].item()
+        "max_circle_units" : label[labels_map["max_circle_units"]].item(),
+        "fill_fraction" : label[labels_map["fill_fraction"]].item
     })
 
 analysis_df = pd.DataFrame(records)
@@ -101,8 +103,8 @@ plt.figure(figsize=(8,5))
 
 for nmax, group in list(analysis_df.groupby("max_circle_units")):
     plt.scatter(
-        [nmax], #* len(group),
-        group["area_of_negative"].mean(),
+        [nmax]* len(group),
+        group["area_of_negative"],
         alpha=0.4,
         label=f"NMax {nmax}"
     )
