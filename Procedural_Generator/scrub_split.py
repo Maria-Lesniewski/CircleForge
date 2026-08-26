@@ -76,10 +76,29 @@ for idx in drop_idxs:
     files_to_delete.append(df.iloc[idx]["access_filename"])
 
 for idx, file in zip(drop_idxs, files_to_delete):
-    Path(file).unlink()
+    if (Path(file).exists()):
+        Path(file).unlink()
     df = df.drop(idx)
 
 df.reset_index(drop=True)
 
-### Part 2 : Split
+### Part 2 : Shuffle/Split
+shuff = np.random.choice(len(df), size=len(df), replace=False)
+df = df.iloc[shuff].reset_index(drop=True)
+f_train = 0.6
+f_val = 0.2
+f_test = 0.2
+n_samples = len(df)
+n_train = int(n_samples*f_train)
+n_val = int(n_samples*f_val)
+n_test = int(n_samples*f_test)
+
+if (n_train + n_val + n_test != n_samples):
+    dif = n_samples - (n_train + n_val + n_test)
+    n_val = n_val + dif
+
+split_labels = ["train"]*n_train + ["val"]*n_val + ["test"]*n_test
+df["data_split"] = split_labels
+
+df.to_csv('split_annotations.csv', index=False)
 
