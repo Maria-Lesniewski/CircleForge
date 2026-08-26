@@ -1,45 +1,89 @@
 # @author Maria Lesniewski
 # @file main.py
-# @desc This is the driver for my silly physics based diffusion experiment
+# @desc This is the driver for creating procedurally generated circle drawings in a data base.
 
 import generatorlib as gen
 import numpy as np
 import os
+from mpi4py import MPI
+import pandas as pd
 
 
-# Generate Data 
-# Drawings have some characteristics like 
-# Number of circles
-# Area of blank negative space 
-# 
-# Generate a blank canvas (all black, 0. White = 255)
-#doodle_obj = gen.CircleDoodle(600)
-#doodle_obj = gen.CircleDoodle(300)
-np.random.seed(7)
+### Data Generation Parameters 
+negative_space_fill_densities = [0.1, 0.01, 0.5, 1]
+max_N_to_try = list(range(0, 10))
+max_N_to_try.extend(range(20, 400, 10))
+samples_per_setting = 50
 
-doodle_obj = gen.CircleDoodle(size=600, max_circle = 2, fill_percent = 0.01, filename="name.npy")
+""" # Debugging Parameters
+negative_space_fill_densities = [1]
+max_N_to_try = list(range(0, 3))
+samples_per_setting = 4
+"""
 
-# Fill the page with circles and the negative space with a random density of speckles
-doodle_obj.fill_space()
-doodle_obj.show_obj()
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+if rank == 0:
+    while(True):
+        print(f"Predicted settings will generate {len(negative_space_fill_densities)*len(max_N_to_try)*samples_per_setting} samples")
+        print("Is this okay?\n")
+        response = input("Y/N")
+        if response == "Y":
+            break
+        if response == "N":
+            print("Change Settings and try again")
+            print(f"killing {size} processes")
+            comm.Abort(0)
+        else:
+            print("Please input 'Y' or 'N'")
 
-file_exists = os.path.exists("data_folder")
-if not file_exists:
-    os.mkdir("data_folder")
-doodle_obj.add_to_data_base("data_folder")
+comm.Barrier()
+
+print(f"I am rank {rank} out of {size}")
+annotation_filenames = []
+for i in range(0,size):
+    annotation_filenames.append(f"processor_{i}_annotations.csv")
+
+print(annotation_filenames)
+# Generate Data, set seed for reproducibility
+np.random.seed(rank)
+
+if rank == 0:
+    file_exists = os.path.exists("samples")
+    if not file_exists:
+        os.mkdir("samples")
+
+job_ids = []
+count = 0
+for sample_no in range(0,samples_per_setting):
+    for max_N in max_N_to_try:
+        for pixel_density in negative_space_fill_densities:
+            job_ids.append([count,max_N, sample_no, pixel_density])
+            count+=1
+
+for ele in job_ids:
+    if (ele[0] % size ) == rank:
+        writefilename = f"Nmax_{ele[1]}_p{ele[3]}_{ele[2]}.npy"
+        doodle_obj = gen.CircleDoodle(size=600, max_circle = ele[1], fill_percent = ele[3], filename=writefilename, annotations=annotation_filenames[rank])
+        doodle_obj.fill_space()
+        print(f"writing {writefilename}")
+        doodle_obj.add_to_data_base("samples")
 
 
-doodle_obj2 = gen.CircleDoodle(size=600)
-doodle_obj2.load_circle_obj_from_data("data_folder/annotations.csv","data_folder/name.npy")
-doodle_obj2.show_obj()
+comm.Barrier()
+# Rank 0 stitches files
+if rank == 0:
+    print("Combining CSVs...")
 
-os.remove("data_folder/annotations.csv")
-os.remove("data_folder/name.npy")
-os.rmdir("data_folder")
+    for i, ele in enumerate(annotation_filenames):
+        annotation_filenames[i] = "samples/" + annotation_filenames[i]
+        
+    combined = pd.concat(
+        [pd.read_csv(f) for f in annotation_filenames],
+        ignore_index=True
+    )
 
+    combined.to_csv("samples/annotations.csv", index=False)
 
-if (doodle_obj.is_equivalent(doodle_obj2)):
-    print("The two objects are equivalent")
-else:
-    print("NOPE")
-input("Press enter to end program")
+    print("Done")

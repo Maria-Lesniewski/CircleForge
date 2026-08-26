@@ -18,6 +18,8 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
+Note that requirements.txt lists mpi4py as a req, but that this is only required for embarassingly paralell generation of data. 
+If the parallelized code in the procedural data generation folder is used, then openmpi-bin libopenmpi-dev should be installed
 
 ## Synthetic Data 
 The images in the data base look something like this:
