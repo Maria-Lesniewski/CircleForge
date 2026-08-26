@@ -12,6 +12,7 @@ class CircleData(Dataset):
         root_dir="",
         target_columns=None,
         transform=None,
+        split_tag=None
     ):
         """
         PyTorch Dataset for annotated .npy vector files.
@@ -30,6 +31,10 @@ class CircleData(Dataset):
         """
 
         self.annotations = pd.read_csv(csv_file)
+        if split_tag is not None:
+            self.annotations = self.annotations[self.annotations["data_split"] == split_tag].reset_index(drop=True)
+            if (len(self.annotations) == 0):
+                print(f"Warning: split_tag {split_tag} produced a loaded set with len 0")
         self.root_dir = root_dir
         self.target_columns = target_columns or ["ncircles"]
         self.transform = transform
