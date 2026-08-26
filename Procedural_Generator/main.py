@@ -9,17 +9,17 @@ from mpi4py import MPI
 import pandas as pd
 
 
-"""
 ### Data Generation Parameters 
 negative_space_fill_densities = [0.1, 0.01, 0.5, 1]
 max_N_to_try = list(range(0, 10))
 max_N_to_try.extend(range(20, 400, 10))
 samples_per_setting = 50
-"""
+
+""" # Debugging Parameters
 negative_space_fill_densities = [1]
 max_N_to_try = list(range(0, 3))
 samples_per_setting = 4
-
+"""
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
