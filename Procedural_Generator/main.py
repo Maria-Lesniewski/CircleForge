@@ -10,9 +10,9 @@ import pandas as pd
 
 
 ### Data Generation Parameters 
-negative_space_fill_densities = [0.1, 0.01, 0.5, 1]
-max_N_to_try = list(range(0, 10))
-max_N_to_try.extend(range(20, 400, 10))
+negative_space_fill_densities = [0.1, 0.01, 0.3, 0.5, 1]
+max_N_to_try = list(range(0, 200))
+#max_N_to_try.extend(range(20, 400, 10))
 samples_per_setting = 50
 
 """ # Debugging Parameters
@@ -65,7 +65,7 @@ for sample_no in range(0,samples_per_setting):
 for ele in job_ids:
     if (ele[0] % size ) == rank:
         writefilename = f"Nmax_{ele[1]}_p{ele[3]}_{ele[2]}.npy"
-        doodle_obj = gen.CircleDoodle(size=600, max_circle = ele[1], fill_percent = ele[3], filename=writefilename, annotations=annotation_filenames[rank])
+        doodle_obj = gen.CircleDoodle(size=50, max_circle = ele[1], fill_percent = ele[3], filename=writefilename, annotations=annotation_filenames[rank])
         doodle_obj.fill_space()
         print(f"writing {writefilename}")
         doodle_obj.add_to_data_base("samples")
