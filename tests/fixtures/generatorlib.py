@@ -92,9 +92,9 @@ class CircleDoodle:
             # Big Circle Center and Size
             cx = xavail[idx]
             cy = yavail[idx]
-            R = np.random.randint(self.size//20, self.size//3)
+            R = np.random.randint(self.size//20 + 1, self.size//3 + 2)
             # Small circles on perimeter at random positons
-            r = np.random.randint(R//30 + 1 , R//6)
+            r = np.random.randint(R//30 + 1 , R//6 + 2)
             num_small = 2*np.pi * (R + 2) // (2*r + 4) # R offset by sit space, r offset by double between small circle space
 
             position_found = not self.intersect(cx, cy, R, r)
