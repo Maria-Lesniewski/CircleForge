@@ -4,3 +4,4 @@ data_folder
 samples/
 __pycache__/
 *.pyc
+model*
