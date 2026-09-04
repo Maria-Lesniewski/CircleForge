@@ -76,4 +76,6 @@ loss = loss_crit(output,torch.tensor(y, dtype=torch.float32))
 print("From torch framework:")
 print("Training MSE:", loss.detach().numpy())
 print("Training RMSE:", np.sqrt(loss.detach().numpy()))
+model_path = "Final_Least_Squares_opt_model"
+torch.save(linear.state_dict(), model_path)
 
