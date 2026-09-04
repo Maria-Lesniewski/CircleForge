@@ -66,6 +66,7 @@ loss_crit = nn.MSELoss() # This is the square of RMS and is easier for gradients
 optimizer = torch.optim.Adam(linear.parameters(), lr=1e-3)
 
 old_school_log = []
+model_log = []
 best_vloss = 1000000000
 for epoch in range(100):
     running_loss = 0.0
@@ -111,11 +112,13 @@ for epoch in range(100):
             if avg_vloss < best_vloss:
                 print(f"New best model {epoch} {i}")
                 best_vloss = avg_vloss
-                model_path = 'model_{}_{}'.format(epoch, i)
+                model_path = 'CachedModels/model_{}_{}'.format(epoch, i)
                 torch.save(linear.state_dict(), model_path)
+                model_log.append([str(model_path), best_vloss])
 
 print('Finished Training')
 
 
 writer.flush()
 np.savetxt("log/loss_epoch_vloss_vs.train_batch_ID.xvg", old_school_log)
+np.savetxt("CachedModels/model_dict_and_validation_loss.txt", model_log, fmt="%s")
