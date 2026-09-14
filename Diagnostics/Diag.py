@@ -8,14 +8,16 @@ from torch.utils.data import DataLoader
 import numpy as np
 ## Load your best model parameters here 
 #best_params = input("Enter name of best fit model file")
-best_params = "Final_Least_Squares_opt_model"
+#best_params = "Final_Least_Squares_opt_model"
+best_params = "Final_Least_Squares_rotated_opt_model"
 log_str = "analysis_log_model_" + best_params
 best_model_path = Path(best_params)
 # Log what you're doing since we have CL input
 with open(log_str, 'w', encoding='utf-8') as logfile:
     logfile.write("Last model analyzed was" + best_params + "\n")
 
-linear_model = mo.BasicLinear()
+#linear_model = mo.BasicLinear()
+linear_model = mo.RotatedLinear()
 linear_model.load_state_dict(torch.load(best_model_path))
 linear_model.eval() # No gradients here, just final model diagnostics 
 loss = nn.MSELoss()
@@ -75,19 +77,15 @@ for i, (sets,key) in enumerate(zip(datas, data_dict)):
             error_v_true.append([ncircleslabel.squeeze(1).item(), loss(predictions, ncircleslabel).item()])
             mperror.append(loss(mean_predictor, ncircleslabel).item())
             predict_v_true.append([predictions.squeeze(), ncircleslabel.squeeze()])
-    R2 = sum(error)/sum(mperror)
+    R2 = 1 - sum(error)/sum(mperror)
+    mask = (np.abs(error) <= 1).astype(int)
+    acc = sum(mask)/len(mask)
     np.savetxt(save_dir / "model_MSE_per_sample.xvg", np.column_stack((np.arange(0,len(datas[i])), error)))
     print(mperror[0])
     np.savetxt(save_dir / "mean_predictor_MSE_per_sample.xvg" , np.column_stack((np.arange(0, len(datas[i])), mperror)))
     np.savetxt(save_dir / "Error_v_True_value.xvg", error_v_true)
     np.savetxt(save_dir / "Predict_v_True_value.xvg", predict_v_true)
-    np.savetxt(save_dr / "R2.xvg", np.array([["R2 = ", R2],]), fmt="%s")
-    
-
-
-
-
-    
+    np.savetxt(save_dir / "R2_accuracy.xvg", np.array([["R2 = ", R2], ["Accuracty = ", acc]]), fmt="%s")
     
 
 ## Plot 
