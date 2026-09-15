@@ -72,13 +72,13 @@ def test_is_equivalent(default_drawing):
 
 def test_load_circle_obj_from_data():
     read_drawing = CircleDoodle()
-    read_drawing.load_circle_obj_from_data("./fixtures/annotations.csv", "./fixtures/ones.npy")
+    read_drawing.load_circle_obj_from_data("./DataGeneratorTest/fixtures/annotations.csv", "./DataGeneratorTest/fixtures/ones.npy")
     print(read_drawing.size)
     assert read_drawing.size == 300
     assert np.sum(read_drawing.image) == read_drawing.size*read_drawing.size
     assert np.array_equal(np.ones((300,300)), read_drawing.image) == True
-    assert read_drawing.image_filename == "fixtures/ones.npy"
-    assert read_drawing.access_filename == "./fixtures/ones.npy"
+    assert read_drawing.image_filename == "DataGeneratorTest/fixtures/ones.npy"
+    assert read_drawing.access_filename == "./DataGeneratorTest/fixtures/ones.npy"
     assert read_drawing.ncircles == 0
     assert read_drawing.nbig == 0
     assert read_drawing.nsmall == 0
@@ -92,10 +92,10 @@ def test_label_datapoint_with_ncircles(default_drawing):
 
 def test_fill_space():
     read_drawing = CircleDoodle()
-    read_drawing.load_circle_obj_from_data("fixtures/annotations.csv", "fixtures/fixture.npy")
+    read_drawing.load_circle_obj_from_data("DataGeneratorTest/fixtures/annotations.csv", "DataGeneratorTest/fixtures/fixture.npy")
     random.seed(67)
     np.random.seed(67)
-    generated_drawing = CircleDoodle(size=400, filename="fixtures/fixture.npy")
+    generated_drawing = CircleDoodle(size=400, filename="DataGeneratorTest/fixtures/fixture.npy")
     generated_drawing.fill_space()
     
     generated_drawing.label_datapoint_with_ncircles()
