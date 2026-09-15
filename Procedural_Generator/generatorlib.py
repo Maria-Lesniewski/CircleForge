@@ -256,7 +256,7 @@ class CircleDoodle:
         self.label_datapoints_with_area()
         self.label_datapoint_with_ncircles()
 
-        csv_filename = rootdir + "/" + self.annotations_file
+        csv_filename = os.path.join(rootdir, self.annotations_file) 
         file_exists = os.path.isfile(csv_filename)
 
 
