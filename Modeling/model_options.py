@@ -21,12 +21,12 @@ class ModelFactory:
 
     @classmethod
     # Aggressive type hinting, this is a factory method
-    def create_model_from_registry(cls, model_type: str, config: Dict[str, Any]) -> nn.Module:
+    def create(cls, model_type: str, config: Dict[str, Any]) -> nn.Module:
         if model_type not in cls._registry:
             raise ValueError(f"Unknown model type: '{model_type}'")
         return cls._registry[model_type](**config) # config will be used as unpacked args for inits where applicable
 
-@ModelFactory.register("Basic_Linear")
+@ModelFactory.register("BasicLinear")
 class BasicLinear(nn.Module):
     """
     The most naive model we could build. 
@@ -43,7 +43,7 @@ class BasicLinear(nn.Module):
         x = self.flatten(x)
         x = self.f1(x)
         return x
-@ModelFactory.register("Rotated_Linear")
+@ModelFactory.register("RotatedLinear")
 class RotatedLinear(nn.Module):
     """
     A slightly fancier version of the naive model to account for count invariance under rotation
