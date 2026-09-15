@@ -2,8 +2,31 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from typing import Dict, Any, List
 
+## Model Factory for writing generic test / train functions without cluttering code with too many variants that do the same thing
+# The registry stores the list of models implemented within this module
+class ModelFactory:
+    _registry: Dict[str,Any] = {
+            # We fill this in as we add types below
+            }
 
+    # Add to registry with decorators 
+    @classmethod
+    def register(cls, name : str):
+        def decorator(model_cls):
+            cls._registry[name] = model_cls
+            return model_cls
+        return decorator
+
+    @classmethod
+    # Aggressive type hinting, this is a factory method
+    def create_model_from_registry(cls, model_type: str, config: Dict[str, Any]) -> nn.Module:
+        if model_type not in cls._registry:
+            raise ValueError(f"Unknown model type: '{model_type}'")
+        return cls._registry[model_type](**config) # config will be used as unpacked args for inits where applicable
+
+@ModelFactory.register("Basic_Linear")
 class BasicLinear(nn.Module):
     """
     The most naive model we could build. 
@@ -20,7 +43,7 @@ class BasicLinear(nn.Module):
         x = self.flatten(x)
         x = self.f1(x)
         return x
-
+@ModelFactory.register("Rotated_Linear")
 class RotatedLinear(nn.Module):
     """
     A slightly fancier version of the naive model to account for count invariance under rotation
