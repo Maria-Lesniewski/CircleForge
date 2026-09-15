@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import os 
 import csv
 import pandas as pd
+from pathlib import Path
 class CircleDoodle:
     """
     Generates non-overlapping circular patterns on a discrete grid.
@@ -290,12 +291,18 @@ class CircleDoodle:
     def load_circle_obj_from_data(self, annotated_file, npy_access_filename):
         """
         Reads annotations.csv, finds the filename passed and loads existent stats into the object
+        npy_access_filename should be a relative path
         """
         df = pd.read_csv(annotated_file)
-        mask = (df["access_filename"] == npy_access_filename) # Note this assumes unique names/files
+        mask = (df["access_filename"].apply(Path) == Path(npy_access_filename)) # Note this assumes unique names/files
         if sum(mask) == 0:
-            print(f"Error: Unable to load file {npy_access_filename} not recognized in {annotated_file}")
+            print(f"ERROR: Unable to find {npy_access_filename} entry in {annotated_file}")
             exit()
+        elif sum(mask) > 1:
+            print(f"ERROR: Found multiple {npy_access_filename} entries in {annotated_file}")
+            print(f"mask entries {np.nonzero(mask)[0]}")
+            exit()
+
         #row_data = df[mask]
         row_data = df[mask].iloc[0]
         self.access_filename = npy_access_filename

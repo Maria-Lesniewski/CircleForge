@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 def fixture_path(request):
     """Returns the absolute path to the fixtures directory relative to the test file."""
     test_dir = os.path.dirname(request.fspath)
-    return os.path.join(test_dir, "fixtures")
+    return os.path.join(test_dir, "Datafixtures")
 
 
 # Import CircleDoodle from the library file
@@ -92,7 +92,7 @@ def test_label_datapoint_with_ncircles(default_drawing):
 
 def test_fill_space():
     read_drawing = CircleDoodle()
-    read_drawing.load_circle_obj_from_data("./fixtures/annotations.csv", "./fixtures/fixture.npy")
+    read_drawing.load_circle_obj_from_data("fixtures/annotations.csv", "fixtures/fixture.npy")
     random.seed(67)
     np.random.seed(67)
     generated_drawing = CircleDoodle(size=400, filename="fixtures/fixture.npy")
