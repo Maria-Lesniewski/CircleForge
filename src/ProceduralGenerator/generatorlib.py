@@ -251,12 +251,16 @@ class CircleDoodle:
         Makes sure all labels associated with circle doodle object are populated
         Saves image and labels to a CSV sheet folder / image directory in the roodir passed
         """
-        self.access_filename = rootdir + "/" + self.image_filename
+        if rootdir != None:
+            self.access_filename = rootdir + "/" + self.image_filename
+            csv_filename = os.path.join(rootdir, self.annotations_file)
+        else:
+            self.access_filename = self.image_filename
+            csv_filename = self.annotations_file
         np.save(self.access_filename, self.image)
         self.label_datapoints_with_area()
         self.label_datapoint_with_ncircles()
 
-        csv_filename = os.path.join(rootdir, self.annotations_file) 
         file_exists = os.path.isfile(csv_filename)
 
 
