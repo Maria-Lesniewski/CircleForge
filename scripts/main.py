@@ -2,7 +2,7 @@
 # @file main.py
 # @desc This is the driver for creating procedurally generated circle drawings in a data base.
 
-import generatorlib as gen
+import ProceduralGenerator.generatorlib as gen
 import numpy as np
 import os
 from mpi4py import MPI
@@ -14,12 +14,6 @@ negative_space_fill_densities = [0.1, 0.01, 0.3, 0.5, 1]
 max_N_to_try = list(range(0, 200))
 #max_N_to_try.extend(range(20, 400, 10))
 samples_per_setting = 50
-
-""" # Debugging Parameters
-negative_space_fill_densities = [1]
-max_N_to_try = list(range(0, 3))
-samples_per_setting = 4
-"""
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
