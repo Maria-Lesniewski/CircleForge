@@ -12,8 +12,8 @@ class ModelTestRunner:
     _configs -> args for each model type 
     """
     _checkpoints = {
-            "BasicLinear" : "modelstates/BasicLinear.pt",
-            "RotatedLinear" : "modelstates/RotatedLinear.pt"
+            "BasicLinear" : "ModelTests/modelstates/BasicLinear.pt",
+            "RotatedLinear" : "ModelTests/modelstates/RotatedLinear.pt"
             }
 
     _expected_output = {

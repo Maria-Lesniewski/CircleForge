@@ -4,7 +4,7 @@ import sys
 import os
 import random
 # Dynamically add the parent directory to the search path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
 
 @pytest.fixture
