@@ -1,9 +1,7 @@
 .venv/
 generatorlib_backup_pre_circle_hitboxes.py
-data_folder
-samples/
 __pycache__/
 *.pyc
-params*
-r2model*
-
+*.pt
+*.npy
+*.csv
