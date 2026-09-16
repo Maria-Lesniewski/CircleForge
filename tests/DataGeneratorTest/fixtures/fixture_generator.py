@@ -6,6 +6,7 @@ import generatorlib as gen
 import numpy as np
 import os
 import random
+import sys 
 
 # Generate Data 
 # Drawings have some characteristics like 
@@ -15,6 +16,7 @@ import random
 # Generate a blank canvas (all black, 0. White = 255)
 #doodle_obj = gen.CircleDoodle(600)
 #doodle_obj = gen.CircleDoodle(300)
+filepath = os.path.dirname(os.path.abspath(__file__))
 doodle_obj = gen.CircleDoodle(size=600, max_circle = 1, fill_percent = 0.01, filename="name.npy")
 
 # Fill the page with circles and the negative space with a random density of speckles
@@ -43,12 +45,14 @@ else:
 input("Press enter to end program")
 
 os.mkdir("fixtures")
-doodle_obj3 = gen.CircleDoodle(filename="fixtures/ones.npy")
+ones_path = str(os.path.join(filepath, "ones.npy"))
+doodle_obj3 = gen.CircleDoodle(filename=ones_path)
 doodle_obj3.image = np.ones((doodle_obj3.size, doodle_obj3.size))
 doodle_obj3.add_to_data_base(".")
 
 random.seed(67)
 np.random.seed(67)
+fpath = str(os.path.join(filepath, "fixture.npy"))
 doodle_obj4 = gen.CircleDoodle(size=400, filename="fixtures/fixture.npy")
 doodle_obj4.fill_space()
 doodle_obj4.show_obj()

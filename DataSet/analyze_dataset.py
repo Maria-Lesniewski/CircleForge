@@ -11,7 +11,8 @@ dataset = dd.CircleData(
         "nsmall",
         "area_of_circles",
         "area_of_negative",
-        "max_circle_units"
+        "max_circle_units",
+        "fill_fraction"
     ]
 )
 

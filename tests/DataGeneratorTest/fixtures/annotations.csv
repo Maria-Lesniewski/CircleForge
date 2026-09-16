@@ -1,0 +1,3 @@
+access_filename,image_filename,image_size,ncircles,nbig,nsmall,area_of_circles,area_of_negative,max_circle_units,fill_fraction
+./DataGeneratorTest/fixtures/ones.npy,DataGeneratorTest/fixtures/ones.npy,300,0,0,0,0,90000,200,0.05
+./DataGeneratorTest/fixtures/fixture.npy,DataGeneratorTest/fixtures/fixture.npy,400,307,17,290,85403,74597,200,0.05

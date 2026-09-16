@@ -4,3 +4,6 @@ data_folder
 samples/
 __pycache__/
 *.pyc
+params*
+r2model*
+
