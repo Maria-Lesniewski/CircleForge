@@ -44,7 +44,7 @@ if rank == 0:
     io.make_artifact_dir("raw_data/samples")
 
 for i in range(0,size):
-    annotation_filenames.append(io.artifact_path(f"raw_data/processor_{i}_annotations.csv"))
+    annotation_filenames.append(io.artifact_path(f"raw_data/processor_{i}_raw_annotations.csv"))
 
 print(annotation_filenames)
 
@@ -77,6 +77,6 @@ if rank == 0:
         ignore_index=True
     )
 
-    combined.to_csv(io.artifact_path("raw_data/samples/annotations.csv"), index=False)
+    combined.to_csv(io.artifact_path("raw_data/combined_raw_annotations.csv"), index=False)
 
     print("Done")

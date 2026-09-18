@@ -21,19 +21,17 @@ f_test = 0.2
 
 #### BEGIN SCAN FOR DUPLICATES ###
 ## load .csv 
-df = pd.read_csv("raw_data/annotations.csv")
+df = pd.read_csv(io.artifact_path("raw_data/combined_raw_annotations.csv"))
 
-## ignore access_filename/image_filename columns 
+## Look at all data except access_filename/image_filename columns 
 label_columns = [
         col for col in df.columns
         if (col != "access_filename" and col != "image_filename")
         ]
 
-rows_to_delete = []
-files_to_delete = []
+entries_to_delete = []
 
 group = df.groupby(label_columns, dropna=False)
-
 drop_idxs = [] # We dont expect too many of these 
 for group_key, group_df in group:
     if len(group_df) < 2:
@@ -63,12 +61,12 @@ for group_key, group_df in group:
 files_to_delete = []
 
 for idx in drop_idxs:
-    files_to_delete.append(df.iloc[idx]["access_filename"])
+    entries_to_delete.append(df.iloc[idx])
 ### END SCAN FOR DUPLICATES ### 
 
-### DELETE DUPLICATES FROM MANIFEST
+### DELETE DUPLICATES FROM MANIFEST, Create a record of the removal
+deleted_manifest = pd.DataFrame(entries_to_delete).reset_index(drop=True)
 for idx, file in zip(drop_idxs, files_to_delete):
-    io.delete_file_abs_path(file)
     df = df.drop(idx)
 
 df.reset_index(drop=True)
@@ -76,7 +74,7 @@ df.reset_index(drop=True)
 shuff = np.random.choice(len(df), size=len(df), replace=False)
 df = df.iloc[shuff].reset_index(drop=True)
 
-### SPLIT DATA ###
+### SPLIT REMAINING DATA INTO TRAIN/VAL/TEST ###
 n_samples = len(df)
 n_train = int(n_samples*f_train)
 n_val = int(n_samples*f_val)
@@ -90,8 +88,9 @@ if (n_train + n_val + n_test != n_samples):
 split_labels = ["train"]*n_train + ["val"]*n_val + ["test"]*n_test
 df["data_split"] = split_labels
 
-### Save 
-io.
-final_split_annotation = io.artifact_path("")
-df.to_csv('split_annotations.csv', index=False)
-
+### Save Deleted Manifest and Final Data Manifest
+io.make_artifact_dir("final_data")
+final_split_annotation = io.artifact_path("final_data/train_val_test_split_annotations.csv")
+record_of_deletes = io.artifact_path("final_data/samples_removed_from_raw.csv")
+df.to_csv(final_split_annotation, index=False)
+deleted_manifest.to_csv(record_of_deletes, index=False)
