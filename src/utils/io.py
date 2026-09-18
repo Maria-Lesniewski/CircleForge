@@ -15,7 +15,7 @@ def yes_no_q(extra_info : str, question : str) -> bool:
     while(True):
         print(extra_info)
         print(question)
-        response = input("Y/N")
+        response = input("Y/N\n")
         if response == "Y":
             return True
         if response == "N":
