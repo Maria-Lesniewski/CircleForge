@@ -20,8 +20,10 @@ f_val = 0.2
 f_test = 0.2
 
 #### BEGIN SCAN FOR DUPLICATES ###
+raw_file_annotations = io.artifact_path("raw_data/combined_raw_annotations.csv")
+print(f"Checking file {raw_file_annotations} for duplicate entries")
 ## load .csv 
-df = pd.read_csv(io.artifact_path("raw_data/combined_raw_annotations.csv"))
+df = pd.read_csv(raw_file_annotations)
 
 ## Look at all data except access_filename/image_filename columns 
 label_columns = [
@@ -58,15 +60,14 @@ for group_key, group_df in group:
                         
                         break
 
-files_to_delete = []
-
+print(f"Found {len(drop_idxs)} sample entries to drop")
 for idx in drop_idxs:
     entries_to_delete.append(df.iloc[idx])
 ### END SCAN FOR DUPLICATES ### 
 
 ### DELETE DUPLICATES FROM MANIFEST, Create a record of the removal
 deleted_manifest = pd.DataFrame(entries_to_delete).reset_index(drop=True)
-for idx, file in zip(drop_idxs, files_to_delete):
+for idx in drop_idxs:
     df = df.drop(idx)
 
 df.reset_index(drop=True)
@@ -94,3 +95,6 @@ final_split_annotation = io.artifact_path("final_data/train_val_test_split_annot
 record_of_deletes = io.artifact_path("final_data/samples_removed_from_raw.csv")
 df.to_csv(final_split_annotation, index=False)
 deleted_manifest.to_csv(record_of_deletes, index=False)
+print(f"Stored final data manifest in:\n {final_split_annotation}")
+print(f"Stored deleted points (duplicates/non-existant files) in:\n {record_of_deletes}")
+
