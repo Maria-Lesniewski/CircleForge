@@ -1,5 +1,5 @@
 # @author Maria Lesniewski
-# @file scrub_split.py
+# @file scrub_and_split_data.py
 # @desc This is a driver for quality controlling the generated data set / splitting it
 # @desc It removes duplicates and scrambles the samples 
 # @desc then we split the data according to some train, val, test split fraction
