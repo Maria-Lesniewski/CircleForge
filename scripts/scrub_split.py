@@ -1,25 +1,27 @@
 # @author Maria Lesniewski
 # @file scrub_split.py
 # @desc This is a driver for quality controlling the generated data set / splitting it
-# @desc Generally, we don't want duplicates in our data base and we want to split the data according to some train, val, test split
-# @desc The generation doesnt do that. This script scrubs the master list, scrambles it, then adds split labels. 
+# @desc It removes duplicates and scrambles the samples 
+# @desc then we split the data according to some train, val, test split fraction
 
-import generatorlib as gen
-import numpy as np
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+import utils.io as io
+import ProceduralGenerator.generatorlib as gen
+import numpy as np
 from pathlib import Path
-from mpi4py import MPI
 import pandas as pd
 
+### SPLIT PROPORTIONS ###
+f_train = 0.6
+f_val = 0.2
+f_test = 0.2
 
-### Skeleton 
-### Search Data Base for matches on all columns. If all columns match, load .npy file and check if identical. If Identical, delete line of one of duplicates from CSV, remove from directory 
-### Then randomly shuffle and add labels for train, val, test etc. 
-
-
-# Part 1: Search 
+#### BEGIN SCAN FOR DUPLICATES ###
 ## load .csv 
-df = pd.read_csv("samples/annotations.csv")
+df = pd.read_csv("raw_data/annotations.csv")
 
 ## ignore access_filename/image_filename columns 
 label_columns = [
@@ -29,7 +31,6 @@ label_columns = [
 
 rows_to_delete = []
 files_to_delete = []
-
 
 group = df.groupby(label_columns, dropna=False)
 
@@ -56,42 +57,31 @@ for group_key, group_df in group:
                     partner_image = np.load(partner_path)
                     if (np.array_equal(image, partner_image)):
                         drop_idxs.append(idx)
-
-                        """ DEBUGGING
-                        image1 = gen.CircleDoodle()
-                        image2 = gen.CircleDoodle()
-                        image1.load_circle_obj_from_data("samples/annotations.csv", image_path)
-                        image2.load_circle_obj_from_data("samples/annotations.csv", partner_path)
-                        image1.show_obj()
-                        image2.show_obj()
-                        input("Quit")
-                        exit(1)
-                        """
-
+                        
                         break
 
 files_to_delete = []
-print(drop_idxs)
+
 for idx in drop_idxs:
     files_to_delete.append(df.iloc[idx]["access_filename"])
+### END SCAN FOR DUPLICATES ### 
 
+### DELETE DUPLICATES FROM MANIFEST
 for idx, file in zip(drop_idxs, files_to_delete):
-    if (Path(file).exists()):
-        Path(file).unlink()
+    io.delete_file_abs_path(file)
     df = df.drop(idx)
 
 df.reset_index(drop=True)
-
-### Part 2 : Shuffle/Split
+### SHUFFLE REMAINING ###
 shuff = np.random.choice(len(df), size=len(df), replace=False)
 df = df.iloc[shuff].reset_index(drop=True)
-f_train = 0.6
-f_val = 0.2
-f_test = 0.2
+
+### SPLIT DATA ###
 n_samples = len(df)
 n_train = int(n_samples*f_train)
 n_val = int(n_samples*f_val)
 n_test = int(n_samples*f_test)
+
 
 if (n_train + n_val + n_test != n_samples):
     dif = n_samples - (n_train + n_val + n_test)
@@ -100,5 +90,8 @@ if (n_train + n_val + n_test != n_samples):
 split_labels = ["train"]*n_train + ["val"]*n_val + ["test"]*n_test
 df["data_split"] = split_labels
 
+### Save 
+io.
+final_split_annotation = io.artifact_path("")
 df.to_csv('split_annotations.csv', index=False)
 

@@ -47,4 +47,11 @@ def find_project_root() -> Path:
     """
     return PROJECT_ROOT
 
-
+def delete_file_abs_path(abs_file_path : str) -> bool: 
+    """
+    removes a file using the passed absolute path as an arg
+    returns true if successful, false if not
+    """
+    if (Path(abs_file_path).exists()):
+        Path(abs_file_path).unlink()
+    return (not Path(abs_file_path).exists())
