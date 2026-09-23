@@ -57,12 +57,15 @@ class Trainer:
         Minimizes loss function passed according to optimizer passed
         saves models from batches wherein the validation data was 
         """
+
+        print("BEST CHECKPOINT EPOCHS LAUNCHED")
         best_validation_loss = 10**30
         n_batches = len(self.train_loader)
         if validation_interval > n_batches:
-            raise ValueError(f"validation_interval : {validation_interval} > n_batches: {n_batches}")
+            raise ValueError(f"validation_interval : {validation_interval} > n_batches per epoch: {n_batches}")
 
         for epoch in range(n_epochs):
+            epoch_tloss = 0
             for i, data in enumerate(self.train_loader):
                 # Obtain batch samples
                 data.to(self.device)
@@ -77,21 +80,36 @@ class Trainer:
                 self.optimizer.zero_grad()
 
                 # append loss to runner
-                running_loss += loss.item()
+                running_valint_tloss += loss.item()
+                epoch_tloss += loss.item()
 
                 # Check validation set
                 if i % validation_interval == validation_interval - 1:
                     avg_val_loss = self.evaluate_model()
+                    avg_tloss_in_valint = running_valint_tloss / validation_interval
                     print("#### EVALUATION ####")
                     print(f"epoch:{epoch}, batch: {i}")
                     print(f"average training loss over {validation_interval} batches:")
-                    print(f"{running_tloss / validation_interval}")
+                    print(f"{avg_tloss_in_valint}")
                     print(f"average validation loss : {avg_val_loss}")
 
                     if avg_val_loss < best_validation_loss: 
                         print("NEW BEST MODEL")
+                        best_validation_loss = avg_val_loss
+                        self.logger.save_model(
+                                model_id=f"{type(self.model)}", 
+                                step=i*(epoch+1), 
+                                model=self.model, 
+                                stats={
+                                    "validation_loss" : avg_val_loss, 
+                                    "training_loss" : avg_tloss_in_valint},
+                                metadata=True
+                                )
+                    running_valint_tloss = 0
+                print(f"----End of Epoch {epoch}----"
+                print("EPOCH: {epoch}, average loss {epoch_tloss/n_batches}")
+                epoch_tloss = 0
 
-                    running_tloss = 0
 
     def evaluate_model(self):
         """
