@@ -7,13 +7,14 @@ import sys
 import os 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-import Models.model_options as mo # Models
+import torch # Pytorch
+import torch.nn as nn
+import Models.model_options as mo # Custom Models
 import Training.trainer as TL # Pre-stored Training epochs 
+from Training.model_logger import Logger
 import DataSet.DoodleData as dd # Data class for loading into torch
 from torch.utils.data import DataLoader # Actual loaders
 import utils.io as io # For anchoring relative io paths across modules
-
-from torch.utils.tensorboard import SummaryWriter # For logging 
 
 # Load Data Into Data Set
 print("Loading training/validation data samples")
@@ -44,14 +45,36 @@ val_loader = DataLoader(
         num_workers=4
         )
 print("Created data loaders.")
-## Loggers and log directory
-log_path = io.make_artifact_dir("training_log")
-writer = SummaryWriter(log_path)
 
 ## Model Selection
 model_key = io.multiple_choice_q("The following model architectures are implemented", list(mo.ModelFactory._registry.keys()))
 
 model = mo.ModelFactory.create(model_key, config={})
-## Training Algorithm Selection (Toy for Sanity Debug) 
+
+print(type(model).__name__)
+print(type(model))
+print(model.parameters())
+## Loss Function 
+loss_crit = nn.MSELoss()
+print(f"Using losscrit: {type(loss_crit).__name__}")
+optimizer = torch.optim.Adam(list(model.parameters()), lr=1e-3)
+print(f"Using optimizer: {type(optimizer).__name__}")
+
+## Training Algorithm Selection (Currently sort of a toy Sanity Debug) 
 epoch_key = io.multiple_choice_q("The following epoch algs are active", list(TL.Trainer._epoch_registry.keys()))
 
+# Create a directory to save in based on choices, and create a writer to use while training
+root_path = io.artifact_path(f"{model_key}_{epoch_key}_training")
+io.make_artifact_dir(root_path)
+print(f"Training logs will be stored in directory {root_path}")
+scribe = Logger(root_path)
+model_trainer = TL.Trainer(
+        model=model,
+        optimizer=optimizer,
+        loss_fn = loss_crit,
+        train_loader=trloader,
+        val_loader=val_loader,
+        logger=scribe,
+        epoch_style = epoch_key
+        )
+print("Created training object")
