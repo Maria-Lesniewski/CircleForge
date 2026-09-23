@@ -1,7 +1,7 @@
 # import pytest 
 # import json Later it might make sense to go to json files if we add too many models
 import torch
-import Modeling.model_options as mo
+import Models.model_options as mo
 
 class ModelTestRunner:
 

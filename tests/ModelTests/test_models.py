@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../s
 
 import torch
 from model_test_factory import ModelTestRunner
-from Modeling.model_options import ModelFactory
+from Models.model_options import ModelFactory
 import pytest
 
 
