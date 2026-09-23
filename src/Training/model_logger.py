@@ -5,6 +5,7 @@
 # @desc and also different file formats for humans/machines can be processed fast
 
 import torch
+import torchvision
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from pathlib import Path
