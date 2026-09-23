@@ -4,9 +4,11 @@
 # @desc It exists so that relative training paths can be handled in scripts directly
 # @desc and also different file formats for humans/machines can be processed fast
 
-from torchvision.utils.tensorboard import SummaryWriter
+import torch
+from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from pathlib import Path
+from typing import Any
 
 class Logger:
     """
