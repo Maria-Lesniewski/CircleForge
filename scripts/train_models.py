@@ -51,9 +51,6 @@ model_key = io.multiple_choice_q("The following model architectures are implemen
 
 model = mo.ModelFactory.create(model_key, config={})
 
-print(type(model).__name__)
-print(type(model))
-print(model.parameters())
 ## Loss Function 
 loss_crit = nn.MSELoss()
 print(f"Using losscrit: {type(loss_crit).__name__}")
