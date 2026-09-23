@@ -7,22 +7,23 @@ from typing import Dict, Any, List
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import model_logger as ml
+from . import model_logger as ml
 from torch.utils.data import DataLoader
 
 class Trainer:
     _epoch_registry: Dict[str, Any] = {
             # epoch registry filled by routine definitions below
             }
-
-    @classmethod
-    def register(cls, epoch_routine_name: str):
-        """
-        decorator factory for adding to dictionary of implemented epoch routines
-        """
+    def register_epoch(epoch_routine_name: str, registry=_epoch_registry):
         def decorator(epoch_function):
-            cls._epoch_registry[epoch_routine_name] = epoch_function
+            """
+            decorator factory for adding to dictionary of implemented epoch routines
+            """
+            registry[epoch_routine_name] = epoch_function
             return epoch_function
+        return decorator
+
+
 
     def __init__(self, model, optimizer, loss_fn, train_loader, val_loader, logger, epoch_style : str):
         self.device = torch.device(
@@ -51,7 +52,7 @@ class Trainer:
         """
         self.epoch_routine(epoch_config)
 
-    @register("best_checkpoint_epochs")
+    @register_epoch("best_checkpoint_epochs")
     def best_checkpoint_epochs(self, n_epochs : int , validation_interval : int):
         """
         Minimizes loss function passed according to optimizer passed
@@ -106,7 +107,7 @@ class Trainer:
                                 metadata=True
                                 )
                     running_valint_tloss = 0
-                print(f"----End of Epoch {epoch}----"
+                print(f"----End of Epoch {epoch}----")
                 print("EPOCH: {epoch}, average loss {epoch_tloss/n_batches}")
                 epoch_tloss = 0
 
