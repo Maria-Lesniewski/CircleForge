@@ -1,8 +1,11 @@
 # import pytest 
 # import json Later it might make sense to go to json files if we add too many models
 import torch
+import torch.nn as nn
 import Models.model_options as mo
-
+import utils.io as io
+import json
+from pathlib import Path
 class ModelTestRunner:
 
     """
@@ -28,8 +31,20 @@ class ModelTestRunner:
             "RotatedLinear" : {}
             }
 
+    # Check the inits via model architecture
+    # Architectures are stored in the test folder as json files
+    _architectures = {
+            "BasicLinear" : "ModelTests/modelarchitectures/BasicLinear.json",
+            "RotatedLinear" : "ModelTests/modelarchitectures/RotatedLinear.json",
+            }
+
+    _LAYER_TYPES = {
+            "Flatten" : nn.Flatten,
+            "Linear" : nn.Linear
+            }
+
     @classmethod
-    def test(cls, model_type : str, input_data, tolerance=1e-12):
+    def test_forward(cls, model_type : str, input_data, tolerance=1e-12):
         model = mo.ModelFactory.create(
                 model_type,
                 cls._configs[model_type]
@@ -49,4 +64,51 @@ class ModelTestRunner:
                 torch.tensor(expected),
                 atol=tolerance
                 )
+    @classmethod
+    def test_model_init(cls, model_type : str):
+        model = mo.ModelFactory.create(
+                model_type,
+                cls._configs[model_type]
+                )
+        # Check that layers are properly initialized
+        layer_dict = cls.load_model_architectures(model_type)
+        for expected_layer in layer_dict["layers"]:
+            name = expected_layer["name"]
+            expected_type = cls._LAYER_TYPES[expected_layer["type"]]
+            
+            assert hasattr(model, name), (
+                    f"Model {model_type} is missing layer '{name}'"
+                    )
+            actual_layer = getattr(model, name)
+
+            assert isinstance(actual_layer, expected_type), (
+                    f"In Model {model_type}"
+                    f"Layer '{name}' has type "
+                    f"{type(actual_layer).__name__}, "
+                    f"expected {expected_type.__name__}"
+                    )
+
+            expected_attributes = expected_layer.get("attributes")
+
+            if expected_attributes:
+                for attr, expected_value in expected_attributes.items():
+
+                    if attr == "bias":
+                        # Then we'll set to true if found
+                        actual_value = (actual_layer.bias is not None)
+                    else:
+                        actual_value = getattr(actual_layer, attr)
+
+                    assert actual_value == expected_value, (
+                        f"Layer '{name}' attribute '{attr}' "
+                        f"expected {expected_value}, "
+                        f"got {actual_value}"
+                    )
+            return True
+
+    @classmethod
+    def load_model_architectures(cls, model_type : str):
+        with Path(cls._architectures[model_type]).open() as f:
+            return json.load(f)
+
 
