@@ -75,7 +75,7 @@ model_trainer = TL.Trainer(
         epoch_style = epoch_key
         )
 print("Created training object")
-config = {"n_epochs" : 1, "validation_interval" : 1}
+config = {"n_epochs" : 3, "validation_interval" : 1}
 for _ in range(0,3):
     print("####TRAINING#######")
 

@@ -71,8 +71,8 @@ class Trainer:
             for i, data in enumerate(self.train_loader):
                 # Obtain batch samples
                 input_img, label = data
-                input_img.to(self.device)
-                label.to(self.device)
+                input_img = input_img.to(self.device)
+                label = label.to(self.device)
                 # zero gradient
                 self.optimizer.zero_grad()
                 #Eval Model
@@ -80,11 +80,12 @@ class Trainer:
                 # Back propagate
                 loss = self.loss_fn(output, label)
                 loss.backward()
-                self.optimizer.zero_grad()
+                self.optimizer.step()
 
                 # save loss each batch
                 batch_id = (epoch*len(self.train_loader) + i)
-
+                print(batch_id)
+                self.logger.add_scalars(tag="training_set", scalars={"loss" : loss.item() }, step=batch_id)
                 # append loss to runner
                 running_valint_tloss += loss.item()
                 epoch_tloss += loss.item()
@@ -98,6 +99,13 @@ class Trainer:
                     print(f"average training loss over {validation_interval} batches:")
                     print(f"{avg_tloss_in_valint}")
                     print(f"average validation loss : {avg_val_loss}")
+                    self.logger.add_scalars(
+                            tag="validation_int",
+                            scalars={
+                                "avg_val_loss" : avg_val_loss,
+                                "avg_train_loss_in_val_int" : avg_tloss_in_valint
+                                }, 
+                            step=batch_id)
 
                     if avg_val_loss < best_validation_loss: 
                         print("NEW BEST MODEL")
@@ -111,10 +119,18 @@ class Trainer:
                                     "training_loss" : avg_tloss_in_valint},
                                 metadata=True
                                 )
+                        self.logger.add_scalars(
+                                tag="model_checkpoints",
+                                scalars={
+                                    "tloss" : loss.item(),
+                                    "val_loss_avg" : best_validation_loss,
+                                    "running_tloss" : avg_tloss_in_valint
+                                },
+                                step=batch_id) 
                     running_valint_tloss = 0
-                print(f"----End of Epoch {epoch}----")
-                print(f"EPOCH: {epoch}, average loss {epoch_tloss/n_batches}")
-                epoch_tloss = 0
+            print(f"----End of Epoch {epoch}----")
+            print(f"EPOCH: {epoch}, average loss {epoch_tloss/n_batches}")
+            epoch_tloss = 0
 
 
     def evaluate_model(self):
@@ -127,8 +143,8 @@ class Trainer:
             running_vloss = 0
             for i, val_data in enumerate(self.val_loader):
                 vinputs, vlabels = val_data
-                vinputs.to(self.device)
-                vlabels.to(self.device)
+                vinputs = vinputs.to(self.device)
+                vlabels = vlabels.to(self.device)
                 voutputs = self.model(vinputs)
                 vloss = self.loss_fn(voutputs, vlabels)
                 running_vloss += vloss.item()
