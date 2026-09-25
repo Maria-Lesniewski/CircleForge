@@ -50,7 +50,7 @@ class Trainer:
         """
         calls the epoch routine specified by the class and trains for n_epochs
         """
-        self.epoch_routine(epoch_config)
+        self.epoch_routine(self,**epoch_config)
 
     @register_epoch("best_checkpoint_epochs")
     def best_checkpoint_epochs(self, n_epochs : int , validation_interval : int):
@@ -67,10 +67,12 @@ class Trainer:
 
         for epoch in range(n_epochs):
             epoch_tloss = 0
+            running_valint_tloss = 0
             for i, data in enumerate(self.train_loader):
                 # Obtain batch samples
-                data.to(self.device)
                 input_img, label = data
+                input_img.to(self.device)
+                label.to(self.device)
                 # zero gradient
                 self.optimizer.zero_grad()
                 #Eval Model
@@ -108,7 +110,7 @@ class Trainer:
                                 )
                     running_valint_tloss = 0
                 print(f"----End of Epoch {epoch}----")
-                print("EPOCH: {epoch}, average loss {epoch_tloss/n_batches}")
+                print(f"EPOCH: {epoch}, average loss {epoch_tloss/n_batches}")
                 epoch_tloss = 0
 
 
@@ -121,10 +123,11 @@ class Trainer:
         with torch.no_grad():
             running_vloss = 0
             for i, val_data in enumerate(self.val_loader):
-                val_data.to(self.device)
                 vinputs, vlabels = val_data
+                vinputs.to(self.device)
+                vlabels.to(self.device)
                 voutputs = self.model(vinputs)
-                vloss = self.loss_fun(voutputs, vlabels)
+                vloss = self.loss_fn(voutputs, vlabels)
                 running_vloss += vloss.item()
             avg_vloss = running_vloss / len(self.val_loader)
         self.model.train() ## TURN ON TRAINING MODE 

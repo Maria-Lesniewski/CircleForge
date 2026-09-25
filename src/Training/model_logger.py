@@ -10,6 +10,7 @@ from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from pathlib import Path
 from typing import Any
+import json
 
 class Logger:
     """
@@ -67,8 +68,9 @@ class Logger:
             step : int, # iteration stats are saved for
             stats : dict[str, Any]):
         path = self.meta_path / f"{model_id}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
         data = {"model_id" : model_id, 
                 "stats" : stats, 
-                "checkpoint_path" : self.checkpoint_path / f"{model_id}_{step}.pt"}
+                "checkpoint_path" : str(self.checkpoint_path / f"{model_id}_{step}.pt")}
         with open(path, 'w') as f:
             json.dump(data, f)
