@@ -80,3 +80,6 @@ for _ in range(0,3):
     print("####TRAINING#######")
 
 model_trainer.train(config)
+
+print("Training complete. Closing logger")
+scribe.close()

@@ -46,7 +46,7 @@ class Logger:
 
     def close(self):
         self.torchwriter.flush()
-        self.torwriter.close()
+        self.torchwriter.close()
 
     def save_model(
             self, 
