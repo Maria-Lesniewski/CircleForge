@@ -82,6 +82,9 @@ class Trainer:
                 loss.backward()
                 self.optimizer.zero_grad()
 
+                # save loss each batch
+                batch_id = (epoch*len(self.train_loader) + i)
+
                 # append loss to runner
                 running_valint_tloss += loss.item()
                 epoch_tloss += loss.item()
@@ -101,7 +104,7 @@ class Trainer:
                         best_validation_loss = avg_val_loss
                         self.logger.save_model(
                                 model_id=f"{self.model.__class__.__name__}", 
-                                step=i*(epoch+1), 
+                                step=epoch*len(self.train_loader) + i, 
                                 model=self.model, 
                                 stats={
                                     "validation_loss" : avg_val_loss, 
