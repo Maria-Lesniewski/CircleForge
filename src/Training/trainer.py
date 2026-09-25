@@ -100,7 +100,7 @@ class Trainer:
                         print("NEW BEST MODEL")
                         best_validation_loss = avg_val_loss
                         self.logger.save_model(
-                                model_id=f"{type(self.model)}", 
+                                model_id=f"{self.model.__class__.__name__}", 
                                 step=i*(epoch+1), 
                                 model=self.model, 
                                 stats={

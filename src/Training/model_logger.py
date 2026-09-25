@@ -56,7 +56,7 @@ class Logger:
             stats : dict[str, Any], # meta statistics
             metadata : bool # whether to save a json with metastatistics
             ):
-        path = self.checkpoint_path / f"{model_id}_{step}.pt"
+        path = self.checkpoint_path / f"{model_id}_step{step}.pt"
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(model.state_dict(), path)
         if metadata:
