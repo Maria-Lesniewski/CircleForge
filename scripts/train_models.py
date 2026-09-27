@@ -3,15 +3,11 @@
 # @desc This is a driver for training models that predict N circles using PyTorch
 # @desc For now, it will accept a model option and train it accordingly 
 
-import sys
-import os 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-
 import torch # Pytorch
 import torch.nn as nn
 import Models.model_options as mo # Custom Models
 import Training.trainer as TL # Pre-stored Training epochs 
-from Training.model_logger import Logger
+from utils.model_logger import Logger
 import DataSet.DoodleData as dd # Data class for loading into torch
 from torch.utils.data import DataLoader # Actual loaders
 import utils.io as io # For anchoring relative io paths across modules
@@ -34,13 +30,13 @@ val_data = dd.CircleData(
 ## Loaders
 trloader = DataLoader(
         train_data,
-        batch_size=32,
+        batch_size=256,
         shuffle=True,
         num_workers=4
         )
 val_loader = DataLoader(
         val_data,
-        batch_size=32,
+        batch_size=256,
         shuffle=True,
         num_workers=4
         )
@@ -75,7 +71,7 @@ model_trainer = TL.Trainer(
         epoch_style = epoch_key
         )
 print("Created training object")
-config = {"n_epochs" : 3, "validation_interval" : 1}
+config = {"n_epochs" : 100, "validation_interval" : int(len(trloader)/10)}
 for _ in range(0,3):
     print("####TRAINING#######")
 
