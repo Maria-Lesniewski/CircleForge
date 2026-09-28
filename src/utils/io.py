@@ -96,6 +96,7 @@ def compounding_multiple_choice_q(extra_info : str, multiple_choice : list[str])
             else:
                 print("\n Integer responses entered are out of range or formatted incorrectly")
                 print(f"\n Please enter options as integers in range {integer_options[0]} - {integer_options[-1]} followed by a '-1'")
+                continue
 
         except:
             print(f"\nCritical Logic Block Error. Killing program.\n")

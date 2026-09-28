@@ -58,7 +58,7 @@ class ModelAnalyzer:
         """
         intro_context = ("The Model Analyzer is used to evaluate pre-trained models\n" +
                 "The following are currently implemented analysis routines\n")
-        io.compounding_multiple_choice_q(intro_context, self._function_registry)
+        io.compounding_multiple_choice_q(intro_context, list(self._function_registry.keys()))
 
 
     @register_analysis("RMSD")
