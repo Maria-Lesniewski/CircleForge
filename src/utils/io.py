@@ -92,7 +92,7 @@ def compounding_multiple_choice_q(extra_info : str, multiple_choice : list[str])
                    ):
                 print(f"registered \n {int_responses}")
                 selected = [multiple_choice[i] for i in int_responses[:-1]]
-                return selected
+                return list(set(selected))
             else:
                 print("\n Integer responses entered are out of range or formatted incorrectly")
                 print(f"\n Please enter options as integers in range {integer_options[0]} - {integer_options[-1]} followed by a '-1'")
