@@ -32,6 +32,8 @@ def multiple_choice_q(extra_info: str, multiple_choice : list[str]):
     Asks a multiple choice question and returns the answer.
     extra_info : Context paragraph ahead of question 
     multiple_choice : Options user can select from, entry will be returned
+
+    returns multiple_choice[response] : str 
     """
     integer_options = np.arange(0, len(multiple_choice))
     while(True):
@@ -50,6 +52,55 @@ def multiple_choice_q(extra_info: str, multiple_choice : list[str]):
                 print(f"\nSelection out of range. Please select integer in range {integer_options[0]} - {integer_options[-1]}\n")
         except:
             print(f"\n'{response}' is not an integer. Try again.\n")
+
+
+def compounding_multiple_choice_q(extra_info : str, multiple_choice : list[str]):
+    """
+    Asks a multiple choice question where mutiple options may be admitted and returns answers
+
+    extra_info : Context paragraph ahead of question
+    multiple_choice : Options user can select from, entry will be returned
+
+    returns multiple_choice[responses] : list[str]
+    """
+    integer_options = np.arange(0, len(multiple_choice))
+    sentinal = -1
+    while(True):
+        print(extra_info)
+        print(f"Please select integer options seperated by spaces, followed by {sentinal}")
+        for i, item in enumerate(multiple_choice):
+            print(f"{i}. {item}")
+        response = input("Select options:")
+
+        if not response:
+            print("Please enter at least one option")
+            continue
+
+        try:
+            responses = response.split()
+            if len(responses) == 0:
+                print("Please enter at least one option")
+                continue
+            int_responses = [int(x) for x in responses]
+        except:
+            print(f"\n {response} does not contain all integers. Try again \n")
+            continue
+
+        try:
+            if ( int_responses[-1] == sentinal and 
+                    all(x in integer_options for x in int_responses[:-1])
+                   ):
+                print(f"registered \n {int_responses}")
+                selected = [multiple_choice[i] for i in int_responses[:-1]]
+                return selected
+            else:
+                print("\n Integer responses entered are out of range or formatted incorrectly")
+                print(f"\n Please enter options as integers in range {integer_options[0]} - {integer_options[-1]} followed by a '-1'")
+
+        except:
+            print(f"\nCritical Logic Block Error. Killing program.\n")
+            sys.exit(1)
+
 
 
 ## FUNCTION FOR PATH ANCHORING ####
