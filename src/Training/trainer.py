@@ -7,7 +7,7 @@ from typing import Dict, Any, List
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from . import model_logger as ml
+from  utils import model_logger as ml
 from torch.utils.data import DataLoader
 
 class Trainer:
