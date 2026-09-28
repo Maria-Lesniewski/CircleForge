@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 ## Eventually we should recognize models saved from logger and just ask which to eval (Build a model config grabber from the models stored by loggers)
-config = {"model_type" : "BasicLinear", "model_path" : "tests/ModelTests/modelstates/BasicLinear.pt", "evaluation_objectives" : ["ncircles"] }
+config = {"model_type" : "BasicLinear", "model_path" : "tests/ModelTests/modelstates/BasicLinear.pt", "evaluation_objective" : "ncircles" }
 ## For now we'll hard code config and use our least squares model as a test
 
 # Load Model
@@ -27,7 +27,10 @@ model.eval()
 data_fp = io.artifact_path("final_data/train_val_test_split_annotations.csv")
 train_data = dd.CircleData(
         csv_file=data_fp,
-        target_columns=["ncircles"],
+        target_columns=[
+            "ncircles",
+            "nbig"
+            ],
         split_tag="train"
         )
 val_data = dd.CircleData(
@@ -41,5 +44,5 @@ test_data = dd.CircleData(
         split_tag="test"
         )
 
-analyzer = ma.ModelAnalyzer(model, train_data, "./")
+analyzer = ma.ModelAnalyzer(model, train_data, "./", config["evaluation_objective"])
 analyzer.obtain_schedule_and_configs()
