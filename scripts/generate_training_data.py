@@ -1,9 +1,7 @@
 # @author Maria Lesniewski
 # @file generate_training_data.py
 # @desc This is the driver for creating procedurally generated circle drawings in a data base.
-import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 import utils.io as io
 import ProceduralGenerator.generatorlib as gen
 import numpy as np
@@ -12,8 +10,10 @@ import pandas as pd
 
 ### Data Generation Parameters 
 negative_space_fill_densities = [0.1, 0.01, 0.3, 0.5, 1]
-max_N_to_try = np.array([1]) # list(range(0, 200))
-samples_per_setting = 1 # 50
+max_N_to_try = list(range(0,200))
+#np.array([1]) # list(range(0, 200))
+samples_per_setting = 50
+#1 # 50
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()

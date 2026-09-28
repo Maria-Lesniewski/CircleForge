@@ -5,9 +5,6 @@
 # @desc then we split the data according to some train, val, test split fraction
 
 import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-
 import utils.io as io
 import ProceduralGenerator.generatorlib as gen
 import numpy as np
