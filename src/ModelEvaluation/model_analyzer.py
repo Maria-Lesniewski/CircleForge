@@ -19,6 +19,9 @@ class ModelAnalyzer:
     ModelAnalyzer provides a common interface for requesting model
     analysies and dispatches requests to registered analysis routines.
 
+    Seperates analysis that require total knowledge of the set from running knowledge
+    of the set to save on memory / to help generalize to larger prediction tasks
+
     Class Attributes:
         _function_registry : Maps analysis strings to appropriate function implemented 
     """
@@ -92,8 +95,38 @@ class ModelAnalyzer:
             context_str += option_str
             self.calculation_config = io.multiple_choice_q(context_str, list(self.calculation_config_options.keys()))
 
+    def run_schedule(self):
+        """
+        Perform and log each calculation listed
+        according to the config mode user passed
+        """
+        for func in self.calculation_schedule.keys():
+            if self.calculation_schedule[func].execution == "running":
+               self.calculation_schedule[func](self)
+
+
+
 #### Begin Grabhat of Function Implementations 
-    @register_analysis("RMSD")
-    def RMSD(self):
-        print("Hello")
+    @register_analysis("RMSE")
+    def RMSE(self):
+        print("Hello from RMSE")
+
+    RMSE.execution = "global"
+    
+    @register_analysis("predicted_vs_real")
+    def predicted_vs_real(self):
+        print("hello from pvr")
+    
+    predicted_vs_real.execution="running"
+
+    @register_analysis("R2")
+    def R2(self):
+        print("Hello from R2")
+    R2.execution="global"
+
+    @register_analysis("histogram_error")
+    def histogram_error(self):
+        print("Hello from h_e")
+    
+    histogram_error.execution="global"
 

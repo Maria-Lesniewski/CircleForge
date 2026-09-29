@@ -46,3 +46,4 @@ test_data = dd.CircleData(
 
 analyzer = ma.ModelAnalyzer(model, train_data, "./", config["evaluation_objective"])
 analyzer.obtain_schedule_and_configs()
+analyzer.run_schedule()
