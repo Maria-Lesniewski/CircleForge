@@ -52,11 +52,11 @@ class ModelAnalyzer:
         self.dataloader : DataLoader = data_set_loader
         self.filewriter_root_path : str = filewriter_root_path
         self.calculation_schedule : Dict[str,Any] = {}
-        self.determine_calc_config_options()
+        self.check_evaluation_request()
 
-    def determine_calc_config_options(self):
+    def check_evalution_request(self):
         """
-        Functions as failsafe for if dataloader passed doesnt have analysis objective in it
+        Verifies data loader has required target within it
         """
 
         if (self.evaluate_against not in self.dataloader.target_columns):
@@ -64,7 +64,7 @@ class ModelAnalyzer:
                     f"Received dataset with columns {self.dataloader.target_columns}")
             raise ValueError(error_str)
 
-    def obtain_schedule_and_configs(self):
+    def obtain_schedule(self):
         """
         Prints list of all possible implemented analysis, 
         if analysis has options, asks for relevant options 
