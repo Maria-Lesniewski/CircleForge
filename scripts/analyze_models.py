@@ -44,6 +44,7 @@ test_data = dd.CircleData(
         split_tag="test"
         )
 
-analyzer = ma.ModelAnalyzer(model, train_data, "./", config["evaluation_objective"])
-analyzer.obtain_schedule()
-analyzer.run_schedule()
+with torch.no_grad():
+    analyzer = ma.ModelAnalyzer(model, train_data, "./", config["evaluation_objective"])
+    analyzer.obtain_schedule()
+    analyzer.run_schedule()
