@@ -106,7 +106,7 @@ class ModelAnalyzer:
         # functions that need global data will update "states" of the function 
         for i, data in enumerate(self.dataloader):
             input_img, label = data
-            self.prediction_state = self.model(input_img)
+            self.prediction_state = self.model(input_img).squeeze(-1)
             self.label_state = label[:,self.datadict[self.evaluate_against]]
             mode="running"
             for func in self.schedule.keys():
@@ -151,11 +151,9 @@ class ModelAnalyzer:
         prints model prediction against actual data
         """
         for i in range(len(self.prediction_state)):
-            print(f"pred: {self.prediction_state[i]}")
-            print(f"lab: {self.label_state[i]}")
             self.loggers["predicted_vs_real"].add_scalars(
                     "evaluation", 
-                    {"predicted_vs_real" : self.prediction_state[i].item()},
+                    {"predicted_vs_real" : self.prediction_state[i]},
                     self.label_state[i]
                     )
 
@@ -180,7 +178,7 @@ class ModelAnalyzer:
             r2 = 1 - (self.R2.__func__.state["SSE"] / SSTot)
             self.loggers["R2"].add_scalars(
                     "evaluation",
-                    {"R2" : r2, "var" : var, "SSE" : self.R2.__func__.state["SSE"], "SST" : SSTot},
+                    {"R2" : r2, "var" : var, "SSE" : self.R2.__func__.state["SSE"], "SST" : SSTot, "N" : self.R2.__func__.state["N"]},
                     0
                     )
 
