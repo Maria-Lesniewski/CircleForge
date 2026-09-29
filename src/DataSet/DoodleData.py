@@ -38,6 +38,7 @@ class CircleData(Dataset):
         self.root_dir = root_dir
         self.target_columns = target_columns or ["ncircles"]
         self.transform = transform
+        self.split_tag = split_tag
 
     def __len__(self):
         return len(self.annotations)

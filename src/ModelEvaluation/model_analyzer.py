@@ -91,10 +91,11 @@ class ModelAnalyzer:
         choices = io.compounding_multiple_choice_q(intro_context, list(self._function_registry.keys()))
         # register calc reqs to schedule, create working dir for analysis and loggers
         a_path = io.make_artifact_dir(f"Analysis_{self.model.__class__.__name__}")
-        print(f"saving analysis in {a_path}")
+        a_sub_path = io.make_artifact_dir(a_path / f"{self.dataloader.dataset.split_tag}")
+        print(f"saving analysis in {a_sub_path}")
         for ele in choices:
             self.schedule[ele] = self._function_registry[ele]
-            self.loggers[ele] = Logger(a_path / ele)
+            self.loggers[ele] = Logger(a_sub_path / ele)
 
     def run_schedule(self):
         """
@@ -107,10 +108,17 @@ class ModelAnalyzer:
             input_img, label = data
             self.prediction_state = self.model(input_img)
             self.label_state = label[:,self.datadict[self.evaluate_against]]
-            mode="debugging"
+            mode="running"
             for func in self.schedule.keys():
                 self.schedule[func](self, mode)
 
+        # Finish any standing state functions
+        print(f"Finished iterating over {len(self.dataloader)} batches of {self.dataloader.batch_size} samples")
+        print(f"Finalizing cumulative analyses")
+        mode = "final"
+        for fun in self.schedule.keys():
+            if (self.schedule[func].state):
+                self.schedule[func](self,mode)
 
 
 #### Begin Grabhat of Function Implementations 
@@ -121,11 +129,17 @@ class ModelAnalyzer:
         e.g. (E(model - true)^2)^(1/2)
         """
         if mode == "running":
-            RMSD.state["N"] += len(data)
-            RMSD.state["sum"] += ()**2
+            self.RMSD.__func__.state["N"] += len(self.prediction_state)
+            self.RMSD.__func__.state["sum"] += torch.sum((self.prediction_state - self.label_state)**2)
         if mode == "final":
-            print("Hello final mode")
-            # write sqrt(sum)/N somewhere
+            self.loggers["RMSD"].add_scalar(
+                    "evaluation", 
+                    {"RMSD" : np.sqrt(self.RMSD.__func__.state["sum"]/
+                        self.RMSD.__func__.state["N"])
+                        },
+                    0)
+            self._reset_functional_state(self.RMSD)
+
     RMSD.state = {
             "sum" : 0,
             "N" : 0, 
@@ -133,7 +147,9 @@ class ModelAnalyzer:
     
     @register_analysis("predicted_vs_real", "always")
     def predicted_vs_real(self, mode=None):
-        # print model prediction against actual data
+        """
+        prints model prediction against actual data
+        """
         for i in range(len(self.prediction_state)):
             print(f"pred: {self.prediction_state[i]}")
             print(f"lab: {self.label_state[i]}")
@@ -142,9 +158,40 @@ class ModelAnalyzer:
                     {"predicted_vs_real" : self.prediction_state[i].item()},
                     self.label_state[i]
                     )
+
     @register_analysis("R2", "always")
     def R2(self, mode):
-        print("Hello from R2")
+        """
+        Calculated R2 for the model wrt the current set (should be bounded btwn 0 and 1 for training set)
+        e.g. 
+        R2 = 1 - SSres/SSTot 
+        SSres = sum(model - true)^2
+        SSTot = sum(true - true_mean)^2 = sum(true^2) - sum(true)^2/N
+        """
+        if mode == "running":
+            self.R2.__func__.state["N"] += len(self.prediction_state)
+            self.R2.__func__.state["SSE"] += torch.sum((self.prediction_state - self.label_state)**2)
+            self.R2.__func__.state["true_sum"] += torch.sum(self.label_state)
+            self.R2.__func__.state["true_square"] += torch.sum(self.label_state**2)
+        if mode == "final":
+            SSTot = self.R2.__func__.state["true_square"] -\
+                    self.R2.__func__.state["true_sum"]**2/self.R2.__func__.state["N"]
+            var = SSTot / self.R2.__func__.state["N"]
+            r2 = 1 - (self.R2.__func__.state["SSE"] / SSTot)
+            self.loggers["R2"].add_scalars(
+                    "evaluation",
+                    {"R2" : r2, "var" : var, "SSE" : self.R2.__func__.state["SSE"], "SST" : SSTot},
+                    0
+                    )
+
+            print(f"Final r2 {r2}")
+
+    R2.state = {
+            "SSE" : 0, 
+            "true_sum" : 0,
+            "true_square" : 0,
+            "N" : 0
+            }
 
     @register_analysis("histogram_error", "always")
     def histogram_error(self, mode):
@@ -159,5 +206,5 @@ class ModelAnalyzer:
         for functions with persistant state attributes, 
         resets state attribute to zero for next calculation
         """
-        for item in func.state.keys():
+        for item in func.__func__.state.keys():
             func.state[item] = 0
