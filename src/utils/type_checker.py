@@ -1,5 +1,5 @@
 # @author Maria Lesniewski
-# @file type_check.py
+# @file type_checker.py
 # @desc This is a helper file for type checking user io
 
 def is_int(response):
