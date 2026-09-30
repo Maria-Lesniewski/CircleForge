@@ -61,8 +61,8 @@ class ModelAnalyzer:
         self.filewriter_root_path : str = filewriter_root_path
         self.schedule : Dict[str,Any] = {}
         self.check_evaluation_request()
-        self.prediction_state = 0 # This will store the data the model predicts batchwise
-        self.label_state = 0 # This will store the true values of the target objective.
+        self.prediction_state = 0
+        self.label_state = 0
         self.loggers : dict[str, Logger] = {}
 
     def init_loader_dict(self):
