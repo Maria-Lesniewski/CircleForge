@@ -1,29 +1,5 @@
 from ..analysis_registry import AnalysisRegistry
 
-#### Begin Grabhat of Function Implementations 
-@AnalysisRegistry.register_analysis("RMSD")
-def RMSD(self, mode):
-    """
-    Calculates the root mean square deviation of the model wrt. samples
-    e.g. (E(model - true)^2)^(1/2)
-    """
-    if mode == "running":
-        self.RMSD.__func__.state["N"] += len(self.prediction_state)
-        self.RMSD.__func__.state["sum"] += torch.sum((self.prediction_state - self.label_state)**2)
-    if mode == "final":
-        self.loggers["RMSD"].add_scalar(
-                "evaluation", 
-                {"RMSD" : np.sqrt(self.RMSD.__func__.state["sum"]/
-                    self.RMSD.__func__.state["N"])
-                    },
-                0)
-        self._reset_functional_state(self.RMSD)
-
-RMSD.state = {
-        "sum" : 0,
-        "N" : 0, 
-        }
-
 @AnalysisRegistry.register_analysis("predicted_vs_true")
 def predicted_vs_true(self, mode=None):
     """
