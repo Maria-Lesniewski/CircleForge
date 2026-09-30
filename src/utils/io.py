@@ -6,7 +6,7 @@ import os
 import numpy as np
 from pathlib import Path
 import sys
-
+from typing import Any, List
 ## USER CL INTERFACE
 def yes_no_q(extra_info : str, question : str) -> bool:
     """ Asks a yes no question, returns true if yes, false if not 
@@ -117,7 +117,7 @@ def dictionary_filling_question(extra_info : str, keys : List[str] ) -> dict[str
     print(f"Please fill in values for the following entries")
     fin_dict = {}
     for entry in keys:
-        fin_dict[entry] = input("f{entry}:")
+        fin_dict[entry] = input(f"{entry}:")
     return fin_dict
 
 ## FUNCTION FOR PATH ANCHORING ####
