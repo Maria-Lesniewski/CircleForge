@@ -74,3 +74,13 @@ class Logger:
                 "checkpoint_path" : str(self.checkpoint_path / f"{model_id}_{step}.pt")}
         with open(path, 'w') as f:
             json.dump(data, f)
+
+    def write_json(self, rel_filepath : str, dictionary : dict[Any, Any]):
+        """
+        Saves any python dictionary as a .json file in the rootfile path
+        """
+        path = self.rootpath/ rel_filepath
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, 'w') as f:
+            json.dump(dictionary, f)
+

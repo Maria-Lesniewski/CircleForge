@@ -103,6 +103,22 @@ def compounding_multiple_choice_q(extra_info : str, multiple_choice : list[str])
             sys.exit(1)
 
 
+def dictionary_filling_question(extra_info : str, keys : List[str] ) -> dict[str:Any]:
+    """
+    Asks a fill in the blank style question wherein user can write anything back
+    (The burden of type correctness is on the calling program to check)
+
+    extra_info : Context paragraph ahead of question
+    keys : categories that user fills values for
+
+    returns dict[keys, user_responses]
+    """
+    print(extra_info)
+    print(f"Please fill in values for the following entries")
+    fin_dict = {}
+    for entry in keys:
+        fin_dict[entry] = input("f{entry}:")
+    return fin_dict
 
 ## FUNCTION FOR PATH ANCHORING ####
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
