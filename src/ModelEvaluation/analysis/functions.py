@@ -1,17 +1,5 @@
 from ..analysis_registry import AnalysisRegistry
 
-@AnalysisRegistry.register_analysis("predicted_vs_true")
-def predicted_vs_true(self, mode=None):
-    """
-    prints model prediction against actual data label
-    """
-    for i in range(len(self.prediction_state)):
-        self.loggers["predicted_vs_true"].add_scalars(
-                "evaluation", 
-                {"predicted_vs_true" : self.prediction_state[i]},
-                self.label_state[i]
-                )
-
 @AnalysisRegistry.register_analysis("R2")
 def R2(self, mode):
     """
