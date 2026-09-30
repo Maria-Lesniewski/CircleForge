@@ -1,18 +1,5 @@
 from ..analysis_registry import AnalysisRegistry
 
-@AnalysisRegistry.register_analysis("error_vs_true")
-def error_vs_true(self, mode=None):
-    """
-    prints the error in model prediction 
-    against the true value 
-    """
-    for i in range(len(self.prediction_state)):
-        self.loggers["error_vs_true"].add_scalars(
-                "evaluation",
-                {"error_vs_true" : self.prediction_state[i] - self.label_state[i]},
-                self.label_state[i]
-                )
-
 @AnalysisRegistry.register_analysis("histogram_error")
 def histogram_error(self, mode):
     n_bins = self.histogram_error.__func__.config["n_bins"]
