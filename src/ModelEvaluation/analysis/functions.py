@@ -1,39 +1,5 @@
 from ..analysis_registry import AnalysisRegistry
 
-@AnalysisRegistry.register_analysis("R2")
-def R2(self, mode):
-    """
-    Calculated R2 for the model wrt the current set (should be bounded btwn 0 and 1 for training set)
-    e.g. 
-    R2 = 1 - SSres/SSTot 
-    SSres = sum(model - true)^2
-    SSTot = sum(true - true_mean)^2 = sum(true^2) - sum(true)^2/N
-    """
-    if mode == "running":
-        self.R2.__func__.state["N"] += len(self.prediction_state)
-        self.R2.__func__.state["SSE"] += torch.sum((self.prediction_state - self.label_state)**2)
-        self.R2.__func__.state["true_sum"] += torch.sum(self.label_state)
-        self.R2.__func__.state["true_square"] += torch.sum(self.label_state**2)
-    if mode == "final":
-        SSTot = self.R2.__func__.state["true_square"] -\
-                self.R2.__func__.state["true_sum"]**2/self.R2.__func__.state["N"]
-        var = SSTot / self.R2.__func__.state["N"]
-        r2 = 1 - (self.R2.__func__.state["SSE"] / SSTot)
-        self.loggers["R2"].add_scalars(
-                "evaluation",
-                {"R2" : r2, "var" : var, "SSE" : self.R2.__func__.state["SSE"], "SST" : SSTot, "N" : self.R2.__func__.state["N"]},
-                0
-                )
-
-        print(f"Final r2 {r2}")
-
-R2.state = {
-        "SSE" : 0, 
-        "true_sum" : 0,
-        "true_square" : 0,
-        "N" : 0
-        }
-
 @AnalysisRegistry.register_analysis("error_vs_true")
 def error_vs_true(self, mode=None):
     """
