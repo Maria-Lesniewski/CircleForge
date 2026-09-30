@@ -43,11 +43,15 @@ class ModelAnalyzer:
         """
         Obj Attributes:
 
-            model : nn.Module - Usually loaded from a .cpt then passed to this init
-            data_set_loader : DataLoader - Set for which evaluation should happen
-            evaluation_objective : str - The name of the target for which the model should be evaluated against. (i.e. what does the model predict) 
-            filewriter_root_path : str - root path that all analysis will be saved under in sub folders
-            evaluate_against : str - The ground truth label the model is trying to predict
+            model - pre-trained inference machine passed in constructor
+            evaluate_against - name of target for inference (i.e. what does the model predict)
+            dataloader - iterator over passed data set used for evaluation
+            datadict - index map for when dataset contains multiple off target labels
+            filewriter_root_path - root path for saving all analysis (subfolders created dependent on analysis)
+            schedule - list of analysis routines to be executed
+            prediction_state - iterator holder for model predictions
+            label_state - iterator holder for ground truths
+            loggers - writing objects for recording each of the scheduled analyses
         """
         self.model : nn.Module = model
         self.evaluate_against = evaluate_against
@@ -88,6 +92,8 @@ class ModelAnalyzer:
         # Obtain user calc req
         intro_context = ("The Model Analyzer is used to evaluate pre-trained models\n" +
                 "The following are currently implemented analysis routines\n")
+        # We can bin analysis by off target labels if they're available. If not, standard options
+
         choices = io.compounding_multiple_choice_q(intro_context, list(self._function_registry.keys()))
         # register calc reqs to schedule, create working dir for analysis and loggers
         a_path = io.make_artifact_dir(f"Analysis_{self.model.__class__.__name__}")
