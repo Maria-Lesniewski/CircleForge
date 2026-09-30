@@ -7,6 +7,7 @@
 from typing import Dict, Any
 import torch
 import torch.nn as nn
+import utils.type_checker as tc
 from utils.model_logger import Logger
 import utils.io as io
 from torch.utils.data import DataLoader
@@ -39,6 +40,7 @@ class ModelAnalyzer:
             return analysis_function
         return decorator
 
+    ### Begin Object Initializing Functions ###
     def __init__(self, model : nn.Module , dataset : Dataset, filewriter_root_path : str, evaluate_against : str, batchsize : int = 32):
         """
         Obj Attributes:
@@ -83,6 +85,8 @@ class ModelAnalyzer:
                     f"Received dataset with columns {self.dataloader.target_columns}")
             raise ValueError(error_str)
 
+    ### End Object Initializing Functions 
+
     def obtain_schedule(self):
         """
         Prints list of all possible implemented analysis, 
@@ -98,10 +102,13 @@ class ModelAnalyzer:
         # register calc reqs to schedule, create working dir for analysis and loggers
         a_path = io.make_artifact_dir(f"Analysis_{self.model.__class__.__name__}")
         a_sub_path = io.make_artifact_dir(a_path / f"{self.dataloader.dataset.split_tag}")
-        print(f"saving analysis in {a_sub_path}")
         for ele in choices:
             self.schedule[ele] = self._function_registry[ele]
+            if (self._function_registry[ele].config):
+                self._function_registry[ele].obtain_config(self)
             self.loggers[ele] = Logger(a_sub_path / ele)
+        print(f"saving analysis in {a_sub_path}")
+
 
     def run_schedule(self):
         """
@@ -125,7 +132,6 @@ class ModelAnalyzer:
         for fun in self.schedule.keys():
             if (self.schedule[func].state):
                 self.schedule[func](self,mode)
-
 
 #### Begin Grabhat of Function Implementations 
     @register_analysis("RMSD", "always")
@@ -212,7 +218,77 @@ class ModelAnalyzer:
 
     @register_analysis("histogram_error", "always")
     def histogram_error(self, mode):
-        print("Hello from h_e")
+        n_bins = self.histogram_error.__func__.config["n_bins"]
+        minb = self.histogram_error.__func__.config["min_bin"]
+        maxb = self.histogram_error.__func__.config["max_bin"]
+
+        if mode == "running":
+            errors = self.prediction_state - self.label_state
+            batch_hist, _ = torch.histogram(errors, bins=n_bins, range=(minb, maxb))
+            self.histogram_error.__func__.state["hist"] += batch_hist
+            ovflo = [entry > self.histogram_error.__func__.config["max_bin"] for entry in errors]
+            unflo = [entry < self.histogram_error.__func__.config["min_bin"] for entry in errors]
+            self.histogram_error.__func__.state["overflow_count"] += sum(ovflo).item()
+            self.histogram_error.__func__.state["underflow_count"] += sum(unflo).item()
+            if any(entry > self.histogram_error.__func__.state["observed_max"] for entry in errors):
+                self.histogram_error.__func__.state["observed_max"] = max(errors).item()
+            if any(entry < self.histogram_error.__func__.state["observed_min"] for entry in errors):
+                self.histogram_error.__func__.state["observed_min"] = min(errors).item()
+
+        if mode == "final":
+            config = self.histogram_error.__func__.config
+            for key, value in config.items():
+                print(key, type(value), value)
+            fin_state = dict(list(self.histogram_error.__func__.state.items())[2:])
+            self.loggers["histogram_error"].write_json(dictionary=config, rel_filepath="histogram_config.json")
+            self.loggers["histogram_error"].write_json(dictionary=fin_state, rel_filepath="histogram_meta.json")
+            for binloc, count in zip(self.histogram_error.__func__.state["edges"], self.histogram_error.__func__.state["hist"]):
+                self.loggers["histogram_error"].add_scalars(
+                        "evaluation",
+                        {"histogram" : count},
+                        binloc
+                        )
+
+    histogram_error.state = {
+            "hist" : 0,
+            "edges" : 0,
+            "observed_min" : float("inf"),
+            "observed_max" : float("-inf"),
+            "overflow_count" : 0,
+            "underflow_count" : 0
+            }
+    histogram_error.config = {
+            "max_bin" : 0,
+            "min_bin" : 0,
+            "n_bins" : 0
+            }
+    def obtain_histogram_error_config(self):
+        
+        while True:
+            user_config = io.dictionary_filling_question(
+                    extra_info="the histogram_error function requires additional configuration",
+                    keys=["max_bin", "min_bin", "n_bins"]
+                    )
+            if ( tc.is_float(user_config["max_bin"])
+                    and tc.is_float(user_config["min_bin"])
+                    and tc.is_int(user_config["n_bins"])
+                    ):
+                max_bin = float(user_config["max_bin"])
+                min_bin = float(user_config["min_bin"])
+                n_bins = int(user_config["n_bins"])
+
+                self.histogram_error.__func__.config["max_bin"] = max_bin
+                self.histogram_error.__func__.config["min_bin"] = min_bin
+                self.histogram_error.__func__.config["n_bins"] = n_bins
+                _ , self.histogram_error.__func__.state["edges"] = torch.histogram(torch.rand(100), range=(min_bin, max_bin), bins=n_bins)
+                return
+            else:
+                print(f"Error in registered responses \n'{user_config}'\n")
+                print("We expect floats for max_bin and min_bin")
+                print("We expect an integer for n_bins")
+                print("Please try again")
+    
+    histogram_error.obtain_config = obtain_histogram_error_config
 
     @register_analysis("RMSD_by_category", "many_target")
     def RMSD_by_category(self, mode):
