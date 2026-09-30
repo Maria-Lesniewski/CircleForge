@@ -1,9 +1,10 @@
-# @file ModelAnalyzer.py
+# @file analysis_runner.py
 # @author Maria Lesniewski
 # @desc This is a class to abstract model analysis into one callable interface and modular functions to test. 
 # @desc Generally, all metrics will require model to evaluate data. Rather than doing that
 #       repeatedly, this class registers each modular analysis type and reuses the same predictions
 #       as requested by a user to log data / performance
+
 from typing import Dict, Any
 import torch
 import torch.nn as nn
@@ -14,7 +15,6 @@ from .streaming_state import StreamingState
 import utils.io as io
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-## Layout Plan 
 
 class AnalysisRunner:
     """
