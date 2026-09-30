@@ -145,15 +145,15 @@ class ModelAnalyzer:
             "N" : 0, 
             }
     
-    @register_analysis("predicted_vs_real", "always")
-    def predicted_vs_real(self, mode=None):
+    @register_analysis("predicted_vs_true", "always")
+    def predicted_vs_true(self, mode=None):
         """
-        prints model prediction against actual data
+        prints model prediction against actual data label
         """
         for i in range(len(self.prediction_state)):
-            self.loggers["predicted_vs_real"].add_scalars(
+            self.loggers["predicted_vs_true"].add_scalars(
                     "evaluation", 
-                    {"predicted_vs_real" : self.prediction_state[i]},
+                    {"predicted_vs_true" : self.prediction_state[i]},
                     self.label_state[i]
                     )
 
@@ -191,12 +191,25 @@ class ModelAnalyzer:
             "N" : 0
             }
 
+    @register_analysis("error_vs_true", "always")
+    def error_vs_true(self, mode=None):
+        """
+        prints the error in model prediction 
+        against the true value 
+        """
+        for i in range(len(self.prediction_state)):
+            self.loggers["error_vs_true"].add_scalars(
+                    "evaluation",
+                    {"error_vs_true" : self.prediction_state[i] - self.label_state[i]},
+                    self.label_state[i]
+                    )
+
     @register_analysis("histogram_error", "always")
     def histogram_error(self, mode):
         print("Hello from h_e")
 
-    @register_analysis("RMSE_by_category", "many_target")
-    def RMSE_by_category(self, mode):
+    @register_analysis("RMSD_by_category", "many_target")
+    def RMSD_by_category(self, mode):
         print("Hello from RMSE_by_category")
 
     def _reset_functional_state(func):
