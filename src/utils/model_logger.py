@@ -79,7 +79,7 @@ class Logger:
         """
         Saves any python dictionary as a .json file in the rootfile path
         """
-        path = self.rootpath/ rel_filepath
+        path = self.root_path/ rel_filepath
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, 'w') as f:
             json.dump(dictionary, f)
