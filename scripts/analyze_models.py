@@ -1,7 +1,7 @@
 import DataSet.DoodleData as dd
 import torch
 import torch.nn as nn
-import ModelEvaluation.model_analyzer as ma
+import ModelEvaluation as ma
 import Models.model_options as mo
 import utils.io as io
 from pathlib import Path
@@ -45,6 +45,6 @@ test_data = dd.CircleData(
         )
 
 with torch.no_grad():
-    analyzer = ma.ModelAnalyzer(model, train_data, "./", config["evaluation_objective"])
+    analyzer = ma.AnalysisRunner(model, train_data, "./", config["evaluation_objective"])
     analyzer.obtain_schedule()
     analyzer.run_schedule()
