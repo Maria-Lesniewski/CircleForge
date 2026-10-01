@@ -60,7 +60,7 @@ def main():
         # Just the filename, not the full path.
         label = Path(filename).name
 
-        ax.plot(x, y, label=label)
+        ax.scatter(x, y, label=label)
 
     ax.set_xlabel(args.xlabel)
     ax.set_ylabel(args.ylabel)
