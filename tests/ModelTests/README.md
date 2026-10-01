@@ -1,6 +1,6 @@
 # HOW TO ADD NEW MODEL TESTS
 
-1) Be sure that the model architecture implemented in Modeling.model_options ahs been registered in the Model Factory, your registry key should be the same as the dict keys to be used in step 2 onward
+1) Be sure that the model architecture implemented in Modeling.model_options has been registered in the Model Factory, your registry key should be the same as the dict keys to be used in step 2 onward
 
 2) Add the appropriate reference checkpoint parameters to the \_checkpoints dict in the ModelTestRunner class
 
