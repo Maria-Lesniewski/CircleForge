@@ -64,6 +64,20 @@ class RotatedLinear(nn.Module):
         x = self.f1(x)
         return x
 
+@ModelFactory.register("Constant")
+class Constant(nn.Module):
+    """
+    A model who's use is almost purely educational / sanity checking/ comparative analysis based
+    Least squares objectives should return the mean of the data set
+    takes 
+    """
+    super(Constant, self).__init__()
+    self.bias = nn.Parameter(torch.tensor(float(torch.rand(1))))
+
+    def forward(self, x):
+        return self.bias(expand(x.shape[0])) # Return constant across batch size
+
+
 """ TO DO 
 class PoissonLinear(nn.Module):
 
