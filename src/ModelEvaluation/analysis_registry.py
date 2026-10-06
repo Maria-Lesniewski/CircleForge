@@ -59,3 +59,15 @@ class AnalysisRegistry:
         c = cls._function_registry | cls._special_function_registry
         return c.copy()
 
+    @classmethod
+    def create(cls, analysis_name : str, config : dict[str: Any]):
+        """
+        Factory method for analyses registered in the register
+        Will pass args in config
+        """
+        supported_classes = cls.total_available()
+        print(f"supported_classes in call {supported_classes}")
+        if analysis_name not in supported_classes:
+                raise ValueError(f"Unknown analysis type: '{analysis_name}'")
+        analysis = supported_classes[analysis_name](**config)
+        return analysis

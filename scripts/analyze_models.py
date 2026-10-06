@@ -15,7 +15,12 @@ from pathlib import Path
 
 
 ## Eventually we should recognize models saved from logger and just ask which to eval (Build a model config grabber from the models stored by loggers)
-config = {"model_type" : "BasicLinear", "model_path" : "tests/ModelTests/modelstates/BasicLinear.pt", "evaluation_objective" : "ncircles" }
+#config = {"model_type" : "BasicLinear", "model_path" : "tests/ModelTests/modelstates/BasicLinear.pt", "evaluation_objective" : "ncircles" }
+#config = {"model_type" : "BasicLinear", "model_path" : "tests/ModelTests/modelstates/Final_Least_Squares_opt_model", "evaluation_objective" : "ncircles" }
+#config = {"model_type" : "RotatedLinear", "model_path" : "tests/ModelTests/modelstates/RotatedLinear.pt", "evaluation_objective" : "ncircles"}
+config = {"model_type" : "RotatedLinear", "model_path" : "tests/ModelTests/modelstates/Final_Least_Squares_rotated_opt_model", "evaluation_objective" : "ncircles"}
+
+
 ## For now we'll hard code config and use our least squares model as a test
 
 # Load Model
@@ -48,3 +53,12 @@ with torch.no_grad():
     analyzer = ma.AnalysisRunner(model, train_data, "./", config["evaluation_objective"])
     analyzer.obtain_schedule()
     analyzer.run_schedule()
+
+    analyzer2 = ma.AnalysisRunner(model, val_data, "./", config["evaluation_objective"])
+    analyzer3 = ma.AnalysisRunner(model, test_data, "./", config["evaluation_objective"])
+
+    analyzer2.obtain_schedule()
+    analyzer2.run_schedule()
+    analyzer3.obtain_schedule()
+    analyzer3.run_schedule()
+

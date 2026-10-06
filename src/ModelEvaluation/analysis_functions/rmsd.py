@@ -11,22 +11,22 @@ class RMSD(StatefulAnalysis):
     Calculates the root mean square deviation of the model wrt. samples
     e.g. (E(model - true)^2)^(1/2)
     """
-    state = {
-            "sum" : 0,
-            "N" : 0,
-            }
+    def __init__(self):
+        super().__init__()
+        self.state = {
+                "sum" : 0,
+                "N" : 0,
+                }
 
-    @classmethod
-    def running(cls, streamer : StreamingState, scribe : Logger = None):
-        cls.state["N"] += len(streamer.prediction_state)
-        cls.state["sum"] += torch.sum((streamer.prediction_state - streamer.label_state)**2)
+    def running(self, streamer : StreamingState, scribe : Logger = None):
+        self.state["N"] += len(streamer.prediction_state)
+        self.state["sum"] += torch.sum((streamer.prediction_state - streamer.label_state)**2)
 
-    @classmethod
-    def final(cls, recorder : Logger):
+    def final(self, recorder : Logger):
         recorder.add_scalars(
                 "evaluation",
-                {"RMSD" : sqrt(cls.state["sum"]/cls.state["N"])},
+                {"RMSD" : sqrt(self.state["sum"]/self.state["N"])},
                 0)
 
-        cls.state["sum"] = 0
-        cls.state["N"] = 0
+        self.state["sum"] = 0
+        self.state["N"] = 0

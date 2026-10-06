@@ -14,8 +14,7 @@ class BasicAnalysis:
     with them abstractly
     """
     
-    @classmethod
-    def running(cls, data_stream : StreamingState, recorder : Logger = None):
+    def running(self, data_stream : StreamingState, recorder : Logger = None):
         """
         For math operations that can be done while 
         data is streaming. May or may not be recorded
@@ -32,12 +31,15 @@ class StatefulAnalysis(BasicAnalysis):
     usually running method aggregates results into a class 'state' attribute
     final combines those states into the final calculation 
 
-    Suggested Attributes:
+    Attributes:
         state - a place for holding aggregrated statistics 
     """
 
-    @classmethod
-    def final(cls, recorder : Logger):
+    def __init__(self):
+        super().__init__()
+        self.state = {}
+    
+    def final(self, recorder : Logger):
         """
         This is for finalizing statistics of the analysis from state
         (post streaming) 
@@ -52,14 +54,20 @@ class ConfigurableAnalysis(StatefulAnalysis):
     e.g. info about the min/max in a histogram can help create batchwise data
     and allow it to be globally aggregatable
 
-    Suggested Attributes:
-        -state
-        -config
+    Attributes:
+        -state (see StatefulAnalysis)
+        -config - a place for holding metaparameters required for analysis
     """
 
-    @classmethod
-    def obtain_config(cls):
+    def __init__(self):
+        super().__init__()
+
+        self.config = {}
+
+    def obtain_config(self):
         """
         Function for explicitly retrieving config
         for calculation from external data source
         """
+
+        raise NotImplementedError

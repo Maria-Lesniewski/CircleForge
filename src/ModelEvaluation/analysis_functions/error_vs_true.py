@@ -9,8 +9,8 @@ class error_vs_true(BasicAnalysis):
     prints the error in model prediction
     against the true value
     """
-    @classmethod
-    def running(cls, stream : StreamingState, scribe : Logger):
+
+    def running(self, stream : StreamingState, scribe : Logger):
         for i in range(len(stream.prediction_state)):
                 scribe.add_scalars(
                 "evaluation",

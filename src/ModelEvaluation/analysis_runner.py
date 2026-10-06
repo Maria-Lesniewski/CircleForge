@@ -28,8 +28,7 @@ class AnalysisRunner:
             datadict - index map for when dataset contains multiple off target labels
             filewriter_root_path - root path for saving all analysis (subfolders created dependent on analysis)
             schedule - list of analysis routines to be executed
-            prediction_state - iterator holder for model predictions
-            label_state - iterator holder for ground truths
+            streamer - streaming object holding the model and label states while running through dataset
             loggers - writing objects for recording each of the scheduled analyses
 
     """
@@ -41,7 +40,7 @@ class AnalysisRunner:
         self.datadict : dict[str, int] = {} 
         self.init_loader_dict()
         self.filewriter_root_path : str = filewriter_root_path
-        self.schedule : Dict[str,Any] = {}
+        self.schedule : Dict[str,Any] = {} # Holds instances of analysis functions with analysis state variables
         self.schedule_options : Dict[str,Any] = {}
         self.check_evaluation_request()
         self.streamer = StreamingState({"prediction_state" : 0, "label_state" : 0}) 
@@ -89,9 +88,10 @@ class AnalysisRunner:
         a_path = io.make_artifact_dir(f"Analysis_{self.model.__class__.__name__}")
         a_sub_path = io.make_artifact_dir(a_path / f"{self.dataloader.dataset.split_tag}")
         for ele in choices:
-            self.schedule[ele] = self.schedule_options[ele]
-            if hasattr(self.schedule_options[ele], "config"):
-                self.schedule_options[ele].obtain_config()
+            self.schedule[ele] = AnalysisRegistry.create(ele, {})
+            if hasattr(self.schedule[ele], "config"):
+                self.schedule[ele].obtain_config()
+
             self.loggers[ele] = Logger(a_sub_path / ele)
         print(f"saving analysis in {a_sub_path}")
 

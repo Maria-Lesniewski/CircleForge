@@ -14,38 +14,39 @@ class R2(StatefulAnalysis):
     SSTot = sum(true - true_mean)^2 = sum(true^2) - sum(true)^2/N
     """
 
-    state = {
-        "SSE" : 0,
-        "true_sum" : 0,
-        "true_square" : 0,
-        "N" : 0
-        }
-    @classmethod
-    def running(cls, stream : StreamingState, scribe : Logger = None):
-        cls.state["N"] += len(stream.prediction_state)
-        cls.state["SSE"] += torch.sum((stream.prediction_state - stream.label_state)**2)
-        cls.state["true_sum"] += torch.sum(stream.label_state)
-        cls.state["true_square"] += torch.sum(stream.label_state**2)
+    def __init__(self):
+        super().__init__()
+        self.state = {
+            "SSE" : 0,
+            "true_sum" : 0,
+            "true_square" : 0,
+            "N" : 0
+            }
+        
+    def running(self, stream : StreamingState, scribe : Logger = None):
+        self.state["N"] += len(stream.prediction_state)
+        self.state["SSE"] += torch.sum((stream.prediction_state - stream.label_state)**2)
+        self.state["true_sum"] += torch.sum(stream.label_state)
+        self.state["true_square"] += torch.sum(stream.label_state**2)
     
-    @classmethod
-    def final(cls, scribe : Logger):
-        SSTot = cls.state["true_square"] - cls.state["true_sum"]**2/cls.state["N"]
-        var = SSTot / cls.state["N"]
-        r2 = 1 - (cls.state["SSE"] / SSTot)
+    def final(self, scribe : Logger):
+        SSTot = self.state["true_square"] - self.state["true_sum"]**2/self.state["N"]
+        var = SSTot / self.state["N"]
+        r2 = 1 - (self.state["SSE"] / SSTot)
         scribe.add_scalars(
                 "evaluation",
                 {
                     "R2" : r2, 
                     "var" : var, 
-                    "SSE" : cls.state["SSE"],
+                    "SSE" : self.state["SSE"],
                     "SST" : SSTot, 
-                    "N" : cls.state["N"]
+                    "N" : self.state["N"]
                     },
                 0
                 )
 
         print(f"Final r2 {r2}")
-        cls.state["SSE"] = 0
-        cls.state["true_sum"] = 0
-        cls.state["true_square"] = 0
-        cls.state["N"] = 0
+        self.state["SSE"] = 0
+        self.state["true_sum"] = 0
+        self.state["true_square"] = 0
+        self.state["N"] = 0
