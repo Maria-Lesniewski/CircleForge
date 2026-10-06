@@ -1,31 +1,30 @@
 import numpy as np
 import DataSet.DoodleData as dd
 import torch
-import Modeling.model_options as mo
+import Models.model_options as mo
 import torch.nn as nn
 from torch.nn.utils import vector_to_parameters
 ### Data sets
+import numpy as np
+import DataSet.DoodleData as dd
+import torch
+import Models.model_options as mo
+import torch.nn as nn
+import utils.io as io
+from torch.nn.utils import vector_to_parameters
+### Data sets
+print("Loading training/validation data samples")
+data_fp = io.artifact_path("final_data/train_val_test_split_annotations.csv")
 train_data = dd.CircleData(
-    csv_file="DataSet/samples/split_annotations.csv",
-    target_columns=[
-        "ncircles",
-    ],
-    split_tag ="train"
-)
+        csv_file=data_fp,
+        target_columns=["ncircles"],
+        split_tag="train"
+        )
 val_data = dd.CircleData(
-    csv_file="DataSet/samples/split_annotations.csv",
-    target_columns=[
-        "ncircles",
-    ],
-    split_tag ="val"
-)
-test_data = dd.CircleData(
-    csv_file="DataSet/samples/split_annotations.csv",
-    target_columns=[
-        "ncircles",
-    ],
-    split_tag ="test"
-)
+        csv_file=data_fp,
+        target_columns=["ncircles"],
+        split_tag="val"
+        )
 
 ## Model 
 linear = mo.RotatedLinear()

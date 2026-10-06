@@ -71,11 +71,13 @@ class Constant(nn.Module):
     Least squares objectives should return the mean of the data set
     takes 
     """
-    super(Constant, self).__init__()
-    self.bias = nn.Parameter(torch.tensor(float(torch.rand(1))))
+
+    def __init__(self):
+        super(Constant, self).__init__()
+        self.bias = nn.Parameter(torch.tensor(float(torch.rand(1))))
 
     def forward(self, x):
-        return self.bias(expand(x.shape[0])) # Return constant across batch size
+        return self.bias.expand(x.shape[0]) # Return constant across batch size
 
 
 """ TO DO 

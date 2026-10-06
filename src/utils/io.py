@@ -6,6 +6,7 @@ import os
 import numpy as np
 from pathlib import Path
 import sys
+import inspect
 from typing import Any, List
 ## USER CL INTERFACE
 def yes_no_q(extra_info : str, question : str) -> bool:
@@ -153,3 +154,11 @@ def delete_file_abs_path(abs_file_path : str) -> bool:
     if (Path(abs_file_path).exists()):
         Path(abs_file_path).unlink()
     return (not Path(abs_file_path).exists())
+
+def find_here() -> Path:
+    """
+    Finds the absolute path of a calling file's folder
+    (NOT the calling file. the directory its in)
+    """
+    caller_file_directory = Path(inspect.stack()[1].filename).parent.resolve()
+    return caller_file_directory

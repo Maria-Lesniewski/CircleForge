@@ -1,31 +1,23 @@
 import numpy as np
 import DataSet.DoodleData as dd
 import torch
-import Modeling.model_options as mo
+import Models.model_options as mo
 import torch.nn as nn
+import utils.io as io
 from torch.nn.utils import vector_to_parameters
 ### Data sets
+print("Loading training/validation data samples")
+data_fp = io.artifact_path("final_data/train_val_test_split_annotations.csv")
 train_data = dd.CircleData(
-    csv_file="DataSet/samples/split_annotations.csv",
-    target_columns=[
-        "ncircles",
-    ],
-    split_tag ="train"
-)
+        csv_file=data_fp,
+        target_columns=["ncircles"],
+        split_tag="train"
+        )
 val_data = dd.CircleData(
-    csv_file="DataSet/samples/split_annotations.csv",
-    target_columns=[
-        "ncircles",
-    ],
-    split_tag ="val"
-)
-test_data = dd.CircleData(
-    csv_file="DataSet/samples/split_annotations.csv",
-    target_columns=[
-        "ncircles",
-    ],
-    split_tag ="test"
-)
+        csv_file=data_fp,
+        target_columns=["ncircles"],
+        split_tag="val"
+        )
 
 ## Model 
 linear = mo.BasicLinear()
@@ -46,6 +38,16 @@ for features, label in train_data:
 
 X = np.asarray(X, dtype=np.float32)
 y = np.asarray(y, dtype=np.float32)
+
+print("SCRIPT 1")
+print("X shape:", X.shape)
+print("y shape:", y.shape)
+print("X[0, :10]:", X[0, :10])
+print("y[:10]:", y[:10])
+print("X sum:", X.sum())
+print("y sum:", y.sum())
+
+
 aug_X_for_b = np.concatenate([X, np.ones((X.shape[0], 1))], axis=1)  # Target Shape: (29500, 2501)
 #np.column_stack((X, np.ones_like(X)))  # Append 1 to every sample for bias param
 
