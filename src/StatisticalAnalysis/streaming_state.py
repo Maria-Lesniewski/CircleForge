@@ -21,4 +21,8 @@ class StreamingState:
 
 
     def get(self, name: str) -> Any:
-        return geattr(self, name)
+        if hasattr(self, name):
+            return getattr(self, name)
+        else:
+            raise AttributeError(f"{name} is not an attribute of type(self).__name__")
+
