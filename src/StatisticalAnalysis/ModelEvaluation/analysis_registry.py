@@ -2,7 +2,7 @@
 # @file analysis_registry.py
 # @desc contains the analysis register class for convenient modular dev
 
-from typing import Dict, Any
+from typing import Any
 
 class AnalysisRegistry:
     """
@@ -19,11 +19,11 @@ class AnalysisRegistry:
         _special_function_registry - functions only avaialble under special conditons
     """
 
-    _function_registry : Dict[str,Any] = {
+    _function_registry : dict[str,Any] = {
             # Analysis registry to be filled via decorators calling 
             # the implementation below
             }
-    _special_function_registry : Dict[str,Any] = {
+    _special_function_registry : dict[str,Any] = {
             # Same as above, but specifically filled by
             # "special" keyword
             }
@@ -47,15 +47,15 @@ class AnalysisRegistry:
 
     # Methods to expose class attributes without allowing accidental mods from user
     @classmethod
-    def available(cls) -> Dict[str, Any]:
+    def available(cls) -> dict[str, Any]:
         return cls._function_registry.copy()
 
     @classmethod
-    def special_available(cls) -> Dict[str, Any]:
+    def special_available(cls) -> dict[str, Any]:
         return cls._special_function_registry.copy()
 
     @classmethod
-    def total_available(cls) -> Dict[str, Any]:
+    def total_available(cls) -> dict[str, Any]:
         c = cls._function_registry | cls._special_function_registry
         return c.copy()
 

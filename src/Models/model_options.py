@@ -2,12 +2,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from typing import Dict, Any, List
+from typing import Any
 
 ## Model Factory for writing generic test / train functions without cluttering code with too many variants that do the same thing
 # The registry stores the list of models implemented within this module
 class ModelFactory:
-    _registry: Dict[str,Any] = {
+    _registry: dict[str,Any] = {
             # We fill this in as we add types below
             }
 
@@ -21,7 +21,7 @@ class ModelFactory:
 
     @classmethod
     # Aggressive type hinting, this is a factory method
-    def create(cls, model_type: str, config: Dict[str, Any]) -> nn.Module:
+    def create(cls, model_type: str, config: dict[str, Any]) -> nn.Module:
         if model_type not in cls._registry:
             raise ValueError(f"Unknown model type: '{model_type}'")
         return cls._registry[model_type](**config) # config will be used as unpacked args for inits where applicable

@@ -7,7 +7,7 @@ import numpy as np
 from pathlib import Path
 import sys
 import inspect
-from typing import Any, List
+from typing import Any
 ## USER CL INTERFACE
 def yes_no_q(extra_info : str, question : str) -> bool:
     """ Asks a yes no question, returns true if yes, false if not 
@@ -104,7 +104,7 @@ def compounding_multiple_choice_q(extra_info : str, multiple_choice : list[str])
             sys.exit(1)
 
 
-def dictionary_filling_question(extra_info : str, keys : List[str] ) -> dict[str:Any]:
+def dictionary_filling_question(extra_info : str, keys : list[str] ) -> dict[str:Any]:
     """
     Asks a fill in the blank style question wherein user can write anything back
     (The burden of type correctness is on the calling program to check)

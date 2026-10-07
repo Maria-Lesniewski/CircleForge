@@ -5,7 +5,7 @@
 #       repeatedly, this class registers each modular analysis type and reuses the same predictions
 #       as requested by a user to log data / performance
 
-from typing import Dict, Any
+from typing import Any
 import torch
 import torch.nn as nn
 import utils.type_checker as tc
@@ -40,8 +40,8 @@ class AnalysisRunner:
         self.datadict : dict[str, int] = {} 
         self.init_loader_dict()
         self.filewriter_root_path : str = filewriter_root_path
-        self.schedule : Dict[str,Any] = {} # Holds instances of analysis functions with analysis state variables
-        self.schedule_options : Dict[str,Any] = {}
+        self.schedule : dict[str,Any] = {} # Holds instances of analysis functions with analysis state variables
+        self.schedule_options : dict[str,Any] = {}
         self.check_evaluation_request()
         self.streamer = StreamingState({"prediction_state" : 0, "label_state" : 0}) 
         self.loggers : dict[str, Logger] = {}
