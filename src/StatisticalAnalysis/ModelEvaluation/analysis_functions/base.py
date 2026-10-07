@@ -1,7 +1,7 @@
 # @file base.py
 # @author Maria Lesniewski 
 # @desc Holds the Basic, Stateful and Configurable Function classes
-from ..streaming_state import StreamingState
+from ...streaming_state import StreamingState
 from utils.model_logger import Logger
 
 

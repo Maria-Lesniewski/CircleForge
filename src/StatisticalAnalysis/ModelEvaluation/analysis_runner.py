@@ -11,7 +11,7 @@ import torch.nn as nn
 import utils.type_checker as tc
 from utils.model_logger import Logger
 from .analysis_registry import AnalysisRegistry
-from .streaming_state import StreamingState
+from ..streaming_state import StreamingState
 import utils.io as io
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset

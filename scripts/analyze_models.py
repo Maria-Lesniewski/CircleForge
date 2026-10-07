@@ -1,7 +1,7 @@
 import DataSet.DoodleData as dd
 import torch
 import torch.nn as nn
-import ModelEvaluation as ma
+import StatisticalAnalysis.ModelEvaluation as ma
 import Models.model_options as mo
 import utils.io as io
 from pathlib import Path

@@ -1,6 +1,6 @@
 from ..analysis_registry import AnalysisRegistry
 from .base import ConfigurableAnalysis
-from ..streaming_state import StreamingState
+from ...streaming_state import StreamingState
 from torch import rand, histogram
 from utils.io import dictionary_filling_question
 from utils.model_logger import Logger

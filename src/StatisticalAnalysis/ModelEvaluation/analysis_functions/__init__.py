@@ -1,4 +1,5 @@
 from ..analysis_registry import AnalysisRegistry
+from ...streaming_state import StreamingState
 from pkgutil import iter_modules
 from importlib import import_module
 

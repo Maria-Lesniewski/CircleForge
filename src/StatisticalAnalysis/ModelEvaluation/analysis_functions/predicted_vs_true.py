@@ -1,6 +1,6 @@
 from ..analysis_registry import AnalysisRegistry
 from .base import BasicAnalysis
-from ..streaming_state import StreamingState
+from ...streaming_state import StreamingState
 from utils.model_logger import Logger
 
 @AnalysisRegistry.register_analysis("predicted_vs_true")
