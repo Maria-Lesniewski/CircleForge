@@ -8,6 +8,24 @@ from utils.type_checker import is_float, is_int
 
 @AnalysisRegistry.register_analysis("histogram_error")
 class histogram_error(ConfigurableAnalysis):
+    """
+        Fills in a running histogram of (signed) error within bounds specified by user
+        Notes any error over/underflow count and returns actual mins/max for repeated analysis
+
+        Attributes:
+            -state : Internal structure for calculation
+                -hist : The count
+                -edges : The bins
+                -observed_min : The minimum error in prediction
+                -observed_max : The maximum error in prediction
+                -overflow_count : The number of samples not included in the histogram at the high end
+                -underflow_count : the number of samples truncated to the lowest bin 
+
+            -config: Analysis config set by the user on request
+                -max_bin : The highest error value to bin during the analysis
+                -min_bin : The lowest error valye to bin during the analysis
+                -n_bins : The resolution of the histogram along domaun [min_bin, max_bin)
+    """
 
     def __init__(self):
         super().__init__()
@@ -50,14 +68,6 @@ class histogram_error(ConfigurableAnalysis):
                     {"histogram" : count},
                     binloc
                     )
-        # close for repeated analysis
-        self.state["hist"] = 0
-        self.state["edges"] = 0
-        self.state["observed_min"] = float("inf")
-        self.state["observed_max"] = float("-inf")
-        self.config["max_bin"] = 0
-        self.config["max_bin"] = 0
-        self.config["n_bins"] = 0
 
     def obtain_config(self):
         while True:

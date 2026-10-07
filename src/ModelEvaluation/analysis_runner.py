@@ -116,3 +116,9 @@ class AnalysisRunner:
         for func in self.schedule.keys():
             if hasattr(self.schedule[func], "state"):
                 self.schedule[func].final(self.loggers[func])
+
+    def close(self):
+        for logger in self.loggers:
+            self.loggers[logger].close()
+
+

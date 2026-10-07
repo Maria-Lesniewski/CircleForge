@@ -50,15 +50,27 @@ test_data = dd.CircleData(
         )
 
 with torch.no_grad():
-    analyzer = ma.AnalysisRunner(model, train_data, "./", config["evaluation_objective"])
-    analyzer.obtain_schedule()
-    analyzer.run_schedule()
+    tr_analyzer = ma.AnalysisRunner(model, train_data, "./", config["evaluation_objective"])
+    val_analyzer = ma.AnalysisRunner(model, val_data, "./", config["evaluation_objective"])
+    tes_analyzer = ma.AnalysisRunner(model, test_data, "./", config["evaluation_objective"])
 
-    analyzer2 = ma.AnalysisRunner(model, val_data, "./", config["evaluation_objective"])
-    analyzer3 = ma.AnalysisRunner(model, test_data, "./", config["evaluation_objective"])
+    print("#### TRAINING SET EVALUATION SETTINGS ###")
+    tr_analyzer.obtain_schedule()
 
-    analyzer2.obtain_schedule()
-    analyzer2.run_schedule()
-    analyzer3.obtain_schedule()
-    analyzer3.run_schedule()
+    print("####VALIDATION SET EVALUATION SETTINGS ###")
+    val_analyzer.obtain_schedule()
 
+    print("### TEST SET EVALUATION SETTINGS ###")
+    tes_analyzer.obtain_schedule()
+
+    print("Evaluating Training Data")
+    tr_analyzer.run_schedule()
+    print("Evaluating Validation Data")
+    val_analyzer.run_schedule()
+    print("Evaluating Test Data")
+    tes_analyzer.run_schedule()
+
+    print("Analysis Complete. Shutting Down.")
+    tr_analyzer.close()
+    val_analyzer.close()
+    tes_analyzer.close()

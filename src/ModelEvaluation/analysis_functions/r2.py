@@ -46,7 +46,3 @@ class R2(StatefulAnalysis):
                 )
 
         print(f"Final r2 {r2}")
-        self.state["SSE"] = 0
-        self.state["true_sum"] = 0
-        self.state["true_square"] = 0
-        self.state["N"] = 0

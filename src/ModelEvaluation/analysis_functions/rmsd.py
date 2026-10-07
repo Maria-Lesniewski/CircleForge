@@ -27,6 +27,3 @@ class RMSD(StatefulAnalysis):
                 "evaluation",
                 {"RMSD" : sqrt(self.state["sum"]/self.state["N"])},
                 0)
-
-        self.state["sum"] = 0
-        self.state["N"] = 0
