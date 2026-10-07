@@ -66,7 +66,6 @@ class AnalysisRegistry:
         Will pass args in config
         """
         supported_classes = cls.total_available()
-        print(f"supported_classes in call {supported_classes}")
         if analysis_name not in supported_classes:
                 raise ValueError(f"Unknown analysis type: '{analysis_name}'")
         analysis = supported_classes[analysis_name](**config)
