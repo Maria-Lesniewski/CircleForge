@@ -13,6 +13,12 @@ class StreamingState:
 
     Attributes are totally custom to purpose via dict, 
     but syntax is less annoying than dict
+    
+    get exists so that we can use it either as dict or as attributes in object
     """
     def __init__(self, attributes : dict[str, Any]):
         self.__dict__.update(attributes)
+
+
+    def get(self, name: str) -> Any:
+        return geattr(self, name)
