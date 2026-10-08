@@ -100,7 +100,8 @@ class DiagnosticsRunner:
             self.streamer.features = input_img
             # Add multi-labels to streamer
             for ele in self.datadict:
-                self.streamer.assign(ele, label[self.datadict[ele]])
+                self.streamer.assign(ele, label[:, self.datadict[ele]])
+
             # Do Analysis
             for func in self.schedule.keys():
                 self.schedule[func].running(self.streamer, self.loggers[func], list(self.datadict.keys()))
