@@ -2,7 +2,7 @@
 # @file data_diagnostics_registry.py
 # @desc contains the analysis register class for convenient modular dev (like ModelEval, but for data correlations that exist between labels) 
 
-from typing import Dict, Any
+from typing import Any
 
 class DiagnosticsRegistry:
     """
@@ -18,13 +18,13 @@ class DiagnosticsRegistry:
         _function_registry - stores list of analyses
     """
 
-    _function_registry : Dict[str,Any] = {
+    _function_registry : dict[str,Any] = {
             # Analysis registry to be filled via decorators calling 
             # the implementation below
             }
 
     @classmethod
-    def register_diagnostic(cls,
+    def register_analysis(cls,
             analysis_name : str, 
             ):
         def decorator(analysis_function):
@@ -39,7 +39,7 @@ class DiagnosticsRegistry:
 
     # Methods to expose class attributes without allowing accidental mods from user
     @classmethod
-    def available(cls) -> Dict[str, Any]:
+    def available(cls) -> dict[str, Any]:
         return cls._function_registry.copy()
 
     @classmethod
@@ -48,7 +48,7 @@ class DiagnosticsRegistry:
         Factory method for diagnostics registered in the register
         Will pass args in config
         """
-        supported_classes = cls.total_available()
+        supported_classes = cls.available()
         if analysis_name not in supported_classes:
                 raise ValueError(f"Unknown analysis type: '{analysis_name}'")
         analysis = supported_classes[analysis_name](**config)
