@@ -8,8 +8,8 @@ class StreamingState:
     """
     This exists to make function implementations 
     seperate from any other class object that might use 
-    them, while also providing a house for streaming 
-    data / model predictions as necessary 
+    them, while also providing a standardized-house for streaming 
+    data / model predictions as necessary
 
     Attributes are totally custom to purpose via dict, 
     but syntax is less annoying than dict
@@ -26,3 +26,5 @@ class StreamingState:
         else:
             raise AttributeError(f"{name} is not an attribute of type(self).__name__")
 
+    def assign(self, name : str, value : Any):
+        setattr(self, name, value)
