@@ -11,7 +11,7 @@ import numpy as np
 from pathlib import Path
 from typing import Any
 import json
-
+import os 
 class Logger:
     """
     This is a class for recording experimental details 
@@ -47,6 +47,11 @@ class Logger:
     def close(self):
         self.torchwriter.flush()
         self.torchwriter.close()
+
+        # remove empty directories we did not write to 
+        # (tensorboard always writes an event log, grace doesn't)
+        if os.path.isdir(self.grace_path) and not os.listdir(self.grace_path):
+            os.rmdir(self.grace_path)
 
     def save_model(
             self, 
