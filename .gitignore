@@ -1,5 +1,4 @@
 .venv/
-generatorlib_backup_pre_circle_hitboxes.py
 __pycache__/
 *.pyc
 *.pt

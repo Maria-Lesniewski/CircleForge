@@ -1,6 +1,6 @@
 # @author Maria Lesniewski
-# @file generator.py
-# @desc this is the "real" generator. We're writing an algorithm and seeing if diffusion can do as well
+# @file circle_doodle.py
+# @desc This class houses the info about each image in the database, and fills it in to a database
 
 import numpy as np
 import cv2 # This is opencv 

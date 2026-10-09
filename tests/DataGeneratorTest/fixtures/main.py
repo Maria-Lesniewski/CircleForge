@@ -1,8 +1,8 @@
 # @author Maria Lesniewski
 # @file main.py
-# @desc This is the driver for my silly physics based diffusion experiment
+# @desc This is a driver for making and comparing doodle images
 
-import generatorlib as gen
+import circle_doodle as gen
 import numpy as np
 import os
 import random

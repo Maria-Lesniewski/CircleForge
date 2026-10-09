@@ -3,7 +3,7 @@
 # @desc This is the driver for creating procedurally generated circle drawings in a data base.
 import os
 import utils.io as io
-import ProceduralGenerator.generatorlib as gen
+import ProceduralGenerator.circle_doodle as gen
 import numpy as np
 from mpi4py import MPI
 import pandas as pd
