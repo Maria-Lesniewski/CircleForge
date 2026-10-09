@@ -41,9 +41,19 @@ class correlate_feature(ConfigurableAnalysis):
 
     def LP(self, feature : torch.Tensor) -> float:
         """
-        Returns the average of a 6x6 laplacian filter passed over the image
+        Returns the average of a 3x3 laplacian filter passed over the image
         """
         kernel = torch.tensor(
+                [
+                [ 0, -1,  0],
+                [-1,  4, -1],
+                [ 0, -1,  0],
+                ],
+                dtype=torch.float32, requires_grad=False)
+
+
+        """ # Idea for larger edges. Didnt work
+        torch.tensor(
                 [
                 [ 0,  0, -1, -1,  0,  0],
                 [ 0, -1, -2, -2, -1,  0],
@@ -53,6 +63,7 @@ class correlate_feature(ConfigurableAnalysis):
                 [ 0,  0, -1, -1,  0,  0],
                 ],
                 dtype=torch.float32, requires_grad=False)
+        """
         response = F.conv2d(
                 feature[None, None], # We are passing one sample at a time.
                 kernel[None, None], # but this function expects batch dimension and multiple signal channels
