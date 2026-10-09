@@ -4,7 +4,7 @@ import sys
 import os
 import random
 # Dynamically add the parent directory to the search path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ def fixture_path(request):
 
 
 # Import CircleDoodle from the library file
-from Procedural_Generator.generatorlib import CircleDoodle
+from ProceduralGenerator.generatorlib import CircleDoodle
 
 @pytest.fixture()
 def set_seed(autouse=True):

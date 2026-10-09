@@ -1,0 +1,18 @@
+{
+	"layers" : [
+		{
+			"name" : "flatten",
+			"type" : "Flatten"
+		},
+		{
+			"name" : "f1",
+			"type" : "Linear",
+			"attributes" : 
+			{
+				"in_features" : 2500,
+				"out_features" : 1,
+				"bias" : true
+			}
+		}
+	]
+}
