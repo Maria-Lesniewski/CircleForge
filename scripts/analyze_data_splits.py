@@ -19,8 +19,6 @@ train_data = dd.CircleData(
 val_data = dd.CircleData(
         csv_file=data_fp,
         target_columns=["ncircles",
-            "nbig",
-            "nsmall"
             ],
         split_tag="val"
         )
@@ -40,24 +38,21 @@ with torch.no_grad():
 
     print("#### TRAINING SET Diag SETTINGS ###")
     tr_analyzer.obtain_schedule()
-    """
     print("####VALIDATION SET Diag SETTINGS ###")
     val_analyzer.obtain_schedule()
 
-    print("### TEST SET Diag SETTINGS ###")
-    tes_analyzer.obtain_schedule()
-    """
+    #print("### TEST SET Diag SETTINGS ###")
+    #tes_analyzer.obtain_schedule()
+    
     print("Evaluating Training Data")
     tr_analyzer.run_schedule()
-    """
     print("Evaluating Validation Data")
     val_analyzer.run_schedule()
-    print("Evaluating Test Data")
-    tes_analyzer.run_schedule()
-    """
+    
+    #print("Evaluating Test Data")
+    #tes_analyzer.run_schedule()
+    
     print("Analysis Complete. Shutting Down.")
     tr_analyzer.close()
-    """
     val_analyzer.close()
-    tes_analyzer.close()
-    """
+    # tes_analyzer.close()
