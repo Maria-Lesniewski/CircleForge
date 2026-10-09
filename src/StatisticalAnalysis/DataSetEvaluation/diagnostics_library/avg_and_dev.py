@@ -15,7 +15,7 @@ class avg_and_dev(StatefulAnalysis):
     (if pop var -> divide by N, if var estimate from sample-> divide by N -1)
     We also report the estimated error in the mean from each estimate type 
     """
-    def __init__(self, keys : list[str] = None):
+    def __init__(self, keys : list[str]):
         super().__init__()
         self.state = {}
         for ele in keys:
