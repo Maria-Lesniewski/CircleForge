@@ -1,3 +1,7 @@
+# @file circle_data.py
+# @author Maria Lesniewski
+# @desc Houses the PyTorch dataset definition of the CircleForge data base 
+
 import os
 import pandas as pd
 import numpy as np

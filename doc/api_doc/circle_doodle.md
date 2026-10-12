@@ -34,7 +34,7 @@ CircleDoodle(
 | `fill_percent` | `float` | `1/20` | Fraction of available negative space to fill with randomly sampled white pixels. (After circles are drawn) |
 | `max_circle` | `int` | `200` | Maximum number of circle-unit placement attempts during generation. |
 | `filename` | `str` | `"default.npy"` | Filename used when saving the generated image. |
-| `annotations` | `str` | `"annotations.csv"` | CSV file used to store image annotations. See Also ()|
+| `annotations` | `str` | `"annotations.csv"` | CSV file used to store image annotations.|
 
 **Returns:** An initialized `CircleDoodle` object.
 
@@ -375,3 +375,7 @@ if (doodle_obj.is_equivalent(doodle_obj2)):
 else:
     print("NOPE. They're different")
 ```
+
+
+# See Also
+- [CircleData](circle_data.md) - CircleForge's class for storing and indexing generated CircleDoodles, used for model training and analysis. 
