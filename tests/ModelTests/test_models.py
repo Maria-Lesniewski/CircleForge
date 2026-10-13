@@ -14,6 +14,7 @@ MODEL_TUPLE = ("model_type",
         [
             "BasicLinear",
             "RotatedLinear",
+            "Constant"
             ]
         )
 

@@ -16,19 +16,22 @@ class ModelTestRunner:
     """
     _checkpoints = {
             "BasicLinear" : "ModelTests/modelstates/BasicLinear.pt",
-            "RotatedLinear" : "ModelTests/modelstates/RotatedLinear.pt"
+            "RotatedLinear" : "ModelTests/modelstates/RotatedLinear.pt",
+            "Constant" : "ModelTests/modelstates/Constant.pt"
             }
 
     _expected_output = {
             "BasicLinear" : 37.6138, ### THIS IS THE BIAS PARAM,
-            "RotatedLinear" : 38.3361 ### THIS IS THE BIAS PARM
+            "RotatedLinear" : 38.3361, ### THIS IS THE BIAS PARM,
+            "Constant" : 40.986219552886205, ### THIS IS THE CONSTANT PARAM
             }
 
     # For model classes with instantiating args
-    # Current 2 are hard coded as none, but ideally we pass a dict with paramkeys and values
+    # Current 3 are hard coded as none, but ideally we pass a dict with paramkeys and values
     _configs = {
             "BasicLinear" : {},
-            "RotatedLinear" : {}
+            "RotatedLinear" : {},
+            "Constant" : {}
             }
 
     # Check the inits via model architecture
@@ -36,11 +39,13 @@ class ModelTestRunner:
     _architectures = {
             "BasicLinear" : "ModelTests/modelarchitectures/BasicLinear.json",
             "RotatedLinear" : "ModelTests/modelarchitectures/RotatedLinear.json",
+            "Constant" : "ModelTests/modelarchitectures/Constant.json",
             }
 
-    _LAYER_TYPES = {
+    _LAYER_TYPES = { # Used in .json architecture files
             "Flatten" : nn.Flatten,
-            "Linear" : nn.Linear
+            "Linear" : nn.Linear,
+            "BLayer" : nn.Parameter,
             }
 
     @classmethod

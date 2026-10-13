@@ -9,3 +9,5 @@
 4) Create a .json file (described within the modelarchitectures folder README.md) that lists the layer names and properties implemented within the model 
 
 5) Review the \_\_LAYER\_TYPES dictionary in ModelTestRunner, any new nn.Modules used should be added with a string key for reading / checking in the tests. Your "type" field will be checked against that dictionary key during tests
+
+6) Add the new model's register key to the MODEL_TUPLE variable in the test_models driver
