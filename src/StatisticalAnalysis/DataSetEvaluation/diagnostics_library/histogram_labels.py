@@ -7,7 +7,7 @@ from utils.model_logger import Logger
 from utils.type_checker import is_float, is_int
 
 @DiagnosticsRegistry.register_analysis("histogram_labels")
-class histogram_label(ConfigurableAnalysis):
+class histogram_labels(ConfigurableAnalysis):
     """
         Fills in a running histogram of (signed) error within bounds specified by user
         Notes any error over/underflow count and returns actual mins/max for repeated analysis
