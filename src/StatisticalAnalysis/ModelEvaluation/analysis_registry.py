@@ -3,6 +3,7 @@
 # @desc contains the analysis register class for convenient modular dev
 
 from typing import Any
+import inspect # Used to make sure args are only passed when valid 
 
 class AnalysisRegistry:
     """
@@ -60,13 +61,25 @@ class AnalysisRegistry:
         return c.copy()
 
     @classmethod
-    def create(cls, analysis_name : str, config : dict[str: Any]):
+    def create(cls, analysis_name : str, config : dict[str: Any] = None):
         """
         Factory method for analyses registered in the register
         Will pass args in config
         """
+        # Get optional __init__ args if passed
+        config = config or {}
+        
+        # Check if the analysis requested is supported 
         supported_classes = cls.total_available()
         if analysis_name not in supported_classes:
                 raise ValueError(f"Unknown analysis type: '{analysis_name}'")
-        analysis = supported_classes[analysis_name](**config)
-        return analysis
+  
+         # Inspect constructor of the request for config
+        analysis_class = supported_classes[analysis_name]
+        signature = inspect.signature(analysis_class.__init__)
+
+        # For now, if the signature is more than self, we'll pass whatever config passed in with it
+        if len(signature.parameters) > 1:
+            return analysis_class(**config)
+        else:
+            return analysis_class()

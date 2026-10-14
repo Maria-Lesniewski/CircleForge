@@ -36,6 +36,7 @@ class AnalysisRunner:
         
         self.model : nn.Module = model
         self.evaluate_against = evaluate_against
+        self.off_target : dict[str,int] = {}
         self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=1)
         self.datadict : dict[str, int] = {} 
         self.init_loader_dict()
@@ -79,6 +80,7 @@ class AnalysisRunner:
         if len(self.datadict) > 1:
             options = AnalysisRegistry.total_available()
             self.schedule_options = options
+            self.off_target = { key : i for i, key in enumerate(list(self.datadict.keys())) if key != self.evaluate_against}
         else:
             options = AnalysisRegistry.available()
             self.schedule_options = options
@@ -88,7 +90,7 @@ class AnalysisRunner:
         a_path = io.make_artifact_dir(f"Analysis_{self.model.__class__.__name__}")
         a_sub_path = io.make_artifact_dir(a_path / f"{self.dataloader.dataset.split_tag}")
         for ele in choices:
-            self.schedule[ele] = AnalysisRegistry.create(ele, {})
+            self.schedule[ele] = AnalysisRegistry.create(ele, {"keys" : list(self.off_target.keys())})
             if hasattr(self.schedule[ele], "config"):
                 self.schedule[ele].obtain_config()
 
@@ -107,6 +109,9 @@ class AnalysisRunner:
             input_img, label = data
             self.streamer.prediction_state = self.model(input_img).squeeze(-1)
             self.streamer.label_state = label[:,self.datadict[self.evaluate_against]]
+            for ele in self.off_target:
+                self.streamer.assign(ele, label[:, self.datadict[ele]])
+
             for func in self.schedule.keys():
                 self.schedule[func].running(self.streamer, self.loggers[func])
 

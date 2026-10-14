@@ -50,7 +50,9 @@ class Trainer:
         """
         calls the epoch routine specified by the class and trains for n_epochs
         """
+        self.logger.write_json("training_settings.json", vars(self))
         self.epoch_routine(self,**epoch_config)
+
 
     @register_epoch("best_checkpoint_epochs")
     def best_checkpoint_epochs(self, n_epochs : int , validation_interval : int):
