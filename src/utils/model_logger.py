@@ -87,5 +87,5 @@ class Logger:
         path = self.root_path/ rel_filepath
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, 'w') as f:
-            json.dump(dictionary, f)
+            json.dump(dictionary, f, default=str, indent=4)
 
