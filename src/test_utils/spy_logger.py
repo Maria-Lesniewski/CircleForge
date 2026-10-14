@@ -4,7 +4,6 @@
 # @desc It exists to make unit testing easier for statistical analysis that also expects runners
 
 import torch
-import torchvision
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from pathlib import Path
