@@ -1,9 +1,9 @@
 import pytest
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.error_vs_offtarget_labels import error_vs_offtarget_labels
+from StatisticalAnalysis.ModelEvaluation.analysis_functions.error_vs_off_target_labels import ErrorVSOffTargetLabels
 from StatisticalAnalysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
-def test_error_vs_offtarget_labels():
+def test_error_vs_off_target_labels():
     # Arrange
     stream = StreamingState({
         "prediction_state": [0.8, 0.3, 0.9],
@@ -13,7 +13,7 @@ def test_error_vs_offtarget_labels():
     })
 
     scribe = SpyLogger()
-    analysis = error_vs_offtarget_labels(keys=["class_a", "class_b"])
+    analysis = ErrorVSOffTargetLabels(keys=["class_a", "class_b"])
 
     # Act
     analysis.running(stream, scribe)

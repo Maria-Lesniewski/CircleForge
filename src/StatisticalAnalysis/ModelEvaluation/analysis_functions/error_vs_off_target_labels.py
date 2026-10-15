@@ -3,8 +3,8 @@ from .base import BasicAnalysis
 from ...streaming_state import StreamingState
 from utils.model_logger import Logger
 
-@AnalysisRegistry.register_analysis("error_vs_offtarget_labels", "special")
-class error_vs_offtarget_labels(BasicAnalysis):
+@AnalysisRegistry.register_analysis("error_vs_off_target_labels", "special")
+class ErrorVSOffTargetLabels(BasicAnalysis):
     """
     prints the error in model prediction
     against other labels within the data set
