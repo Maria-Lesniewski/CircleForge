@@ -5,7 +5,7 @@ from utils.model_logger import Logger
 from itertools import combinations
 
 @DiagnosticsRegistry.register_analysis("correlate_labels")
-class correlate_labels(BasicAnalysis):
+class CorrelateLabels(BasicAnalysis):
     """
     prints pairs of streamed values against one another
 

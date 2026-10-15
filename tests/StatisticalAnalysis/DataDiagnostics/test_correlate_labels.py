@@ -1,18 +1,18 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.correlate_labels import correlate_labels
+from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.correlate_labels import CorrelateLabels
 from test_utils.spy_logger import SpyLogger
 from StatisticalAnalysis.streaming_state import StreamingState
 from itertools import combinations
 ### SETUP ###
 @pytest.fixture
 def corr_obj():
-    return correlate_labels(keys=["label1", "label2"])
+    return CorrelateLabels(keys=["label1", "label2"])
 
 @pytest.fixture
 def null_corr_obj():
-    return correlate_labels(keys=["label"])
+    return CorrelateLabels(keys=["label"])
 
 #############
 ### TESTS ###
@@ -61,7 +61,7 @@ def test_on_running_2tags(corr_obj):
         assert calls[call_tag]["step"] == label1[i]
 
 def test_on_running_3tags():
-    corr_obj = correlate_labels(keys=["label1", "label2", "label3"])
+    corr_obj = CorrelateLabels(keys=["label1", "label2", "label3"])
 
     # Dummy 3 images w. labels into a stream
     features = [
