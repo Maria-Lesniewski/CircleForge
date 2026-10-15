@@ -1,14 +1,14 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.correlate_feature import correlate_feature
+from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.correlate_feature import CorrelateFeature
 from test_utils.spy_logger import SpyLogger
 from StatisticalAnalysis.streaming_state import StreamingState
 
 ### SETUP ###
 @pytest.fixture
 def corr_obj():
-    return correlate_feature(keys=["label"])
+    return CorrelateFeature(keys=["label"])
 
 
 
@@ -44,7 +44,7 @@ def test_laplacian_response_is_zero_for_constant_image(corr_obj):
 ## Running func test
 
 def test_running_pairs_image_mean_with_labels():
-    corr_obj = correlate_feature(keys=["label"])
+    corr_obj = CorrelateFeature(keys=["label"])
 
     # Dummy config 
     corr_obj.config = {"mean": corr_obj._feature_pooling_funcs["mean"]}

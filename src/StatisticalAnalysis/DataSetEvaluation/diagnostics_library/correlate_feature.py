@@ -8,7 +8,7 @@ import torch
 import torch.nn.functional as F
 
 @DiagnosticsRegistry.register_analysis("correlate_feature")
-class correlate_feature(ConfigurableAnalysis):
+class CorrelateFeature(ConfigurableAnalysis):
     """
     Calculates correlations between features/manipulations of features and
     target labels 
