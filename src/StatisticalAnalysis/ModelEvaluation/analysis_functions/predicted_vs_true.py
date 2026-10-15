@@ -4,7 +4,7 @@ from ...streaming_state import StreamingState
 from utils.model_logger import Logger
 
 @AnalysisRegistry.register_analysis("predicted_vs_true")
-class predicted_vs_true(BasicAnalysis):
+class PredictedVSTrue(BasicAnalysis):
     """
     prints model prediction against actual data label
     """

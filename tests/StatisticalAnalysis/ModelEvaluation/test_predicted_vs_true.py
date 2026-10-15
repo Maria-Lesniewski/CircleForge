@@ -1,5 +1,5 @@
 import pytest
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.predicted_vs_true import predicted_vs_true
+from StatisticalAnalysis.ModelEvaluation.analysis_functions.predicted_vs_true import PredictedVSTrue
 from StatisticalAnalysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
@@ -11,7 +11,7 @@ def test_predicted_vs_true():
     })
 
     scribe = SpyLogger()
-    analysis = predicted_vs_true()
+    analysis = PredictedVSTrue()
 
     # Act
     analysis.running(stream, scribe)
