@@ -88,15 +88,18 @@ class correlate_feature(ConfigurableAnalysis):
             self.state[ele] = []
 
     def running(self, streamer : StreamingState, scribe : Logger, inputs : list[str] = None):
+
+        # Zero out previous running state analysis (batch data only)
         for choice in self.config.keys():
             self.state[choice] = []
-
+        
+        # Call transforms, note we instantiate them unbound so need to pass self
         for transform in self.config.keys():
             for ele in streamer.features:
                 self.state[transform].append(
                     self.config[transform](self,ele)
                     )
-
+        # Write results against each label
         for ele in self.keys:
             for choice in self.config.keys():
                 for i in range(len(streamer.features)):
