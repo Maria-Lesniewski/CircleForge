@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.accuracy_within_tol import accuracy_within_tol
+from StatisticalAnalysis.ModelEvaluation.analysis_functions.accuracy_within_tol import AccuracyWithinTol
 from StatisticalAnalysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
@@ -10,7 +10,7 @@ from test_utils.spy_logger import SpyLogger
 ### SET UP #### 
 @pytest.fixture
 def preconfigured_accuracy_within_tol():
-    instance = accuracy_within_tol()
+    instance = AccuracyWithinTol()
     instance.config["tol"] = 0.2
     return instance
 
@@ -38,7 +38,7 @@ def stream():
 def test_init():
     """ Checks object init """ 
 
-    preconfigured_accuracy_within_tol = accuracy_within_tol()
+    preconfigured_accuracy_within_tol = AccuracyWithinTol()
 
     assert preconfigured_accuracy_within_tol.state == {
         "num_correct": 0,
@@ -92,7 +92,7 @@ def test_running_accumulates_across_batches(preconfigured_accuracy_within_tol, s
 
 
 def test_running_zero_tolerance(scribe):
-    preconfigured_accuracy_within_tol = accuracy_within_tol()
+    preconfigured_accuracy_within_tol = AccuracyWithinTol()
     preconfigured_accuracy_within_tol.config["tol"] = 0.0
 
     stream = StreamingState({
@@ -114,7 +114,7 @@ def test_running_zero_tolerance(scribe):
 
 
 def test_running_error_equal_to_tolerance_is_incorrect(scribe):
-    preconfigured_accuracy_within_tol = accuracy_within_tol()
+    preconfigured_accuracy_within_tol = AccuracyWithinTol()
     preconfigured_accuracy_within_tol.config["tol"] = 0.5
 
     stream = StreamingState({

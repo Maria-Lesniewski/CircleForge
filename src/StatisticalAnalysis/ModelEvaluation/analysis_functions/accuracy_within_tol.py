@@ -7,7 +7,7 @@ from utils.model_logger import Logger
 from utils.type_checker import is_float, is_int
 
 @AnalysisRegistry.register_analysis("accuracy_within_tol")
-class accuracy_within_tol(ConfigurableAnalysis):
+class AccuracyWithinTol(ConfigurableAnalysis):
 
     def __init__(self):
         super().__init__()
