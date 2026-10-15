@@ -5,7 +5,7 @@ from utils.model_logger import Logger
 from numpy import sqrt
 import torch
 
-@AnalysisRegistry.register_analysis("RMSD")
+@AnalysisRegistry.register_analysis("rmsd")
 class RMSD(StatefulAnalysis):
     """
     Calculates the root mean square deviation of the model wrt. samples

@@ -4,7 +4,7 @@ from ...streaming_state import StreamingState
 from utils.model_logger import Logger
 import torch 
 
-@AnalysisRegistry.register_analysis("R2")
+@AnalysisRegistry.register_analysis("r2")
 class R2(StatefulAnalysis):
     """
     Calculates R2 for the model wrt the current set (should be bounded btwn 0 and 1 for training set)
