@@ -1,7 +1,7 @@
 import pytest
 import utils.io as io
 import pandas as pd
-from DataSet.circle_data import CircleData
+from dataset.circle_data import CircleData
 from test_utils.toy_database import ToyDatabase
 
 KEYS = [

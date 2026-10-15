@@ -1,4 +1,4 @@
-from DataSet.circle_data import CircleData
+from dataset.circle_data import CircleData
 import torch
 import torch.nn as nn
 import StatisticalAnalysis.DataSetEvaluation as de
