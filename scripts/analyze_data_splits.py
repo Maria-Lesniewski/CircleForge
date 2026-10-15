@@ -1,7 +1,7 @@
 from dataset.circle_data import CircleData
 import torch
 import torch.nn as nn
-import StatisticalAnalysis.DataSetEvaluation as de
+import analysis.datasets as de
 import models.model_options as mo
 import utils.io as io
 from pathlib import Path

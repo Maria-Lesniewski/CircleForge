@@ -2,7 +2,7 @@ import pytest
 import torch 
 import math 
 
-from analysis.ModelEvaluation.analysis_functions.r2 import R2
+from analysis.models.analysis_functions.r2 import R2
 from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 

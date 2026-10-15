@@ -1,5 +1,5 @@
 import pytest
-from analysis.ModelEvaluation.analysis_functions.predicted_vs_true import PredictedVSTrue
+from analysis.models.analysis_functions.predicted_vs_true import PredictedVSTrue
 from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 

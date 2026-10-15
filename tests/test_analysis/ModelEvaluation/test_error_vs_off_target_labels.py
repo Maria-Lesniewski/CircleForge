@@ -1,5 +1,5 @@
 import pytest
-from analysis.ModelEvaluation.analysis_functions.error_vs_off_target_labels import ErrorVSOffTargetLabels
+from analysis.models.analysis_functions.error_vs_off_target_labels import ErrorVSOffTargetLabels
 from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 

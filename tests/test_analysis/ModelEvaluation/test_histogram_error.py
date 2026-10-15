@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from analysis.ModelEvaluation.analysis_functions.histogram_error import HistogramError
+from analysis.models.analysis_functions.histogram_error import HistogramError
 from analysis.streaming_state import StreamingState
 
 ### SET UP #### 
