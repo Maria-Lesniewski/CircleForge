@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.histogram_labels import histogram_labels
+from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.histogram_labels import HistogramLabels
 from StatisticalAnalysis.streaming_state import StreamingState
 
 
@@ -10,7 +10,7 @@ from StatisticalAnalysis.streaming_state import StreamingState
 def preconfigured_histogram():
     """Create a configured histogram preconfigured_histogram without interactive input."""
     
-    obj = histogram_labels(keys=["fake_data"])
+    obj = HistogramLabels(keys=["fake_data"])
 
     obj.config = {
         "min_bin": 0.0,
