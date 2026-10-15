@@ -6,7 +6,7 @@ from numpy import sqrt
 import torch
 
 @DiagnosticsRegistry.register_analysis("avg_and_dev")
-class avg_and_dev(StatefulAnalysis):
+class AvgAndDev(StatefulAnalysis):
     """
     Calculates the mean and standard deviation of each passed state
     stdev is calculated as sqrt of the variance. Both population and sample 

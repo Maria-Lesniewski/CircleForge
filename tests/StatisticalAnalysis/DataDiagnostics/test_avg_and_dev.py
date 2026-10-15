@@ -2,7 +2,7 @@ import pytest
 import utils.io as io
 from test_utils.toy_database import ToyDatabase
 from test_utils.spy_logger import SpyLogger
-from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.avg_and_dev import avg_and_dev
+from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.avg_and_dev import AvgAndDev
 from StatisticalAnalysis.streaming_state import StreamingState
 import pandas as pd
 import torch
@@ -74,7 +74,7 @@ def test_running_and_final(streamed_data_obj, run_standards, final_standards):
     # Create spy
     test_logger = SpyLogger()
 
-    avg_and_dev_obj = avg_and_dev(KEYS)
+    avg_and_dev_obj = AvgAndDev(KEYS)
     avg_and_dev_obj.running(streamed_data_obj, test_logger)
     
     for ele in run_standards:
