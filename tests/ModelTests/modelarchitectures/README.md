@@ -11,7 +11,7 @@
 
 ## JSON FILE FORMAT
 
-Each model implemented in Models.model\_options 
+Each model implemented in models.model\_options 
 
 Has some "\_\_init\_\_" function implmented defining layers sequenced like 
 """

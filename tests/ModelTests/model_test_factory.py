@@ -2,7 +2,7 @@
 # import json Later it might make sense to go to json files if we add too many models
 import torch
 import torch.nn as nn
-import Models.model_options as mo
+import models.model_options as mo
 import utils.io as io
 import json
 from pathlib import Path

@@ -4,7 +4,7 @@ import os
 
 import torch
 from model_test_factory import ModelTestRunner
-from Models.model_options import ModelFactory
+from models.model_options import ModelFactory
 import pytest
 
 

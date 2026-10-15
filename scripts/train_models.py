@@ -5,7 +5,7 @@
 
 import torch # Pytorch
 import torch.nn as nn
-import Models.model_options as mo # Custom Models
+import models.model_options as mo # Custom Models
 import Training.trainer as TL # Pre-stored Training epochs 
 from utils.model_logger import Logger
 from DataSet.circle_data import CircleData # Data class for loading into torch
