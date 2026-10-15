@@ -32,7 +32,10 @@ class R2(StatefulAnalysis):
     def final(self, scribe : Logger):
         SSTot = self.state["true_square"] - self.state["true_sum"]**2/self.state["N"]
         var = SSTot / self.state["N"]
-        r2 = 1 - (self.state["SSE"] / SSTot)
+        if SSTot != 0:
+            r2 = 1 - (self.state["SSE"] / SSTot)
+        else:
+            r2 = float("nan")
         scribe.add_scalars(
                 "evaluation",
                 {
