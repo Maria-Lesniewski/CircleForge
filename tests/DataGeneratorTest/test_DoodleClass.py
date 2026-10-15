@@ -15,7 +15,7 @@ def fixture_path(request):
 
 
 # Import CircleDoodle from the library file
-from ProceduralGenerator.circle_doodle import CircleDoodle
+from generator.circle_doodle import CircleDoodle
 
 @pytest.fixture()
 def set_seed(autouse=True):

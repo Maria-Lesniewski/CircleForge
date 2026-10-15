@@ -3,7 +3,7 @@
 # @desc This is a class for generating toy databases mid-test (avoids database relative path problem)
 
 import os
-from ProceduralGenerator.circle_doodle import CircleDoodle
+from generator.circle_doodle import CircleDoodle
 import numpy as np
 from pathlib import Path 
 import shutil 
