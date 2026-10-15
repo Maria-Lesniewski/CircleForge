@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from analysis.DataSetEvaluation.diagnostics_library.correlate_feature import CorrelateFeature
+from analysis.datasets.diagnostics_library.correlate_feature import CorrelateFeature
 from test_utils.spy_logger import SpyLogger
 from analysis.streaming_state import StreamingState
 

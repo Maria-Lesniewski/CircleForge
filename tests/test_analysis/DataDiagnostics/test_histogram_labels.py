@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from analysis.DataSetEvaluation.diagnostics_library.histogram_labels import HistogramLabels
+from analysis.datasets.diagnostics_library.histogram_labels import HistogramLabels
 from analysis.streaming_state import StreamingState
 
 

@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from analysis.DataSetEvaluation.diagnostics_library.correlate_labels import CorrelateLabels
+from analysis.datasets.diagnostics_library.correlate_labels import CorrelateLabels
 from test_utils.spy_logger import SpyLogger
 from analysis.streaming_state import StreamingState
 from itertools import combinations

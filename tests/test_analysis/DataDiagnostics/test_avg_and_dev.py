@@ -2,7 +2,7 @@ import pytest
 import utils.io as io
 from test_utils.toy_database import ToyDatabase
 from test_utils.spy_logger import SpyLogger
-from analysis.DataSetEvaluation.diagnostics_library.avg_and_dev import AvgAndDev
+from analysis.datasets.diagnostics_library.avg_and_dev import AvgAndDev
 from analysis.streaming_state import StreamingState
 import pandas as pd
 import torch
