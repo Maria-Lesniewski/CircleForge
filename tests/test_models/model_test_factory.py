@@ -15,9 +15,9 @@ class ModelTestRunner:
     _configs -> args for each model type 
     """
     _checkpoints = {
-            "BasicLinear" : "ModelTests/modelstates/BasicLinear.pt",
-            "RotatedLinear" : "ModelTests/modelstates/RotatedLinear.pt",
-            "Constant" : "ModelTests/modelstates/Constant.pt"
+            "BasicLinear" : "test_models/modelstates/BasicLinear.pt",
+            "RotatedLinear" : "test_models/modelstates/RotatedLinear.pt",
+            "Constant" : "test_models/modelstates/Constant.pt"
             }
 
     _expected_output = {
@@ -37,9 +37,9 @@ class ModelTestRunner:
     # Check the inits via model architecture
     # Architectures are stored in the test folder as json files
     _architectures = {
-            "BasicLinear" : "ModelTests/modelarchitectures/BasicLinear.json",
-            "RotatedLinear" : "ModelTests/modelarchitectures/RotatedLinear.json",
-            "Constant" : "ModelTests/modelarchitectures/Constant.json",
+            "BasicLinear" : "test_models/modelarchitectures/BasicLinear.json",
+            "RotatedLinear" : "test_models/modelarchitectures/RotatedLinear.json",
+            "Constant" : "test_models/modelarchitectures/Constant.json",
             }
 
     _LAYER_TYPES = { # Used in .json architecture files
