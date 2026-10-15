@@ -32,7 +32,7 @@ def test_off_running(null_corr_obj):
     null_corr_obj.running(stream, logger)
     assert len(logger.add_scalars_calls) == 0
 
-def test_on_running(corr_obj):
+def test_on_running_2tags(corr_obj):
 
     # Dummy 3 images w. labels into a stream
     features = [
@@ -59,3 +59,29 @@ def test_on_running(corr_obj):
     for i, (call_tag, (x,y)) in enumerate(zip(calls, expected_sets)):
         assert calls[call_tag]["scalars"] == {f"{y}_vs_{x}" : label2[i]}
         assert calls[call_tag]["step"] == label1[i]
+
+def test_on_running_3tags():
+    corr_obj = correlate_labels(keys=["label1", "label2", "label3"])
+
+    # Dummy 3 images w. labels into a stream
+    features = [
+            torch.tensor([[0.0, 0.0], [0.0, 0.0]]),
+            torch.tensor([[1.0, 1.0], [1.0, 1.0]]),
+            torch.tensor([[2.0, 2.0], [2.0, 2.0]]),
+            ]
+    label1 = torch.tensor([[10.0], [20.0], [30.0]])
+    label2 = torch.tensor([[0.01], [0.02], [0.03]])
+    label3 = torch.tensor([[1], [2], [3]])
+    streamer = StreamingState({"features" : features, "label1" : label1, "label2" : label2, "label3": label3})
+
+    logger = SpyLogger()
+    corr_obj.running(streamer, logger)
+
+    calls = logger.add_scalars_calls
+
+    expected_sets = list(combinations(["label1", "label2", "label3"], 2))
+    expected_names = [f"{y}_vs_{x}" for x,y in expected_sets]
+
+    assert len(calls) == 3*3
+    call_scalar_names = {list(calls[key]["scalars"].keys())[0] for key in calls }
+    assert set(expected_names) == set(call_scalar_names)
