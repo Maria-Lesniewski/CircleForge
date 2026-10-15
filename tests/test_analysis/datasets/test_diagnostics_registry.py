@@ -7,7 +7,7 @@ from utils.io import find_project_root
 def test_all_modules_are_registered():
     """ Make sure all relevant files in diagnostic_library are registered correctly """
     
-    diagnostic_lib = "src/analysis/DataSetEvaluation/diagnostics_library/"
+    diagnostic_lib = "src/analysis/datasets/diagnostics_library/"
     path_to_diagnostics_lib = find_project_root() / diagnostic_lib
 
     analysis_file = [ path.stem for path in path_to_diagnostics_lib.glob("*.py")
