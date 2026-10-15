@@ -35,16 +35,24 @@ class SpyLogger(Logger):
         self.add_scalars_calls = {} # We'll index them by the tag or id used in each. 
         self.write_json_calls = {}
         self.save_model_calls = {}
+        self.add_scalars_duplicates = 0
 
 
     def add_scalars(self,
             tag : str = None, # label the scalar sets we're adding (by process or by qty)
             scalars : dict[str, float] = None, # custom filenames / what we're evaluating on
             step = None): # The epoch or the batch we're saving for
-        self.add_scalars_calls[tag] = {
-                "scalars" : scalars,
-                "step" : step
-                }
+        if tag not in self.add_scalars_calls:
+            self.add_scalars_calls[tag] = {
+                    "scalars" : scalars,
+                    "step" : step
+                    }
+        else:
+            self.add_scalars_duplicates = self.add_scalars_duplicates + 1
+            self.add_scalars_calls[f"{tag}{self.add_scalars_duplicates}"] = {
+                    "scalars" : scalars,
+                    "step" : step
+                    }
 
     def close(self):
         pass
