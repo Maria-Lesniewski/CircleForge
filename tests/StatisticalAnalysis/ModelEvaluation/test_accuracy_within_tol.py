@@ -1,8 +1,8 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.accuracy_within_tol import AccuracyWithinTol
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.ModelEvaluation.analysis_functions.accuracy_within_tol import AccuracyWithinTol
+from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
 

@@ -1,8 +1,8 @@
 import pytest
 import torch
 from numpy import sqrt 
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.rmsd import RMSD
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.ModelEvaluation.analysis_functions.rmsd import RMSD
+from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
 

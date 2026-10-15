@@ -1,5 +1,5 @@
 import pytest
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.streaming_state import StreamingState
 
 
 @pytest.fixture(scope="module")

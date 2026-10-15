@@ -1,6 +1,6 @@
 import pytest
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.error_vs_off_target_labels import ErrorVSOffTargetLabels
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.ModelEvaluation.analysis_functions.error_vs_off_target_labels import ErrorVSOffTargetLabels
+from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
 def test_error_vs_off_target_labels():

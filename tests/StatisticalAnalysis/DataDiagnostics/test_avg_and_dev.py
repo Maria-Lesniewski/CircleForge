@@ -2,8 +2,8 @@ import pytest
 import utils.io as io
 from test_utils.toy_database import ToyDatabase
 from test_utils.spy_logger import SpyLogger
-from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.avg_and_dev import AvgAndDev
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.DataSetEvaluation.diagnostics_library.avg_and_dev import AvgAndDev
+from analysis.streaming_state import StreamingState
 import pandas as pd
 import torch
 import json

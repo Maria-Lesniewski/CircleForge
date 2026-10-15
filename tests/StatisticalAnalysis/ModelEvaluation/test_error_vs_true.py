@@ -1,6 +1,6 @@
 import pytest
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.error_vs_true import ErrorVSTrue
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.ModelEvaluation.analysis_functions.error_vs_true import ErrorVSTrue
+from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
 def test_error_vs_true():

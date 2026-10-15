@@ -1,5 +1,5 @@
 import pytest 
-from StatisticalAnalysis.ModelEvaluation.analysis_registry import AnalysisRegistry
+from analysis.ModelEvaluation.analysis_registry import AnalysisRegistry
 from pathlib import Path
 from utils.io import find_project_root
 

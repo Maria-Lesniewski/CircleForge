@@ -1,5 +1,5 @@
 import pytest 
-from StatisticalAnalysis.DataSetEvaluation.diagnostics_registry import DiagnosticsRegistry
+from analysis.DataSetEvaluation.diagnostics_registry import DiagnosticsRegistry
 from pathlib import Path
 from utils.io import find_project_root
 

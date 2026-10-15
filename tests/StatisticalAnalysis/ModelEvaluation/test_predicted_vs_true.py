@@ -1,6 +1,6 @@
 import pytest
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.predicted_vs_true import PredictedVSTrue
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.ModelEvaluation.analysis_functions.predicted_vs_true import PredictedVSTrue
+from analysis.streaming_state import StreamingState
 from test_utils.spy_logger import SpyLogger
 
 def test_predicted_vs_true():

@@ -1,9 +1,9 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.DataSetEvaluation.diagnostics_library.correlate_labels import CorrelateLabels
+from analysis.DataSetEvaluation.diagnostics_library.correlate_labels import CorrelateLabels
 from test_utils.spy_logger import SpyLogger
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.streaming_state import StreamingState
 from itertools import combinations
 ### SETUP ###
 @pytest.fixture

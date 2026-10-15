@@ -1,8 +1,8 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.histogram_error import HistogramError
-from StatisticalAnalysis.streaming_state import StreamingState
+from analysis.ModelEvaluation.analysis_functions.histogram_error import HistogramError
+from analysis.streaming_state import StreamingState
 
 ### SET UP #### 
 @pytest.fixture
