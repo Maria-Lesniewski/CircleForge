@@ -2,7 +2,7 @@ from ..analysis_registry import AnalysisRegistry
 from .base import StatefulAnalysis
 from ...streaming_state import StreamingState
 from utils.model_logger import Logger
-from numpy import sqrt
+from torch import sqrt
 import torch
 
 @AnalysisRegistry.register_analysis("rmsd")
