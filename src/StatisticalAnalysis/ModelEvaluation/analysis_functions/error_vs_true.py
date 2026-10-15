@@ -4,7 +4,7 @@ from ...streaming_state import StreamingState
 from utils.model_logger import Logger
 
 @AnalysisRegistry.register_analysis("error_vs_true")
-class error_vs_true(BasicAnalysis):
+class ErrorVSTrue(BasicAnalysis):
     """
     prints the error in model prediction
     against the true value
