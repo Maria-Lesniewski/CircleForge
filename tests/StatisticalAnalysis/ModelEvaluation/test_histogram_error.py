@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from StatisticalAnalysis.ModelEvaluation.analysis_functions.histogram_error import histogram_error
+from StatisticalAnalysis.ModelEvaluation.analysis_functions.histogram_error import HistogramError
 from StatisticalAnalysis.streaming_state import StreamingState
 
 ### SET UP #### 
@@ -9,7 +9,7 @@ from StatisticalAnalysis.streaming_state import StreamingState
 def preconfigured_histogram():
     """Create a configured histogram preconfigured_histogram without interactive input."""
     
-    obj = histogram_error()
+    obj = HistogramError()
 
     obj.config = {
         "min_bin": 0.0,
