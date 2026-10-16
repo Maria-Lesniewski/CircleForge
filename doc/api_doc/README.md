@@ -6,11 +6,11 @@ Each page describes a class's purpose, public methods, attributes, and intended 
 
 ## API Reference
 
-### Data Generation
+### Data Generation and Storage
 
 Classes responsible for procedurally generating synthetic images and their associated labels.
 
-- [CircleDoodle](circle_doodle.md) - Generates procedural circle patterns and tracks image annotations, including circle counts and area statistics.
+- [CircleDoodle](circle_doodle.md) - Generates procedural circle patterns and tracks image annotations, including circle counts and area statistics. 
 
 - [CircleData](circle_data.md) - Dataset iterable, defined by image annotations and the linked .npy image vector files. Used with a dataloader during training and evaluation
 
@@ -30,6 +30,8 @@ Classes for Statistical Inference:
 
 ### Statistical Analysis
 
-- Model Performance is accomplished via the AnalysisRunner Class documented in the [ModelEvaluation Suite](model_evaluation.md). The classes within analyze characteristics of a particular model's predictions
+Multiple classes for statistical analysis of model performance and dataset diagnostics are available in the CircleForge.analysis module. Statistics are aggregated simultaneously from streamed data and finalized to .xy grace files and tensor board scalar plots. 
 
-- Properties of each DataSet can be measured using the DiagnosticsRunner Class documented in the [DataSetEvaluation Suite](data_set_evaluation.md). The classes within analyze characteristics of a particular dataset to help better design features and architectures within models.  
+- The [AnalysisRunner](model_evaluation.md) Class coordinates statistical analysis for evaluating model performance. Analysis are defined as classes within the `analysis.models`  package.
+
+- The [DiagnosticsRunner](data_diagnostics.md) Class coordinates statistical analysis for diagnosing features/trends present in a particular dataset. Diagnostics are defined as classes within the `analysis.datasets` package.

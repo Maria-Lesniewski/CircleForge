@@ -345,7 +345,7 @@ These masks are used by the procedural generation algorithm to track occupied re
 ## Generate and Save an Image
 
 ```
-from circle_doodle import CircleDoodle
+from generator.circle_doodle import CircleDoodle
 
 
 #Initialize an image generator

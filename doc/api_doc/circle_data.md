@@ -10,7 +10,7 @@ Data can be retrieved via indexing or by creating an iterable DataLoader from th
 ## Usage, Initialization, Iteration
 
 ```
-from DataSet.circle_data import CircleData
+from dataset.circle_data import CircleData
 
 # Create a 1 target dataset 
 train_data = CircleData(
