@@ -69,7 +69,7 @@ class SpyLogger(Logger):
                 "step" : step, 
                 "model" : model,
                 "stats" : stats,
-                "metadata" : meta_data
+                "metadata" : metadata
                 }
 
     def _write_model_metadata(
