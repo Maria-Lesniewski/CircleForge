@@ -1,37 +1,58 @@
 # CircleForge API Documentation
 
-This directory contains API documentation for the classes that make up the CircleForge ML pipeline.
+Each page within this directory describes a class's purpose, public methods, attributes, and intended usage.
 
-Each page describes a class's purpose, public methods, attributes, and intended usage.
+## Overview of Pre-configured Pipelines 
+CircleForge provides building blocks for a complete modeling problem pipeline. Classes coordinate PyTorch structures into recordable experimental pieces. 
 
-## API Reference
+A typical "experiment" involves creating a dataset, feature engineering from dataset statistics, creating a model structure, training the model, and evaluating its final performance.
 
-### Data Generation and Storage
+Experiment results are typically stored in a generated `artifacts` folder at the project root. This usually includes direct results (e.g. model.pt files, analysis graphs, datasets) and also metadata (e.g. the conditions for which a dataset was generated.)
 
-Classes responsible for procedurally generating synthetic images and their associated labels.
+### <u>Data Generation and Storage</u>
+Two classes are responsible for respectively procedurally generating image data and storing it for PyTorch training.
 
-- [CircleDoodle](circle_doodle.md) - Generates procedural circle patterns and tracks image annotations, including circle counts and area statistics. 
+1) [`CircleDoodle` (CircleForge.generator)](circle_doodle.md) - Generates procedural circle patterns and tracks image annotations, including circle counts and area statistics.
 
-- [CircleData](circle_data.md) - Dataset iterable, defined by image annotations and the linked .npy image vector files. Used with a dataloader during training and evaluation
+2) [`CircleData` (CircleForge.dataset)](circle_data.md) - Dataset iterable, defined by image annotations and the linked .npy image vector files. Used with a dataloader during training and evaluation
 
-### Modeling 
+Cleaning and splitting generated data is currently implemented more manually, see e.g. `scripts/scrub_split_data.py` for an example.  
 
-**Model Architectures**
+### <u>Calling Models</u> 
 
-Classes for Statistical Inference:
+Experiments with different models can be centralized through a [`ModelFactory`] interface, new models are registered with the factory and implemented as torch.nn.modules individually.
 
-- [ModelFactory](model_factory.md) - A centralized registry for creating instances of PyTorch models via the same interface, used to write general training/evaluation code without dependency on model architecture
+- [`ModelFactory`](model_factory.md) - A centralized registry for creating instances of PyTorch models via the same interface, used to write general training/evaluation code without dependency on model architecture
 
-- [ModelClasses(torch.nn.module)](models.md) - Models that implement the torch.nn.module with different architecture, used for statistical comparison and inference 
+- The [Model Classes](models.md) page contains the list and documentation for currently implemented in CircleForge.models.model_options
 
-**Training Models**
+### <u>Training Models</u>
 
-- [Trainer](trainer.md) - The Trainer class coordinates the particular training parameters for a given model, e.g. the loss function, learning rate, optimizer, epoch style, and logging (model checkpointing, training hyper parameters, loss value etc.) of a given model's training routine.   
+Training hyperparameters (epoch routines, optimizers, loss functions) and model checkpointing are coordinated and logged through the [`Trainer`](trainer.md) class.
 
-### Statistical Analysis
+### <u>Statistical Analysis</u>
 
-Multiple classes for statistical analysis of model performance and dataset diagnostics are available in the CircleForge.analysis module. Statistics are aggregated simultaneously from streamed data and finalized to .xy grace files and tensor board scalar plots. 
+Analysis is usually conducted before and after a model is built during an experimentation pipeline. 
+CircleForge.analysis houses multiple classes for analyzing model performance and dataset trends are available in the CircleForge.analysis module. 
+In each case, statistics are aggregated simultaneously from streamed data and finalized to .xy grace files and tensor board scalar plots. 
+For convenience, we also provide a `utils/grace_like.py` script which can be called on the command line for plotting .xy files passed with matplot lib. See file for details.
 
-- The [AnalysisRunner](model_evaluation.md) Class coordinates statistical analysis for evaluating model performance. Analysis are defined as classes within the `analysis.models`  package.
+The CircleForge.analysis module has two halves:
 
-- The [DiagnosticsRunner](data_diagnostics.md) Class coordinates statistical analysis for diagnosing features/trends present in a particular dataset. Diagnostics are defined as classes within the `analysis.datasets` package.
+- CircleForge.analysis.models : 
+
+    Model Evaluation in CircleForge is coordinated through [`AnalysisRunner`](analysis_runner.md).
+
+    - The [`AnalysisRunner`](analysis_runner.md) class stores pre-registered analysis functions in `AnalysisRegistry`. The functions are calculated batch-wise while an iterator passes through a given dataset, allowing one model evaluation per iteration, regardless of the number of statistics calculated. See the 
+
+- CircleForge.analysis.datasets:
+
+    Data analysis in CircleForge is coordinated through  [`DiagnosticsRunner`](diagnostics_runner.md). 
+
+    - The [`DiagnosticsRunner`](diagnostics_runner.md) stores pre-registered analysis functions in [`DiagnosticRegistry`](diagnostics_registry.md). These functions are calculated batch-wise while an iterater passes through a given dataset. See the [`DiagnosticsRunner`](diagnostics_runner.md) class doc for usage details. See the [`DiagnosticsRegistry`](diagnostics_registry.md) class doc for the list of all implemented functions.
+
+
+## Other Utilities for DIY experimenting
+- `CircleForge.utils.io` provides an interface for anchoring `artifact` paths and prompting CL responses to configuration questions
+
+- `CircleForge.utils.model_logger` stores the [`Logger`](logger.md) class, which is used in the coordinated structures above, but is also handy for saving custom data. 
