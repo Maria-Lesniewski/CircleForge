@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from test_utils.spy_logger import SpyLogger
-from Training.trainer import Trainer
+from training.trainer import Trainer
 from torch.utils.data import DataLoader, TensorDataset
 
 
