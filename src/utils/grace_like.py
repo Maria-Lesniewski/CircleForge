@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+### USAGE
+#### python grace_like.py <fileslist>
+#### python grace_like.py my_scalars.xvg
+#### python grace_like.py *_scalars.xvg
+
 import argparse
 from pathlib import Path
 

@@ -6,7 +6,7 @@
 
 import sys
 import utils.io as io
-import ProceduralGenerator.generatorlib as gen
+import generator.circle_doodle as gen
 import numpy as np
 from pathlib import Path
 import pandas as pd

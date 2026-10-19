@@ -1,8 +1,8 @@
-import DataSet.DoodleData as dd
+from dataset.circle_data import CircleData
 import torch
 import torch.nn as nn
-import StatisticalAnalysis.ModelEvaluation as ma
-import Models.model_options as mo
+import analysis.models as ma
+import models.model_options as mo
 import utils.io as io
 from pathlib import Path
 
@@ -30,7 +30,7 @@ model.eval()
 
 # Load Data Sets
 data_fp = io.artifact_path("final_data/train_val_test_split_annotations.csv")
-train_data = dd.CircleData(
+train_data = CircleData(
         csv_file=data_fp,
         target_columns=[
             "ncircles",
@@ -38,12 +38,12 @@ train_data = dd.CircleData(
             ],
         split_tag="train"
         )
-val_data = dd.CircleData(
+val_data = CircleData(
         csv_file=data_fp,
         target_columns=["ncircles"],
         split_tag="val"
         )
-test_data = dd.CircleData(
+test_data = CircleData(
         csv_file=data_fp,
         target_columns=["ncircles"],
         split_tag="test"

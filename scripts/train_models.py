@@ -5,22 +5,22 @@
 
 import torch # Pytorch
 import torch.nn as nn
-import Models.model_options as mo # Custom Models
-import Training.trainer as TL # Pre-stored Training epochs 
+import models.model_options as mo # Custom Models
+import training.trainer as TL # Pre-stored Training epochs 
 from utils.model_logger import Logger
-import DataSet.DoodleData as dd # Data class for loading into torch
+from dataset.circle_data import CircleData # Data class for loading into torch
 from torch.utils.data import DataLoader # Actual loaders
 import utils.io as io # For anchoring relative io paths across modules
 
 # Load Data Into Data Set
 print("Loading training/validation data samples")
 data_fp = io.artifact_path("final_data/train_val_test_split_annotations.csv")
-train_data = dd.CircleData(
+train_data = CircleData(
         csv_file=data_fp, 
         target_columns=["ncircles"],
         split_tag="train"
         )
-val_data = dd.CircleData(
+val_data = CircleData(
         csv_file=data_fp,
         target_columns=["ncircles"],
         split_tag="val"

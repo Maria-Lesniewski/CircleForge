@@ -1,0 +1,11 @@
+{
+        "image_size" : { "sum_x" : 12000, "sum_x2" : 600000 },
+        "ncircles" :   { "sum_x" : 6333, "sum_x2" : 181577},
+        "nbig" :       { "sum_x" : 934, "sum_x2" : 4052},
+        "nsmall" : { "sum_x" : 5399, "sum_x2" : 131839 },
+        "area_of_circles" : {"sum_x" : 206366, "sum_x2" : 192078190},
+        "area_of_negative" : {"sum_x" : 393634 , "sum_x2" : 660248190 },
+        "max_circle_units" : {"sum_x" : 1320, "sum_x2" : 8520},
+        "fill_fraction" : {"sum_x" : 240, "sum_x2" : 240}
+}
+

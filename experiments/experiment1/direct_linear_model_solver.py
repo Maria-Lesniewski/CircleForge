@@ -2,7 +2,7 @@ import utils.io as io
 import torch
 import torch.nn as nn
 import Models.model_options as mo
-from DataSet import DoodleData as dd
+from DataSet.circle_data import CircleData
 from utils.model_logger import Logger
 import numpy as np
 
@@ -35,7 +35,7 @@ augmenting_functions = {
         }
 ele = io.multiple_choice_q("This script will use linear least squares to train a model", [item for item in input_transforms.keys()])
 data_fp = io.artifact_path("final_data/train_val_test_split_annotations.csv")
-train_data = dd.CircleData(
+train_data = CircleData(
         csv_file=data_fp,
         target_columns=["ncircles"],
         split_tag="train"
