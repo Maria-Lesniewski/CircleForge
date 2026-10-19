@@ -538,7 +538,7 @@ Each analysis class employs the `Logger` class to store results.
 
     The coefficient of determination measures the proportion of variance in the ground-truth values that is explained by the model. It is calculated using the residual sum of squares (SSE) and the total sum of squares (SST).
 
-    The class accumulates the necessary statistics across batches, including the sum of squared prediction errors, the sum of ground-truth values, the sum of squared ground-truth values, and the total number of samples. Once processing is complete, the `final()` method calculates $R^2$, the variance of the ground-truth values, and related statistics. These values are logged under the `"evaluation"` category.
+    The class accumulates the necessary statistics across batches, including the sum of squared prediction errors, the running mean of ground-truth values,and the total number of samples.The running mean and sum of squared deviations are updated using Welford's online algorithm, which avoids the numerical instability associated with calculating variance as the difference between two large nearly equal quantities. Once processing is complete, the `final()` method calculates $R^2$, the population variance of the ground-truth values, and related statistics. These values are logged under the `"evaluation"` category.
 
     The coefficient of determination is calculated using the following formula:
 
@@ -554,10 +554,14 @@ Each analysis class employs the `Logger` class to store results.
     The total sum of squares is calculated as:
 
     $$
-    SST = \sum_{i=1}^{N} y_i^2 - \frac{(\sum_{i=1}^{N} y_i)^2}{N}
+    SST = \sum_{i=1}^{N} (y_i - \bar{y})^2
     $$
 
-    The variance of the ground-truth values is calculated as:
+    where $\bar{y}$ is the mean of all ground-truth values processed.
+
+    This is accomplsihed via Welford's online algorithm rather than the algebraically equivalent difference-of-sums formula. This provides improved numerically stability when accumulating statistics across batches.
+
+    The variance of the ground-truth values can be calculated calculated as:
 
     $$
     \text{var} = \frac{SST}{N}
@@ -567,18 +571,19 @@ Each analysis class employs the `Logger` class to store results.
 
     ### Attributes
 
-    |Attribute|type|desc|
+    | Attribute | Type | Description |
     |---|---|---|
-    |`state`|`dict`|Stores the cumulative statistics required to calculate the coefficient of determination across multiple batches.|
-    |`state["SSE"]`|`int` or `torch.Tensor`|Accumulates the sum of squared errors between model predictions and ground-truth values. Initially set to `0`.|
-    |`state["true_sum"]`|`int` or `torch.Tensor`|Accumulates the sum of all ground-truth values processed. Used to calculate the total sum of squares. Initially set to `0`.|
-    |`state["true_square"]`|`int` or `torch.Tensor`|Accumulates the sum of squared ground-truth values. Used to calculate the total sum of squares. Initially set to `0`.|
-    |`state["N"]`|`int`|Tracks the total number of samples processed across all batches. Initially set to `0`.|
+    | `state` | `dict` | Stores the cumulative statistics required to calculate the coefficient of determination across multiple batches. |
+    | `state["SSE"]` | `float` | Accumulates the sum of squared errors between model predictions and ground-truth values. Initially set to `0.0`. |
+    | `state["mean"]` | `float` | Running mean of the ground-truth values processed so far. Updated incrementally using Welford's algorithm. Initially set to `0.0`. |
+    | `state["M2"]` | `float` | Running sum of squared deviations from the current running mean. At the end of processing, this is the total sum of squares (`SST`). Initially set to `0.0`. |
+    | `state["N"]` | `int` | Tracks the total number of samples processed across all batches. Initially set to `0`. |
 
     ### Methods
 
     `__init__()`
-    - **Description:** Initializes the `R2` instance by calling the parent class constructor and creating the internal `state` dictionary. The dictionary stores the cumulative sum of squared errors, the sum of ground-truth values, the sum of squared ground-truth values, and the total number of samples.
+    - **Description:** Initializes the `R2` instance by calling the parent class constructor and creating the internal `state` dictionary. The dictionary stores the sum of squared prediction errors (SSE), the running mean of the ground-truth values (mean), the running sum of squared deviations (M2), and the total number of samples (N). The latter two statistics are updated using Welford's online algorithm to provide numerically stable variance accumulation. 
+
     - **Parameters:** None.
     - **Returns:** None.
     - **Example:**
@@ -588,10 +593,10 @@ Each analysis class employs the `Logger` class to store results.
         # Initial state
         print(analysis.state)
         # {
-        #     "SSE": 0,
-        #     "true_sum": 0,
-        #     "true_square": 0,
-        #     "N": 0
+        #     "SSE": 0.0,
+        #     "N": 0,
+        #     "mean": 0.0,
+        #     "M2": 0
         # }
         ```
 
@@ -599,12 +604,22 @@ Each analysis class employs the `Logger` class to store results.
     - **Description:** Updates the internal statistics using the predictions and ground-truth values from the current batch.
 
       The method performs the following operations:
-        1. Increments `state["N"]` by the number of predictions in the batch.
+        1. Converts predictions and ground-truth values to flattened, double-precision tensors
         2. Calculates the squared differences between predictions and ground-truth values and adds their sum to `state["SSE"]`.
-        3. Adds the sum of ground-truth values to `state["true_sum"]`.
-        4. Adds the sum of squared ground-truth values to `state["true_square"]`.
+        3. Iterates over the ground-truth values in the current batch, incrementally updating `state["mean"]` and `state["M2"]` using Welford's online algorithm.
+        4. Increments `state["N"]` for each processed observation. 
 
       These accumulated statistics allow the final $R^2$ value to be calculated across all processed batches rather than independently for each batch.
+
+        <u>Welford's algorithm</u>:
+        $$
+        n_i = n_{i-1} + 1\\
+        \delta_i = y_i - \mu_{i-1}\\
+        \mu_i = \mu_{i-1} + \frac{\delta_i}{n_i}\\
+        M2_i = M2_{i-1} + \delta_i (y_i - \mu_i)\\
+        $$
+        [At the end M2 is the SST]
+
     - **Parameters:**
         - `stream`: A `StreamingState` object containing the model predictions and ground-truth values.
         - `scribe`: An optional `Logger` instance. This parameter is not used within this method.
@@ -618,12 +633,13 @@ Each analysis class employs the `Logger` class to store results.
 
         # Inspect the accumulated statistics.
         print(analysis.state["SSE"])         # Sum of squared errors
-        print(analysis.state["true_sum"])    # Sum of ground-truth values
-        print(analysis.state["true_square"]) # Sum of squared ground-truth values
+        print(analysis.state["mean"])    # Running mean of ground-truth values
+        print(analysis.state["M2"]) # running sum of squared deviations
         print(analysis.state["N"])           # Number of samples processed
         ```
 
     `final(scribe: Logger)`
+    
     - **Description:** Calculates the final coefficient of determination and related statistics using the accumulated state.
 
       The method performs the following operations:
