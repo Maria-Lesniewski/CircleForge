@@ -45,7 +45,7 @@ def test_init():
         "num_samples": 0,
     }
 
-    assert preconfigured_accuracy_within_tol.config == {"tol": 0}
+    assert preconfigured_accuracy_within_tol.config == {"tol": 0.01}
 
 
 def test_running_counts_correct_predictions(preconfigured_accuracy_within_tol, scribe, stream):

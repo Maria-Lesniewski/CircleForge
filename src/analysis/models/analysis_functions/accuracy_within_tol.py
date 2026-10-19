@@ -17,7 +17,7 @@ class AccuracyWithinTol(ConfigurableAnalysis):
             }
 
         self.config = {
-            "tol" : 0,
+            "tol" : 0.01,
             }
 
     def running(self, stream : StreamingState, scribe : Logger):
