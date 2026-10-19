@@ -53,6 +53,6 @@ The CircleForge.analysis module has two halves:
 
 
 ## Other Utilities for DIY experimenting
-- `CircleForge.utils.io` provides an interface for anchoring `artifact` paths and prompting CL responses to configuration questions
+- [`CircleForge.utils.io`](io.md) provides an interface for anchoring `artifact` paths and prompting CL responses to configuration questions
 
 - `CircleForge.utils.model_logger` stores the [`Logger`](logger.md) class, which is used in the coordinated structures above, but is also handy for saving custom data. 
