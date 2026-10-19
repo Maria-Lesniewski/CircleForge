@@ -13,6 +13,9 @@ class BasicAnalysis:
     Nothing special, but the running def lets us interface
     with them abstractly
     """
+
+    def __init__(self):
+        pass
     
     def running(self, data_stream : StreamingState, recorder : Logger = None):
         """
