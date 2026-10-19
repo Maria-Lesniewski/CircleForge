@@ -41,15 +41,15 @@ The CircleForge.analysis module has two halves:
 
 - CircleForge.analysis.models : 
 
-    Model Evaluation in CircleForge is coordinated through [`AnalysisRunner`](analysis_runner.md).
+    Model Evaluation in CircleForge is coordinated through [`AnalysisRunner`](runner_classes.md#AnalysiRunner).
 
-    - The [`AnalysisRunner`](analysis_runner.md) class stores pre-registered analysis functions in [`AnalysisRegistry`](analysis_registry.md). The functions are calculated batch-wise while an iterator passes through a given dataset, allowing one model evaluation per iteration, regardless of the number of statistics calculated. See the 
+    - The [`AnalysisRunner`](runner_classes.md#analysisrunner) class stores pre-registered analysis functions in [`AnalysisRegistry`](analysis_registry.md). The functions are calculated batch-wise while an iterator passes through a given dataset, allowing one model evaluation per iteration, regardless of the number of statistics calculated. See the 
 
 - CircleForge.analysis.datasets:
 
-    Data analysis in CircleForge is coordinated through  [`DiagnosticsRunner`](diagnostics_runner.md). 
+    Data analysis in CircleForge is coordinated through  [`DiagnosticsRunner`](runner_classes.md#diagnosticsrunner). 
 
-    - The [`DiagnosticsRunner`](diagnostics_runner.md) stores pre-registered analysis functions in [`DiagnosticRegistry`](diagnostics_registry.md). These functions are calculated batch-wise while an iterater passes through a given dataset. See the [`DiagnosticsRunner`](diagnostics_runner.md) class doc for usage details. See the [`DiagnosticsRegistry`](diagnostics_registry.md) class doc for the list of all implemented functions.
+    - The [`DiagnosticsRunner`](runner_classes.md#diagnosticsrunner.md) stores pre-registered analysis functions in [`DiagnosticRegistry`](diagnostics_registry.md). These functions are calculated batch-wise while an iterater passes through a given dataset. See the [`DiagnosticsRunner`](runner_classes.md#diagnosticsrunner.md) class doc for usage details. See the [`DiagnosticsRegistry`](diagnostics_registry.md) class doc for the list of all implemented functions.
 
 
 ## Other Utilities for DIY experimenting
