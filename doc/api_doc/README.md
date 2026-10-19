@@ -35,7 +35,7 @@ Training hyperparameters (epoch routines, optimizers, loss functions) and model 
 Analysis is usually conducted before and after a model is built during an experimentation pipeline. 
 CircleForge.analysis houses multiple classes for analyzing model performance and dataset trends are available in the CircleForge.analysis module. 
 In each case, statistics are aggregated simultaneously from streamed data and finalized to .xy grace files and tensor board scalar plots. 
-For convenience, we also provide a `utils/grace_like.py` script which can be called on the command line for plotting .xy files passed with matplot lib. See file for details.
+For convenience, we also provide a `utils/grace_like.py` script which can be called on the command line for plotting .xy files passed with matplot lib. See the comments at the top of the `utils/grace_like.py` file for usage details.
 
 The CircleForge.analysis module has two halves:
 
@@ -43,7 +43,7 @@ The CircleForge.analysis module has two halves:
 
     Model Evaluation in CircleForge is coordinated through [`AnalysisRunner`](analysis_runner.md).
 
-    - The [`AnalysisRunner`](analysis_runner.md) class stores pre-registered analysis functions in `AnalysisRegistry`. The functions are calculated batch-wise while an iterator passes through a given dataset, allowing one model evaluation per iteration, regardless of the number of statistics calculated. See the 
+    - The [`AnalysisRunner`](analysis_runner.md) class stores pre-registered analysis functions in [`AnalysisRegistry`](analysis_registry.md). The functions are calculated batch-wise while an iterator passes through a given dataset, allowing one model evaluation per iteration, regardless of the number of statistics calculated. See the 
 
 - CircleForge.analysis.datasets:
 
