@@ -20,7 +20,7 @@ class AccuracyWithinTol(ConfigurableAnalysis):
             "tol" : 0,
             }
 
-    def running(self, stream : StreamingState, scribe : Logger = None):
+    def running(self, stream : StreamingState, scribe : Logger):
         errors = stream.prediction_state - stream.label_state
         is_accurate = ([(abs(ele) < self.config["tol"]) for ele in errors])
         self.state["num_correct"] += sum(is_accurate).item()
