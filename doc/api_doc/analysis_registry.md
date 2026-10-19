@@ -211,11 +211,25 @@ They are intended to be populated through register_analysis() rather than modifi
 The registries are populated when other modules define analysis implementations using the @AnalysisRegistry.register_analysis() decorator.
 Depending on the arguments passed, the analysis are added to a different register accessible via the `*available()` methods above.
 
+### Registry Structure
+
 |Registry|	Registration condition|	Access method|
 |---|---|---|
 |Standard|	special_code=None|	AnalysisRegistry.available()
 |Special|	special_code is not None|	AnalysisRegistry.special_available()|
 |Combined|	Includes both standard and special entries|	AnalysisRegistry.total_available()
+
+### Analysis in Registries
+|AnalysisKey| Class | Registry | Description| 
+|---|---|---|---|
+|"accuracy_within_tol"| `AnalysisWithinTol` |Standard| Counts how many model predictions are "correct" within a given tolerance and reports a % accuracy|
+| "error_vs_true" | `ErrorVSTrue` | Standard | prints a matched (x,y) plot of the modeling error against its target objective prediction|
+| "histogram_error" | `HistogramError` | Standard | Creates a binned histogram of the prediction errors according to the user-specified histogram settings|
+| "predicted_vs_true" | `PredictedVSTrue` | Standard | prints a matched (x,y) plot of the model prediction against the true target label |
+| "r2" | `R2` | Standard | Prints the coefficient of determination for a given model | 
+| "rmsd" | RMSD | Standard | Calculates the root mean square deviation between model predictions and ground-truth labels |
+|"error_vs_off_target_labels" | `ErrorVSOffTargerLabels` | Special | prints a matched (x,y) plot of the modeling error against all specified label targets|
+
 
 **Design Notes**
 
@@ -232,3 +246,7 @@ Depending on the arguments passed, the analysis are added to a different registe
 - Registry access methods return shallow copies to prevent accidental modification of the original dictionaries.
 
 - Duplicate names within a registry overwrite existing entries.
+
+
+# See Also:
+- [Analysis Library](analysis_lib.md) - Contains the complete list of classes, usage examples and API 
