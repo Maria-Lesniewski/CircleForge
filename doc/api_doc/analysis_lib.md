@@ -1,4 +1,18 @@
 # API for Analysis Classes in analysis.models.analysis_functions
+**Overview**
+
+Classes in the analysis module follow one basic structure in three variations. 
+
+- Structure: 
+  - Each class contains a  `running` method that does some batchwise data analysis, this batchwise data analysis may be aggregrated into a final statistic by a `final` function 
+  - Generally, `running` + `final` = overall mathematical operation. So calling `final` before `running` causes numerical problems
+
+- Variations:
+  - BasicAnalysis - One that can be done totally batchwise. Needs no data attributes for tracking
+  - StatefulAnalysis - One that needs to aggregate statistics into some `state` before being finalized. Running statistics are accessed via `state` variables and aggregated during the `final` method
+  - ConfigurableAnalysis - One that needs meta-information before batchwise information can be logged, such that it can be aggregated later. These functions usually have an in-built `obtain_config` function for interfacing with users on the command line, but can be configured directly through object attribute assignment.
+
+Each analysis class employs the `Logger` class to store results.  
 
 - ## AccuracyWithinTol
     <details>
@@ -304,6 +318,7 @@
     analysis.config["min_bin"] = -1.0
     analysis.config["max_bin"] = 1.0
     analysis.config["n_bins"] = 20
+    analysis.state["edges"] = torch.linspace(-1, 1, 20)
 
     # Process a batch of predictions and labels.
     analysis.running(stream)
