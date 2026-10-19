@@ -21,7 +21,7 @@
     |Attribute|type|desc|
     |---|---|---|
     |`state`|`dict`|Stores the running evaluation statistics. Initially contains `num_correct` (the number of correct predictions) and `num_samples` (the total number of processed samples), both initialized to `0`.|
-    |`config`|`dict`|Stores the analysis configuration. Contains `tol`, the tolerance threshold for determining whether a prediction is correct, initialized to `0`.|
+    |`config`|`dict`|Stores the analysis configuration. Contains `tol`, the tolerance threshold for determining whether a prediction is correct, initialized to `0.01`.|
 
     ### Methods
 
@@ -41,7 +41,7 @@
 
     # Initial configuration:
     # {
-    #     "tol": 0
+    #     "tol": 0.01
     # }
     ```
 
@@ -533,8 +533,8 @@
 
     Where:
 
-    - $SSE$$: Sum of squared errors between model predictions and ground-truth values.
-    - $$SST$$: Total sum of squares, representing the variation of ground-truth values around their mean.
+    - $SSE$: Sum of squared errors between model predictions and ground-truth values.
+    - $SST$: Total sum of squares, representing the variation of ground-truth values around their mean.
 
     The total sum of squares is calculated as:
 
