@@ -25,7 +25,7 @@ class Trainer:
 
 
 
-    def __init__(self, model, optimizer, loss_fn, train_loader, val_loader, logger, epoch_style : str):
+    def __init__(self, model, optimizer, loss_fn, train_loader, val_loader, logger, epoch_style : str, step=None):
         self.device = torch.device(
             "cuda" if torch.cuda.is_available() else "cpu"
         )
@@ -37,6 +37,7 @@ class Trainer:
         self.val_loader : DataLoader = val_loader
         self.logger : ml.Logger = logger
         self.epoch_routine = self._get_epoch_routine(epoch_style)
+        self.step = 0 if step is None else step # For continued training
 
     def _get_epoch_routine(self,epoch_style):
         """
@@ -107,7 +108,7 @@ class Trainer:
                                 "avg_val_loss" : avg_val_loss,
                                 "avg_train_loss_in_val_int" : avg_tloss_in_valint
                                 }, 
-                            step=batch_id)
+                            step=(batch_id + self.step))
 
                     if avg_val_loss < best_validation_loss: 
                         print("NEW BEST MODEL")
