@@ -639,12 +639,12 @@ Each analysis class employs the `Logger` class to store results.
         ```
 
     `final(scribe: Logger)`
-    
+
     - **Description:** Calculates the final coefficient of determination and related statistics using the accumulated state.
 
       The method performs the following operations:
-        1. Calculates the total sum of squares (`SSTot`) using the accumulated ground-truth statistics.
-        2. Calculates the variance of the ground-truth values as `SSTot / N`.
+        1. Calculates the total sum of squares (`SSTot`) from `state["M2"]`, which contains the sum of squared deviations accumulated using Welford's algorithm.
+        2. Calculates the population variance of the ground-truth values as `SSTot / N`.
         3. Calculates $R^2$ as `1 - SSE / SSTot` when `SSTot` is nonzero. If `SSTot` is zero, the method assigns `float("nan")` to $R^2$.
         4. Logs the calculated metrics under the `"evaluation"` category at logging step `0`.
         5. Prints the final $R^2$ value to the console.
