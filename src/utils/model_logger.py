@@ -112,6 +112,12 @@ class Logger:
         with open(copy_path, 'w') as f:
             json.dump(data_to_copy, f, default=str, indent=4)
 
-
-
+    def to_dict(self) -> dict[str:str]:
+        """
+        Function to help serialization of object to saved file
+        """
+        return {
+                attr_name : attr_value
+                for attr_name, attr_value in vars(self).items()
+                }
 

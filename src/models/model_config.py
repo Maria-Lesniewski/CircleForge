@@ -68,3 +68,15 @@ class ModelConfig:
         """
         return (self.model_meta["src_config_file"] == "New")
 
+
+    def to_dict(self) -> dict[str:str]:
+        """
+        Function to help serialization of object to saved file
+        """
+        
+        return {
+                attr_name : attr_value
+                for attr_name, attr_value in vars(self).items()
+                }
+
+
