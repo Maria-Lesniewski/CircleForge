@@ -129,7 +129,7 @@ class Trainer:
                         best_validation_loss = avg_val_loss
                         self.logger.save_model(
                                 model_id=f"{self.model_config.model.__class__.__name__}", 
-                                step=epoch*len(self.train_loader) + i, 
+                                step=batch_id, 
                                 model=self.model_config.model, 
                                 stats={
                                     "validation_loss" : avg_val_loss, 
