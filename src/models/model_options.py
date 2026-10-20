@@ -79,6 +79,40 @@ class Constant(nn.Module):
     def forward(self, x):
         return self.bias.expand(x.shape[0]) # Return constant across batch size
 
+@ModelFactory.register("ConvRotatedLinear")
+class ConvRotatedLinear(nn.Module):
+    """
+    The fanciest linear model that accounts for invariance under rotation and adds a convolutional layer
+    """
+
+    def __init__(self):
+        super(ConvRotatedLinear, self).__init__()
+        self.conv = nn.Conv2d(
+            in_channels=1,
+            out_channels=6,
+            kernel_size=5,
+            padding=2,
+            bias=False,
+        )
+        self.flatten = nn.Flatten() # We flatten from dim 1 on so that batches are handled
+        self.f1 = nn.Linear(6*50*50,1)
+
+    def forward(self, x):
+        # X (Nbatch, 50, 50)
+        x = 1/4*(x + torch.rot90(x, 1, dims=(1,2)) + torch.rot90(x, 2, dims=(1,2)) + torch.rot90(x,3, dims=(1,2)))
+        # CircleData does not return a channel dimension, so we need to add one 
+        x = x.unsqueeze(1) 
+        # X (Nbatch, 1, 50, 50)
+        x = self.conv(x)
+        # (Batch, 6, 50, 50)
+        x = self.flatten(x)
+        # (Batch, 1500)
+        x = self.f1(x)
+        return x
+
+
+
+
 
 """ TO DO 
 class PoissonLinear(nn.Module):
