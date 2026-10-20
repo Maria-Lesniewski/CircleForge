@@ -1,8 +1,8 @@
 import utils.io as io
 import torch
 import torch.nn as nn
-import Models.model_options as mo
-from DataSet.circle_data import CircleData
+import models.model_options as mo
+from dataset.circle_data import CircleData
 from utils.model_logger import Logger
 import numpy as np
 
