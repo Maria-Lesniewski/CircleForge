@@ -86,6 +86,32 @@ class Logger:
         """
         path = self.root_path/ rel_filepath
         path.parent.mkdir(parents=True, exist_ok=True)
+        if (path.exists()):
+            print(f"Warning: {path} exists")
+            copy_path = Path(path.stem +  ".backup" + path.suffix)
+            print(f"Creating backup file {copy_path}")
+            self.copy_json(path)
         with open(path, 'w') as f:
             json.dump(dictionary, f, default=str, indent=4)
+
+    def copy_json(self, abs_filepath):
+        """
+        Creates a copy of the file passed in the abs_filepath
+        Checks to make sure thats not overwriting another file
+        """
+        copy_path = Path(abs_filepath.stem +  ".backup" + abs_filepath.suffix)
+        if copy_path.exists():
+            print(f"{copy_path} exists")
+            copy_copy_path = Path(copy_path.stem +  ".backup" + copy_path.suffix)
+            print(f"creating backup {copy_copy_path}")
+            self.copy_json(copy_path)
+
+        with open(abs_filepath, 'r') as f:
+            data_to_copy = json.load(f)
+
+        with open(copy_path, 'w') as f:
+            json.dump(data_to_copy, f, default=str, indent=4)
+
+
+
 
