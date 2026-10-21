@@ -7,8 +7,34 @@ import numpy as np
 from pathlib import Path
 import sys
 import inspect
+import argparse
 from typing import Any
-## USER CL INTERFACE
+import importlib.util
+
+## USER SCRIPT CL INTERFACE
+def parse_config_args():
+    """ Parses arguments for configurable scripts."""
+    parser = argparse.ArgumentParser(description="Configure pipeline step.")
+    parser.add_argument("--config", type=Path, help="Path to custom script config.py file")
+    return parser.parse_args()
+
+def parse_train_args():
+    """ Parses arguments for the train_models script. (may need continued models/config)"""
+    parser = argparse.ArgumentParser(description="Train a model.")
+    parser.add_argument("--model", type=Path, help="Path to a model meta data file")
+    parser.add_argument("--config", type=Path, help="Path to non-default train mode")
+    return parser.parse_args()
+
+def load_config_from_CL(config_file : (str or Path)) -> dict[str:Any]:
+    """ Loads the CONFIG dictionary from a module specified at runtime """ 
+    spec = importlib.util.spec_from_file_location("config_module", str(config_file))
+    config_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(config_module)
+    config = getattr(config_module,"CONFIG")
+    return config
+
+
+## USER PROMPT CL INTERFACE 
 def yes_no_q(extra_info : str, question : str) -> bool:
     """ Asks a yes no question, returns true if yes, false if not 
         extra_info : Context paragraph ahead of question
@@ -16,15 +42,15 @@ def yes_no_q(extra_info : str, question : str) -> bool:
         (we print Y or N as options and force one)
     """
     while(True):
-        print(extra_info)
-        print(question)
+        print(extra_info, flush=True)
+        print(question, flush=True)
         response = input("Y/N\n")
         if response == "Y":
             return True
         if response == "N":
             return False
         else:
-            print("Please input 'Y' or 'N'")
+            print("Please input 'Y' or 'N'", flush=True)
 
 
 
@@ -39,10 +65,10 @@ def multiple_choice_q(extra_info: str, multiple_choice : list[str]):
     integer_options = np.arange(0, len(multiple_choice))
     while(True):
         print(extra_info)
-        print("Please select an integer option")
-        print("Options:")
+        print("Please select an integer option", flush=True)
+        print("Options:", flush=True)
         for i in range(0, len(multiple_choice)): 
-            print(f"{i}. {multiple_choice[i]}")
+            print(f"{i}. {multiple_choice[i]}", flush=True)
         
         response = input("Your Choice?\n")
         try:
@@ -67,24 +93,24 @@ def compounding_multiple_choice_q(extra_info : str, multiple_choice : list[str])
     integer_options = np.arange(0, len(multiple_choice))
     sentinal = -1
     while(True):
-        print(extra_info)
-        print(f"Please select integer options seperated by spaces, followed by {sentinal}")
+        print(extra_info, flush=True)
+        print(f"Please select integer options seperated by spaces, followed by {sentinal}", flush=True)
         for i, item in enumerate(multiple_choice):
-            print(f"{i}. {item}")
+            print(f"{i}. {item}", flush=True)
         response = input("Select options:")
 
         if not response:
-            print("Please enter at least one option")
+            print("Please enter at least one option", flush=True)
             continue
 
         try:
             responses = response.split()
             if len(responses) == 0:
-                print("Please enter at least one option")
+                print("Please enter at least one option", flush=True)
                 continue
             int_responses = [int(x) for x in responses]
         except:
-            print(f"\n {response} does not contain all integers. Try again \n")
+            print(f"\n {response} does not contain all integers. Try again \n", flush=True)
             continue
 
         try:
@@ -114,8 +140,8 @@ def dictionary_filling_question(extra_info : str, keys : list[str] ) -> dict[str
 
     returns dict[keys, user_responses]
     """
-    print(extra_info)
-    print(f"Please fill in values for the following entries")
+    print(extra_info, flush=True)
+    print(f"Please fill in values for the following entries", flush=True)
     fin_dict = {}
     for entry in keys:
         fin_dict[entry] = input(f"{entry}:")
