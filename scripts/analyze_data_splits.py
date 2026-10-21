@@ -32,9 +32,11 @@ test_data = CircleData(
         )
 
 with torch.no_grad():
-    tr_analyzer = de.DiagnosticsRunner(train_data, "./")
-    val_analyzer = de.DiagnosticsRunner(val_data, "./")
-    tes_analyzer = de.DiagnosticsRunner(test_data, "./")
+    io.make_artifact_dir("DataDiagnostics")
+    analysis_path = io.artifact_path("DataDiagnostics")
+    tr_analyzer = de.DiagnosticsRunner(train_data, analysis_path)
+    val_analyzer = de.DiagnosticsRunner(val_data, analysis_path)
+    tes_analyzer = de.DiagnosticsRunner(test_data, analysis_path)
 
     print("#### TRAINING SET Diag SETTINGS ###")
     tr_analyzer.obtain_schedule()
