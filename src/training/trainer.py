@@ -135,7 +135,7 @@ class Trainer:
                                     "validation_loss" : avg_val_loss, 
                                     "training_loss" : avg_tloss_in_valint,
                                     "HowTrained" : "best_checkpoint_epochs",
-                                    "training_settings_path" : (self.logger.root_path / "training_settings.json"),
+                                    "training_settings_path" : Path(str(self.logger.root_path)) / "training_settings.json",
                                     },
                                 metadata=True
                                 )
