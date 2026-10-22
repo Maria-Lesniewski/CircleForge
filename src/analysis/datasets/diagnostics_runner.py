@@ -15,7 +15,7 @@ from ..streaming_state import StreamingState
 import utils.io as io
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-
+from pathlib import Path
 class DiagnosticsRunner:
     """
     Coordinates modular analysis routines for a dataset
