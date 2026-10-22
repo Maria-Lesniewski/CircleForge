@@ -67,7 +67,7 @@ class HistogramLabels(ConfigurableAnalysis):
         for ele in self.keys:
             config = self.config
             fin_state = dict(list(self.state[ele].items())[2:])
-            scribe.write_json(dictionary=config, rel_filepath="histogram_config.json")
+            scribe.write_json(dictionary=config, rel_filepath="{ele}_histogram_config.json")
             scribe.write_json(dictionary=fin_state, rel_filepath=f"{ele}_histogram_meta.json")
             for binloc, count in zip(self.state[ele]["edges"], self.state[ele]["hist"]):
                 scribe.add_scalars(
