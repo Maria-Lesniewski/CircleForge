@@ -41,7 +41,8 @@ train_data = CircleData(
         split_tag="train"
         )
 # One logger for the experiment
-logger = Logger(io.find_here() / "Results")
+experiment_path = io.make_artifact_dir("Experiment1")
+logger = Logger( experiment_path / "LeastSquaresResults")
 
 print(f"####### {ele} ######")
 print("Unpacking dataset")
