@@ -5,19 +5,33 @@
 # @desc then we split the data according to some train, val, test split fraction
 
 import sys
+import importlib.util
 import utils.io as io
 import generator.circle_doodle as gen
+from dataset.scrub_conditions import DEFAULT_CONFIG
 import numpy as np
 from pathlib import Path
 import pandas as pd
 
-### SPLIT PROPORTIONS ###
-f_train = 0.6
-f_val = 0.2
-f_test = 0.2
+config = None
+args = io.parse_config_args()
 
+if (args.config is not None):
+    config = io.load_config_from_CL(args.config)
+else:
+    config = DEFAULT_CONFIG
+
+### SPLIT PROPORTIONS ###
+f_train = config["train_frac"]
+f_val = config["val_frac"]
+f_test = config["test_frac"]
+
+# FILE PATHS 
+raw_path = io.artifact_path(config["raw_rootpath"])
+raw_annotations = config["raw_annotations"]
+final_data = config["scrubbed_rootpath"]
 #### BEGIN SCAN FOR DUPLICATES ###
-raw_file_annotations = io.artifact_path("raw_data/combined_raw_annotations.csv")
+raw_file_annotations = raw_path / raw_annotations
 print(f"Checking file {raw_file_annotations} for duplicate entries")
 ## load .csv 
 df = pd.read_csv(raw_file_annotations)
@@ -87,9 +101,9 @@ split_labels = ["train"]*n_train + ["val"]*n_val + ["test"]*n_test
 df["data_split"] = split_labels
 
 ### Save Deleted Manifest and Final Data Manifest
-io.make_artifact_dir("final_data")
-final_split_annotation = io.artifact_path("final_data/train_val_test_split_annotations.csv")
-record_of_deletes = io.artifact_path("final_data/samples_removed_from_raw.csv")
+fin_art_data_path = io.make_artifact_dir(final_data)
+final_split_annotation = fin_art_data_path / "train_val_test_split_annotations.csv"
+record_of_deletes = fin_art_data_path / "samples_removed_from_raw.csv"
 df.to_csv(final_split_annotation, index=False)
 deleted_manifest.to_csv(record_of_deletes, index=False)
 print(f"Stored final data manifest in:\n {final_split_annotation}")
