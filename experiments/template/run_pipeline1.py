@@ -31,6 +31,6 @@ for i in range(0,3): # for each dataset analyzer
     CL_string+="200\n"# Configure the histogram - max_bin
     CL_string+="0\n" # Configure the label histogram - min bin
     CL_string+="200\n" # configure the histogram - nbins
-data_CL_args = [str(scripts_directory / "analyze_data_splits2.py"), "--config", "configs/data_analysis_config.py"]
+data_CL_args = [str(scripts_directory / "analyze_data_splits.py"), "--config", "configs/data_analysis_config.py"]
 data_analysis_command = [sys.executable, *data_CL_args]
 run_job(data_analysis_command, inp=CL_string)
