@@ -75,7 +75,7 @@ class DiagnosticsRunner:
         options = DiagnosticsRegistry.available()
         self.schedule_options = options
 
-        choices = io.compounding_multiple_choice_q(intro_context, list(options.keys()))
+        choices = sorted(io.compounding_multiple_choice_q(intro_context, list(options.keys())))
         # register calc reqs to schedule, create working dir for analysis and loggers
         a_path = Path(self.filewriter_root_path)
         a_sub_path = a_path / f"{self.dataloader.dataset.split_tag}"
