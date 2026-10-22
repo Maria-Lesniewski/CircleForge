@@ -20,6 +20,6 @@ for i in range(0,3): # for each dataset analyzer
     CL_string+="-200\n" # Configure the label histogram - min bin
     CL_string+="400\n" # configure the histogram - nbins
 
-eval_CL_args = [str(scripts_directory / "analyze_models2.py"), "--config","configs/model_evaluation_config.py"]
+eval_CL_args = [str(scripts_directory / "analyze_models.py"), "--config","configs/model_evaluation_config.py"]
 eval_cmd = [sys.executable, *eval_CL_args] 
 run_job(eval_cmd, inp=CL_string) # train model asks for what kind of model when no --model is passed
