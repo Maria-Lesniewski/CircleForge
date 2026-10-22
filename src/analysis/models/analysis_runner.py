@@ -88,7 +88,7 @@ class AnalysisRunner:
             options = AnalysisRegistry.available()
             self.schedule_options = options
 
-        choices = io.compounding_multiple_choice_q(intro_context, list(options.keys()))
+        choices = sorted(io.compounding_multiple_choice_q(intro_context, list(options.keys())))
         # register calc reqs to schedule, create working dir for analysis and loggers
         a_sub_path = Path(self.file_writer_root_path) / f"{self.dataloader.dataset.split_tag}"
         for ele in choices:
@@ -126,7 +126,7 @@ class AnalysisRunner:
 
     def close(self):
         for logger in self.loggers:
-            self.loggers.write_json("model_data_and_analysis_setting.json", serialize_object(self))
+            self.loggers[logger].write_json("model_data_and_analysis_setting.json", serialize_object(self))
             self.loggers[logger].close()
 
 
