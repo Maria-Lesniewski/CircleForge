@@ -9,7 +9,7 @@ here = io.find_here()
 NUM_PROCS = 4 # <---- Adjust this for your system
 
 # Generator Run
-generator_CL_args = [str(scripts_directory / "generate_training_data2.py"), "--config" ,"configs/generator_config.py"]
+generator_CL_args = [str(scripts_directory / "generate_training_data.py"), "--config" ,"configs/generator_config.py"]
 # ---------------------------------------- Leave blank ^ for default settings
 
 generator_cmd = ["mpirun", "-np", str(NUM_PROCS), sys.executable, *generator_CL_args]
