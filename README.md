@@ -17,8 +17,9 @@ It enables experiments where we can ask different questions about how modeling c
 (e.g. different loss, training routines, modeling conditions) can be coordinated, altered one at a time, and logged to create a truly controlled scientific experiment, and sandbox for learning ML. 
 It does so via modular class architectures that 
 
-The experiments module currently contains a few tutorial questions and an intro to modeling together with blog post XXXX. 
+The experiments module currently contains a few tutorial questions and an intro to modeling, while I am planning on making a more formal containerized tutorial and intro in the future.  
 
+For now: 
 The scripts module houses a complete ML pipeline, currently implemented by manually calling each script with experiment hyper parameters desired. 
 
 ## Quick Start
@@ -62,6 +63,8 @@ python scripts/analyze_models.py
 ```
 Each script uses the CL to ask you for different conditions as far as training, modeling and analaysis. Results are generated to an artifacts folder with the path announced for each. 
 
-### DIY Workflows
+The experiments folder houses run scripts and config files that can be used to customize the parameters of each step with the pre-coded options. that come up when the main folder scripts are called without args. 
+
+### DIY Workflows / Overview of code structure for custom experiments
 Each driver script above interfaces with a particular class which is defined in the source folder. Usually classes are called in PascalCase and defined in a snake\_case.py src. 
-Each src folder contains a ReadMe.md for interfacing with each class. 
+Each src folder contains a README.md for interfacing with each class. 
