@@ -5,7 +5,7 @@ import torch
 
 CONFIG = {
         "data" : {
-            "final_annotations_path" : "template_example_experiment/final_data/" + "train_val_test_split_annotations.csv", # adjust to prior split_config file
+            "annotations_file" : "template_example_experiment/final_data/" + "train_val_test_split_annotations.csv", # adjust to prior split_config file
             "target_columns" : ["ncircles"], # list["str"]
             "feature_transform" : lambda x: x/256, # function obj
             },
