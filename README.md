@@ -7,20 +7,21 @@ Its currently in progress, but each release has some minimum introduced function
 The code and experiments are shared primarily as a technical portfolio and learning resource.
 
 ## What/Why is this?
-CircleForge is a sandbox for experimenting with ML pipelines in a beginner-modeler + seasoned-scientist approachable way.
-It is a totally controllable image classification pipeline, wherein synthetic circleforge data distributions can be infinitely sampled with controllable hidden parameters, while model architectures can be plug-n-play for each modeling task. 
+CircleForge is a configurable learning pipeline for experimenting with model structures under different data/training conditions.
+It features totally controllable synthetic image database generation, a modular model factory for adding custom torch models, and a similar register for adding routines. 
+Each experiment logs itself and its statistical analysis in an artifacts folder, so that experimenting in CircleForge is as easy as changing configuration files. 
+
 The idea is to distill ML experience into concrete "what happens when" questions followed by generated answers. 
 
 ## V1
-V1 of circle forge is hard-geared for image classification and regression questions.
-It enables experiments where we can ask different questions about how modeling choices affect our reliability under different data conditions.
-(e.g. different loss, training routines, modeling conditions) can be coordinated, altered one at a time, and logged to create a truly controlled scientific experiment, and sandbox for learning ML. 
-It does so via modular class architectures that 
+V1 of circle forge is geared for image regression with different architectures.
+It introduces the first version of "configurable/logged" analysis, which enables experiments where we can ask different questions about how modeling choices affect our reliability without changing the infrastructure of the code.
+(e.g. different loss, training routines, modeling structures) can be coordinated, altered one at a time, and logged to create a truly controlled scientific experiment, and sandbox for learning ML. 
 
-The experiments module currently contains a few tutorial questions and an intro to modeling, while I am planning on making a more formal containerized tutorial and intro in the future.  
+The experiments module currently contains a few tutorial questions and an intro to modeling, while I am planning on making a more formal containerized tutorial and intro in the future as I expand the capability to more questions. 
 
 For now: 
-The scripts module houses a complete ML pipeline, currently implemented by manually calling each script with experiment hyper parameters desired. 
+The scripts module houses a complete ML pipeline that can be called in python in order or run as sub-modules as in the experiments folder. Scripts launched with no --config or --model arguments will read a default configuration imported from the src. 
 
 ## Quick Start
 
@@ -36,7 +37,19 @@ cd tests/
 pytest
 ```
 
-### V1 Workflows
+### Run the Template Experiment
+```
+cd experiments/template
+bash end_to_end.sh
+```
+
+### Understand the workflow each pipeline script offers
+- See the README.md in artifacts
+- See the README.md in experiments
+- Run the sub-module pipeline manually, interact with menus on the CL to understand the scope of abilities
+- Read the DEFAULT\_CONFIG config files imported in each driver script 
+
+### V1 Driver Scripts
 Generally, a regression problem involves. 
 
 1) Obtaining Data with labels
