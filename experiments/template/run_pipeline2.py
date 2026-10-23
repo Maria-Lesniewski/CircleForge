@@ -20,3 +20,9 @@ else:
     training_CL_args = [str(scripts_directory / "train_models.py"), "--config","configs/training_config.py", "--model", (sys.argv[1])]
     training_cmd = [sys.executable, *training_CL_args]
     run_job(training_cmd, inp=None)
+
+
+#### Alternatively, the linear least squares script can be used for some models (BasicLinear, RotatedLinear, Constant) as a baseline
+# training_CL_args = [str(scripts_directory / "direct_linear_model_solver.py"), "--config", "configs/least_squares_config.py", "--model", "BasicLinear"]
+# training_cmd = [sys.executable, *training_CL_args]
+# run_job(training_cmd, inp=None)
