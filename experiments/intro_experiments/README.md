@@ -11,7 +11,8 @@ We build linear models using direct linear regression on increasingly varied dat
 		a) One hidden max circles variable, no noisey pixel placements (~250 training samples)
 		b) One hidden max circles variable, various noise densities (~250 training samples)
 		c) Two hidden max circles variables, no noisey pixel placements (~500 training samples)
-		d) Two hidden max circles variables (~500 training samples)
+		d) Two hidden max circles variables, various noise densities (like b) (~500 training samples)
+		- Data sets are generated with hidden parameters then shuffled and randomly split to a training (%60), validation (%20) and test (%20) data set for each letter. 
 
 	- Train a linear model on each data set using direct least squares fitting
 
@@ -23,13 +24,29 @@ We build linear models using direct linear regression on increasingly varied dat
 		- The RMSD ( avg magnitude of error) 
 
 	### Quickstart? 
-	- Run pipelines 1-3 found in this folder 
+	- bash end\_to\_end.sh found in this folder
 
-# Hypothesis:
-	We should see that a linear model can memorize a set of training data, but that it willtransfer poorly to other sets. Transferability should get worse as the direct correlation between the ammount of non-zero pixels and the number of circles we count gets worse. 
+	### Where?
+	- Each stage of analysis will be stored in artifacts/intro\_experiment. 
+	- A summary will be printed with each matrix of performance. Example in this folder.
 
 
 ## Considerations:
 	- Images are 50x50, we're predicting the number of circles we see in an image with  (2500 inouts->1 output ), data sets contain less than 2501 samples, so the solution weights won't be unique
 	- Linear models are trained in single precision directly with least squares on CPU (default torch linalg solver will be poorly conditioned, script calls a more expensive one)
-	- Each set has a constant 250 samples per max N variable employed  
+	- Each set has a constant 250 samples per max N variable employed
+	- Set A/C share a common NMax parameter and background noise conditions
+	- Set B/D share a common NMax parameter and background noise conditions  
+
+
+# Hypotheses/Expected Yields:
+	- We should see that each linear model can effectively memorize their training set 
+	  (R2 =1, accuracy = 100%, RMSD very small) 
+	- We expect that each model will transfer poorly to conditions outside their training set
+		- Sharp drop off in performance between training / validation + test
+		- Sharper drop off for different sets
+	- Particularly, linear models are taking advantage of a direct correlation between the amount of non-zero pixels and the number of circles counted, so the speckled drawings we expect will perform worse.
+		-i.e. set_b / set_d models have steeper drop off between train & val/test
+
+	- Set A/C and B/D may transfer "the best" to their respective pair, but we expect the two hidden Nmax variable states (e.g. "D") to transfer to their "one" partner (e.g. "B") than the "one
+ partner does to the "two". 
