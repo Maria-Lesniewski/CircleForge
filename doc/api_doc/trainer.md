@@ -46,7 +46,7 @@ The training process is started using `Trainer.train()`, which executes the sele
 
     </details>
 
-- Trainer.\_\_init\_\_(model : torch.nn.Module , optimizer : torch.optim.Optimizer, loss_fn : torch.nn.Module , train_loader : DataLoader, val_loader : DataLoader, logger : Logger, epoch_style : str)
+- Trainer.\_\_init\_\_(model_config : [ModelConfig](model_config.md) , optimizer : torch.optim.Optimizer, loss_fn : torch.nn.Module , train_loader : DataLoader, val_loader : DataLoader, logger : Logger, epoch_style : str)
 
     <details> 
     <summary>Initializes a trainer with the required training components and selects an epoch routine.</summary>
@@ -70,7 +70,7 @@ The training process is started using `Trainer.train()`, which executes the sele
 
     ```
     trainer = Trainer(
-        model=model,
+        model_config=model_config,
         optimizer=optimizer,
         loss_fn=loss_fn,
         train_loader=train_loader,
