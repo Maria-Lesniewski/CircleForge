@@ -113,7 +113,6 @@ class ModelConfig:
         config_instance.model_type = model_type
         config_instance.model_meta = {}
         config_instance.model_meta["src_previous_data"] = None
-        config_instance.model_meta["src_previous_config"] = None
 
         if (model is None) and (build_model_args is None):
             raise ValueError( "Provide either an existing model (model) or parameters for constructing it via ModelFactory (build_model args) " )
@@ -132,7 +131,7 @@ class ModelConfig:
             config_instance.model.load_state_dict(torch.load(path))
             config_instance.model_meta["src_previous_pt"] = path
         else:
-            config_instance.model_meta["src_prevoious_pt"] = None
+            config_instance.model_meta["src_previous_pt"] = None
 
         return config_instance
         
