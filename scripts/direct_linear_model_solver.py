@@ -80,8 +80,8 @@ for features, label in train_data: # Note because this is samplewise, we really 
         x =(input_transforms[choice](features)).detach().flatten().numpy()
     X.append(x)
     Y.append(label.detach().item())
-Y = torch.tensor(Y, dtype=torch.float32).detach()
-X = torch.tensor(X, dtype=torch.float32).detach()
+Y = torch.tensor(Y, dtype=torch.float64).detach()
+X = torch.tensor(X, dtype=torch.float64).detach()
 
 print("Preparing to solve linear least squares")
 # Augment the feature column with a 1 across samples. (coeff will be b)
@@ -107,7 +107,8 @@ if (choice == "Constant"):
 
 loss_crit = nn.MSELoss()
 # Check with basic linalg
-y_hat = aug_X @ W
+y_hat = aug_X.to(dtype=torch.float32) @ W.to(dtype=torch.float32)
+X = X.to(dtype=torch.float32)
 del(aug_X)
 if (choice != "Constant"):
     yt_hat = (model(X.unsqueeze(0).reshape(-1,50,50))).squeeze(-1)
