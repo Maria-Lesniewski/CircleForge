@@ -227,10 +227,10 @@ The training process is started using `Trainer.train()`, which executes the sele
 
 |Registry Key| Method | Description |
 |---|---|---|
-|"best_checkpoint_epochs"|	best_checkpoint_epochs|	Trains for a specified number of epochs, periodically evaluates validation loss, and saves checkpoints when validation performance improves.|
+|"best_checkpoint_epochs"|	best_checkpoint_epochs|	Trains for a specified number of epochs, periodically evaluates validation loss, and saves checkpoints when validation performance improves. |
 
 **Design Notes**
-
+- Each epoch routine generates its own data. See the [epoch_data_list](epoch_data_list.md) description for interpretting output. 
 - Epoch routines are registered in the class-level _epoch_registry dictionary.
 - Each epoch routine must be registered using @Trainer.register_epoch("routine_name").
 - The registered routine must accept the Trainer instance as its first argument.
