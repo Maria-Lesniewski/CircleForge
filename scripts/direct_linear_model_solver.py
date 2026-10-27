@@ -87,6 +87,21 @@ print("Preparing to solve linear least squares")
 # Augment the feature column with a 1 across samples. (coeff will be b)
 aug_X = augmenting_functions[choice](X)
 
+print("Finding max eigenvalue of the MSE Hessian")
+print("Finding max eigenvalue of the MSE Hessian")
+
+n = aug_X.shape[0]
+
+sigma_max = torch.linalg.svdvals(aug_X).max()
+lambda_max = 2.0 * sigma_max.square() / n
+eta_max = 2.0 / lambda_max
+
+print(f"Model: {choice}")
+print(f"Largest singular value: {sigma_max.item():.6e}")
+print(f"Largest Hessian eigenvalue: {lambda_max.item():.6e}")
+print(f"Maximum theoretical learning rate (Basic Gradient Descent): {eta_max.item():.6e}")
+
+
 print(f"Solving LLS for {choice}")
 S = torch.linalg.lstsq(aug_X,Y,rcond=None, driver="gelsd")
 W = S.solution
