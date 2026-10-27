@@ -1,0 +1,24 @@
+TRAIN TRAIN TRAIN
+          MODEL / RESULT
+BasicLinear	0.1704533697 	
+
+RotatedLinear	0.0997263023 	
+
+Constant	0.0000000000 	
+
+VAL VAL VAL
+          MODEL / RESULT
+BasicLinear	0.0248374456 	
+
+RotatedLinear	0.0636150250 	
+
+Constant	-0.0000876811 	
+
+TEST TEST TEST
+          MODEL / RESULT
+BasicLinear	0.0221394968 	
+
+RotatedLinear	0.0604014654 	
+
+Constant	-0.0001023355 	
+
