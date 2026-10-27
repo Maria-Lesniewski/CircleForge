@@ -129,7 +129,7 @@ def test_best_checkpoints_epoch_train_logging(trainer):
      trainer.train({"n_epochs": 1, "validation_interval": 4})
 
      # Check total number of calls
-     assert len(trainer.logger.add_scalars_calls) == 6
+     assert len(trainer.logger.add_scalars_calls) == 7
 
      # Check training loss was logged for every batch
      training_set_calls = { key : value for key, value in trainer.logger.add_scalars_calls.items() if key.startswith("training_set")}

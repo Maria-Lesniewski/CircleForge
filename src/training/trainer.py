@@ -150,6 +150,13 @@ class Trainer:
                     running_valint_tloss = 0
             print(f"----End of Epoch {epoch}----")
             print(f"EPOCH: {epoch}, average loss {epoch_tloss/n_batches}")
+            self.logger.add_scalars(
+                    tag="epoch_stats",
+                    scalars={
+                        "avg_batch_loss_in_epoch" : epoch_tloss/n_batches,
+                        },
+                    step=epoch
+                    )
             epoch_tloss = 0
 
 
