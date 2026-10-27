@@ -158,6 +158,20 @@ class Trainer:
                     step=epoch
                     )
             epoch_tloss = 0
+        print("Saving Model End of Training Routine")
+        self.logger.save_model(
+                model_id=f"{self.model_config.model.__class__.__name__}_END_OF_ROUTINE",
+                step=(n_epochs*len(self.train_loader)) + self.step0,
+                model=self.model_config.model,
+                stats={
+                    "validation_loss" : best_validation_loss,
+                    "training_loss" : "see last epoch meta",
+                    "HowTrained" : "best_checkpoint_epochs",
+                    "training_settings_path" : Path(str(self.logger.root_path)) / "training_settings.json",
+                    },
+                    metadata=True
+                    )
+
 
 
     def evaluate_model(self):

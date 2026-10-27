@@ -140,4 +140,4 @@ def test_best_checkpoints_epoch_train_logging(trainer):
      assert len(trainer.logger.add_scalars_calls["model_checkpoints"]["scalars"]) == 3
 
      # Check the best model was savee
-     assert len(trainer.logger.save_model_calls) == 1
+     assert len(trainer.logger.save_model_calls) == 2
