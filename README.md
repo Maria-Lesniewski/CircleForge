@@ -18,9 +18,9 @@ V1 of circle forge is geared for image regression with different architectures.
 It introduces the first version of "configurable/logged" analysis, which enables experiments where we can ask different questions about how modeling choices affect our reliability without changing the infrastructure of the code.
 (e.g. different loss, training routines, modeling structures) can be coordinated, altered one at a time, and logged to create a truly controlled scientific experiment, and sandbox for learning ML. 
 
-The experiments module currently contains a few tutorial questions and an intro to modeling, while I am planning on making a more formal containerized tutorial and intro in the future as I expand the capability to more questions. 
+The experiments module currently contains a few tutorial experiments to introduce the modeling pipeline, while I am planning on making a more formal containerized tutorial and intro to modeling in the future as I expand the capability to more questions. 
 
-For now: 
+**Current Workflow**
 The scripts module houses a complete ML pipeline that can be called in python in order or run as sub-modules as in the experiments folder. Scripts launched with no --config or --model arguments will read a default configuration imported from the src. 
 
 ## Quick Start
