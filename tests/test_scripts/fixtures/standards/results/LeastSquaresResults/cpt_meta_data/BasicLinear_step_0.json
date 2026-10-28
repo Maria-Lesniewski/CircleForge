@@ -1,0 +1,8 @@
+{
+    "model_id": "BasicLinear",
+    "stats": {
+        "train_loss": 2.1600499167107046e-12,
+        "train_mse": 1.4697108275816383e-06
+    },
+    "checkpoint_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/test_experiment/LeastSquaresResults/checkpoints/BasicLinear_step_0.pt"
+}
