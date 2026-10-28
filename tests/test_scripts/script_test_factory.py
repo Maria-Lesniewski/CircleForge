@@ -125,7 +125,7 @@ class ScriptTestRunner:
         Compares each value within an .xvg file loaded (same as comparing a csv)
         Included to help list the filetypes we generally expect to read/check
         """
-        ScriptTestRunner.compare_csv(cls,actual, expected)
+        ScriptTestRunner.compare_csv(actual, expected)
 
     @classmethod 
     def compare_npy(cls, actual : Path or str, expected : Path or str) -> None:
