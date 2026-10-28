@@ -4,8 +4,8 @@
 
 CONFIG = {
         "model" : {
-            "type" : "BasicLinear", # ModelFactoryKey string or "Ask" for prompt
-            "meta_path" : "../tests/test_scripts/fixtures/standards/results/LeastSquaresResults/cpt_meta_data/BasicLinear_step_0.json", # meta_data written by Trainer class. or "Ask" for prompt (generally put your last latest which will vary dependent on data gen process)
+            "type" : "Ask", # ModelFactoryKey string or "Ask" for prompt
+            "meta_path" : "Ask", # meta_data written by Trainer class. or "Ask" for prompt (generally put your last latest which will vary dependent on data gen process)
             },
         "data" : {
             "annotations_path" : "../tests/test_scripts/fixtures/standards/results/final_data/" + "train_val_test_split_annotations.csv",
@@ -14,6 +14,6 @@ CONFIG = {
             },
         "analysis_settings" : {
             "evaluation_objective" : "ncircles", # str, colname
-            "log_path" : "test_experiment/ModelEvaluation", # Results stored under modename in outside folder
+            "log_path" : "101test_experiment101/ModelEvaluation", # Results stored under modename in outside folder
             } # Currently the schedule must be piped in via the CL interface
         }

@@ -167,4 +167,47 @@ def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, sh
             inp=None,
             )
 
+def test_eval_models_w_config_and_CL_model(test_artifact_dir, ct, shuffled_db):
+    """
+    This is a minimal version of this test as I expand coverage and rework other structures
+    """
+    target_analysis = ["r2", "accuracy_within_tol", "rmsd"]
+    an_files = {}
+    an_files["r2"] = [
+            "grace/evaluation_N.xvg",
+            "grace/evaluation_R2.xvg",
+            "grace/evaluation_SSE.xvg",
+            "grace/evaluation_SST.xvg",
+            "grace/evaluation_var.xvg",
+            ]
+    an_files["rmsd"] = ["grace/evaluation_RMSD.xvg",]
+    an_files["accuracy_within_tol"] = ["accuracy.json",]
+    
+    target_files = []
+    for split in ["train", "val", "test"]:
+        for ele in target_analysis:
+            for file in an_files[ele]:
+                target_files.append(
+                            f"ModelEvaluation/BasicLinear/{split}/{ele}/{file}")
+    standard_files = []
+    output_files = []
+    for file in target_files:
+        standard_files.append("fixtures/standards/results/" + f"{file}")
+        output_files.append(f"{test_artifact_dir}/" + f"{file}")
+    CL_string = str(io.find_here()/"fixtures/standards/results/LeastSquaresResults/checkpoints/BasicLinear_step_0.pt") + "\n"
+    for i in range(0,3): # for each dataset analyzer
+        CL_string+="0 4 5 -1\n" # 0: accuracy, 4:r2, 5: rmsd
+        CL_string+="1\n" # Configure accuracy tolerance
 
+    ScriptTestRunner.test_script(
+            driver_script="analyze_models.py",
+            input_files={ "config" : "test_scripts/fixtures/inputs/model_evaluation_config.py"},
+            output_files=output_files,
+            standard_files=standard_files,
+            inp=CL_string
+            )
+
+
+
+
+## Still need a test_train_models, but device management and stochastic seeds need to be wrangled first. Some sample output is stored in the fixtures folder. 
