@@ -19,6 +19,12 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
+
+            - name: Install MPI
+              uses: mpi4py/setup-mpi@v1
+              with:
+                mpi:  ${{ runner.os == 'Windows' && 'msmpi' || 'openmpi' }}
+
             
             - name: Set up Python
               uses: actions/setup-python@v4
