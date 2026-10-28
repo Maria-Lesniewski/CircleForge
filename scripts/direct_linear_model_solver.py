@@ -9,6 +9,22 @@ import numpy as np
 # This is sort of a one off application for least squares with supported models
 # and one target regression 
 
+## HARD CODED OPTIONS (linear models only)
+# This is slower, but it should require less memory 
+## Prelims for looping 
+input_transforms = {
+        "BasicLinear" : (lambda x : x), # Layer 1 of this model takes the image exactly
+        "RotatedLinear" : (lambda x:
+            1/4*(
+                x
+                +torch.rot90(x, 1, dims=(0,1))
+                + torch.rot90(x, 2, dims=(0,1))
+                + torch.rot90(x,3, dims=(0,1))
+                )
+            ), # Layer 1 of this model averages rotated reps of the image,
+        "Constant" : lambda x : torch.tensor([1]) # This model uses no features. Just 1s
+        }
+
 # OBTAIN CONFIG
 args = io.parse_train_args()
 if (args.config is None):
@@ -30,21 +46,6 @@ col = config["data"]["target_columns"]
 if len(col) > 1:
     raise ValueError("target_columns for least squares regression must be len 1")
 
-## HARD CODED OPTIONS (linear models only)
-# This is slower, but it should require less memory 
-## Prelims for looping 
-input_transforms = {
-        "BasicLinear" : (lambda x : x), # Layer 1 of this model takes the image exactly
-        "RotatedLinear" : (lambda x: 
-            1/4*(
-                x 
-                +torch.rot90(x, 1, dims=(0,1)) 
-                + torch.rot90(x, 2, dims=(0,1)) 
-                + torch.rot90(x,3, dims=(0,1))
-                )
-            ), # Layer 1 of this model averages rotated reps of the image,
-        "Constant" : lambda x : torch.tensor([1]) # This model uses no features. Just 1s
-        }
 
 augmenting_functions = {
         "BasicLinear" : (
@@ -88,19 +89,31 @@ print("Preparing to solve linear least squares")
 aug_X = augmenting_functions[choice](X)
 
 print("Finding max eigenvalue of the MSE Hessian")
-print("Finding max eigenvalue of the MSE Hessian")
 
 n = aug_X.shape[0]
 
+spectral_analysis = {"Model" : choice}
+spectral_analysis["spectral_properties"] = {}
 sigma_max = torch.linalg.svdvals(aug_X).max()
+sigma_min = torch.linalg.svdvals(aug_X).min()
 lambda_max = 2.0 * sigma_max.square() / n
+condition_number = sigma_max / sigma_min
+spectral_analysis["spectral_properties"]["largest_singular_value"] = sigma_max.item()
+spectral_analysis["spectral_properties"]["smallest_singular_value"] = sigma_min.item()
+spectral_analysis["spectral_properties"]["largest_hessian_eigenvalue"] = lambda_max.item()
+spectral_analysis["spectral_properties"]["condition_number"]  = condition_number.item()
 eta_max = 2.0 / lambda_max
-
+spectral_analysis["optimization"] = {}
+spectral_analysis["optimization"]["maximum_theoretical_learning_rate"] = eta_max.item()
 print(f"Model: {choice}")
 print(f"Largest singular value: {sigma_max.item():.6e}")
+print(f"Smallest singular value: {sigma_min.item():.6e}")
+print(f"Condition number: {condition_number.item():.6e}")
 print(f"Largest Hessian eigenvalue: {lambda_max.item():.6e}")
 print(f"Maximum theoretical learning rate (Basic Gradient Descent): {eta_max.item():.6e}")
 
+
+logger.write_json("spectral_analysis.json", spectral_analysis)
 
 print(f"Solving LLS for {choice}")
 S = torch.linalg.lstsq(aug_X,Y,rcond=None, driver="gelsd")
