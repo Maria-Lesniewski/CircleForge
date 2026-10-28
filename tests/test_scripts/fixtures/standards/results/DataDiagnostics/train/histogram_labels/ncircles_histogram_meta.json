@@ -1,6 +1,6 @@
 {
-    "observed_min": 5.0,
+    "observed_min": 14.0,
     "observed_max": 36.0,
-    "overflow_count": 4,
+    "overflow_count": 6,
     "underflow_count": 0
 }

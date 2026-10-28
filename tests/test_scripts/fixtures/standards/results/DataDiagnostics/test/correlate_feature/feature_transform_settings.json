@@ -1,7 +1,7 @@
 {
     "selected_functions": [
         "L2Norm",
-        "LaplacianResponse",
-        "mean"
+        "mean",
+        "LaplacianResponse"
     ]
 }

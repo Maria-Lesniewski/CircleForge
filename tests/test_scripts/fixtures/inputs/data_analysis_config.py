@@ -3,8 +3,8 @@
 # paths are relative to the artifact directories 
 
 CONFIG = {
-        "annotations_path" : "../tests/test_scripts/fixtures/standards/results/final_data/" + "train_val_test_split_annotations.csv",
+        "annotations_path" : "101test_experiment101/final_data/" + "train_val_test_split_annotations.csv",
         "target_columns" : ["ncircles", "nbig", "nsmall"],
-        "analysis_write_path" : "test_experiment/DataDiagnostics",
+        "analysis_write_path" : "101test_experiment101/DataDiagnostics",
         "feature_transform" : None
         } # Training schedule and configs are piped through input files

@@ -1,7 +1,7 @@
 {
-    "arithmatic_mean": 20.0,
-    "population_stddev": 5.0,
-    "sample_stddev": 7.0710678118654755,
-    "pop_SE_est": 3.5355339059327373,
-    "sample_SE_est": 5.0
+    "arithmatic_mean": 16.5,
+    "population_stddev": 1.5,
+    "sample_stddev": 2.1213203435596424,
+    "pop_SE_est": 1.0606601717798212,
+    "sample_SE_est": 1.4999999999999998
 }
