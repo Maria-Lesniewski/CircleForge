@@ -146,14 +146,25 @@ def test_analyze_data_splits_w_config(test_artifact_dir, ct, shuffled_db):
             inp=CL_string
             )
 
+def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, shuffled_db):
+    target_files = [
+            "spectral_analysis.json",
+            "cpt_meta_data/BasicLinear_step_0.json",
+            ]
+    standard_files = []
+    output_files = []
+    for ele in target_files:
+        standard_files.append("fixtures/standards/results/LeastSquaresResults/"+f"{ele}")
+        output_files.append(f"{test_artifact_dir}/LeastSquaresResults/" + f"{ele}")
 
-
-
-
-
-
-
-
-
+    ScriptTestRunner.test_script(
+            driver_script="direct_linear_model_solver.py",
+            input_files={ "config" : "test_scripts/fixtures/inputs/least_squares_config.py", 
+                         "model" : "BasicLinear"
+                         },
+            output_files=output_files,
+            standard_files=standard_files,
+            inp=None,
+            )
 
 
