@@ -89,13 +89,13 @@ class ConvRotatedLinear(nn.Module):
         super(ConvRotatedLinear, self).__init__()
         self.conv = nn.Conv2d(
             in_channels=1,
-            out_channels=6,
+            out_channels=3,
             kernel_size=5,
             padding=2,
             bias=False,
         )
         self.flatten = nn.Flatten() # We flatten from dim 1 on so that batches are handled
-        self.f1 = nn.Linear(6*50*50,1)
+        self.f1 = nn.Linear(3*50*50,1)
 
     def forward(self, x):
         # X (Nbatch, 50, 50)
@@ -104,13 +104,55 @@ class ConvRotatedLinear(nn.Module):
         x = x.unsqueeze(1) 
         # X (Nbatch, 1, 50, 50)
         x = self.conv(x)
-        # (Batch, 6, 50, 50)
+        # (Batch, 3, 50, 50)
         x = self.flatten(x)
         # (Batch, 1500)
         x = self.f1(x)
         return x
 
+@ModelFactory.register("ConvRotatedLinearReLU")
+class ConvRotatedLinearReLU(nn.Module):
+    """
+    Rotation-averaged convolutional model with a nonlinear
+    ReLU activation before the final linear regression layer.
+    """
 
+    def __init__(self):
+        super().__init__()
+
+        self.conv = nn.Conv2d(
+            in_channels=1,
+            out_channels=3,
+            kernel_size=5,
+            padding=2,
+            bias=False,
+        )
+
+        self.relu = nn.ReLU()
+        self.flatten = nn.Flatten()
+        self.f1 = nn.Linear(3 * 50 * 50, 1)
+
+    def forward(self, x):
+        # Average the four right-angle rotations.
+        x = 0.25 * (
+            x
+            + torch.rot90(x, 1, dims=(1, 2))
+            + torch.rot90(x, 2, dims=(1, 2))
+            + torch.rot90(x, 3, dims=(1, 2))
+        )
+
+        # Add the channel dimension.
+        x = x.unsqueeze(1)
+
+        # Convolution and nonlinear activation.
+        x = self.conv(x)
+        x = self.relu(x)
+
+        # Linear regression output.
+        x = self.flatten(x)
+        x = self.f1(x)
+
+        return x
 
 
 
