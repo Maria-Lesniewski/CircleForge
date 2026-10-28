@@ -78,15 +78,29 @@ class ScriptTestRunner:
     @classmethod
     def compare_csv(cls, actual: Path, expected: Path) -> None:
         """Compare two CSV files by their parsed contents."""
+        if (actual.stat().st_size <= 1) and (expected.stat().st_size <= 1):
+            assert True
+            return
+        if (actual.stat().st_size <=1) != (expected.stat().st_size <= 1):
+            print(f"Error: One file in the comparison is empty, while the other is not")
+            assert False
+
         actual_df = pd.read_csv(actual).drop(columns=["access_filename", "image_filename"], errors="ignore")
         expected_df = pd.read_csv(expected).drop(columns=["access_filename", "image_filename"], errors="ignore")
-
-        assert_frame_equal(
+        
+        try: 
+            assert_frame_equal(
                 actual_df,
                 expected_df,
                 check_dtype=True,
                 check_exact=True,
                 check_like=False,)
+        except AssertionError as exc:
+            raise AssertionError(
+                    f"CSV files differ!\n" + 
+                    f"Actual: {actual}\n" +
+                    f"Expected: {expected}\n" +
+                    f"Details {exc}" ) from exc
 
     @classmethod
     def compare_json(cls, actual: Path, expected: Path) -> None:

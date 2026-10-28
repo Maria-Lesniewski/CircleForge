@@ -13,6 +13,9 @@ import numpy as np
 from pathlib import Path
 import pandas as pd
 
+np.random.seed(0)
+
+
 config = None
 args = io.parse_config_args()
 
