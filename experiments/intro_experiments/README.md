@@ -1,52 +1,63 @@
-# This Experiment Asks: 
-Can linear regression use pixel inputs to determine the number of circles in the cartoon picture reliably? 
+# Experiment 1: Introduction 
+We start modeling simply by asking "can linear regression use pixel inputs to determine the number of circles in the cartoon picture reliably?"
 
-# To Answer This Question
-We build linear models using direct linear regression on increasingly varied databases
+## To Answer This Question
+We build linear models using direct linear regression on increasingly varied databases. 
 
 ## Procedure:
-	### Experiment
+	
+- **DataSet**
 
 	- Generate 4 data sets:
-		a) One hidden max circles variable, no noisey pixel placements (~250 training samples)
+		a) One hidden max circles variable, no noisy pixel placements (~250 training samples)
 		b) One hidden max circles variable, various noise densities (~250 training samples)
-		c) Two hidden max circles variables, no noisey pixel placements (~500 training samples)
+		c) Two hidden max circles variables, no noisy pixel placements (~500 training samples)
 		d) Two hidden max circles variables, various noise densities (like b) (~500 training samples)
+		
 		- Data sets are generated with hidden parameters then shuffled and randomly split to a training (%60), validation (%20) and test (%20) data set for each letter. 
 
-	- Train a linear model on each data set using direct least squares fitting
+- **Models**
 
-	- Evaluate each model on its native data set and the other three (a) (b) (c) (d) 
+	- Train a linear model $(N = \bold{W}\bold{x} + b)$ on each data set using direct least squares fitting to predict the number of circles in an image $N$, based upon the pixel representation of the image loaded, $\bold{x}$.
 
-	### Measure 
-		- The R2 of each model on each set (variance accounted for by the model)
-		- The accuracy (within 1 of total circle count) of each model on each set (how many samples basically correct)
-		- The RMSD ( avg magnitude of error) 
+	- We refer to the model trained on "set a" as "model a", the model trained on "set b" as "model b", etc. 
 
-	### Quickstart? 
-	- bash end\_to\_end.sh found in this folder
+- **Evaluation**
+	- Evaluate each model on its native data set and the other three (a) (b) (c) (d) by measuring:
+		- The **$R^2$** of each model on each set. We interpret this as the variance in the set that each model accounts for.
+		- The **accuracy** of each model on each set.
+			- This is a regression test, not a classification model yet, so we define accuracy as the fraction of inferences that are within 1 of the true circle count.
+		
+		- The **RMSD** of each model on each set, i.e. the average magnitude of inference errors. 
+			- Since models are trained with least squares loss RMSD is equivalent to the square root of the loss function. (loss = Mean Square Error)  
 
-	### Where?
-	- Each stage of analysis will be stored in artifacts/intro\_experiment. 
-	- A summary will be printed with each matrix of performance. Example in this folder.
+### Quickstart? 
+`bash end_to_end.sh`
 
+### Results
+- Each stage of analysis will be stored in `artifacts/intro_experiment`. 
+- A summary will be printed with each matrix of performance. We provide an example of pre-obtained values in this folder.
 
 ## Considerations:
-	- Images are 50x50, we're predicting the number of circles we see in an image with  (2500 inouts->1 output ), data sets contain less than 2501 samples, so the solution weights won't be unique
-	- Linear models are trained in single precision directly with least squares on CPU (default torch linalg solver will be poorly conditioned, script calls a more expensive one)
-	- Each set has a constant 250 samples per max N variable employed
-	- Set A/C share a common NMax parameter and background noise conditions
-	- Set B/D share a common NMax parameter and background noise conditions  
+- Images are 50x50, since we're predicting the number of circles we see in an image that implies the model has (2,500 inputs->1 output). Counting the bias parameter, we have 2,501 model parameter (significantly more than the number of samples) so the solution weights won't be unique.
+
+- Linear models are trained in double precision directly with least squares on CPU (default torch linalg solver will be poorly conditioned, script calls a more expensive one) before they're cast to torch.float32. (expect some numerical noise in casting)
+
+- Each set has a constant 250 samples per max N variable employed
+
+- "set a" and "set c" share a common NMax parameter and background noise conditions
+
+- "set b" and "set d" share a common NMax parameter and background noise conditions  
 
 
 # Hypotheses/Expected Yields:
-	- We should see that each linear model can effectively memorize their training set 
-	  (R2 =1, accuracy = 100%, RMSD very small) 
-	- We expect that each model will transfer poorly to conditions outside their training set
-		- Sharp drop off in performance between training / validation + test
-		- Sharper drop off for different sets
-	- Particularly, linear models are taking advantage of a direct correlation between the amount of non-zero pixels and the number of circles counted, so the speckled drawings we expect will perform worse.
-		-i.e. set_b / set_d models have steeper drop off between train & val/test
+- We have found experimentally that the condition number is pretty small for this experiment (order 1-10), we should see that each linear model can effectively memorize their training set (R2 =1, accuracy = 100%, RMSD very small) 
 
-	- Set A/C and B/D may transfer "the best" to their respective pair, but we expect the two hidden Nmax variable states (e.g. "D") to transfer to their "one" partner (e.g. "B") than the "one
- partner does to the "two". 
+- We expect that each model will transfer poorly to conditions outside their training set
+	- Sharp drop off in performance between training / validation + test
+	- Sharper drop off for different sets
+
+- Particularly, linear models are taking advantage of a direct correlation between the amount of non-zero pixels and the number of circles counted, so the speckled drawings we expect will perform worse.
+	-i.e. set_b / set_d models have steeper drop off between train & val/test
+
+- Because of each set's similarity, we expect "model a" to transfer relatively well "set c" and also "model b" to "set d".  However, we expect models trained on sets with two hidden Nmax variable states to their transfer to the subset partner more effectively. (e.g. "model d" transfers to "set b" better than "model b" to "set d")
