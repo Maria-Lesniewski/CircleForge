@@ -1,0 +1,10 @@
+{
+    "model_id": "BasicLinear",
+    "stats": {
+        "validation_loss": 575.8060913085938,
+        "training_loss": 377.104736328125,
+        "HowTrained": "best_checkpoint_epochs",
+        "training_settings_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/test_experiment/train_stats/BasicLinear_best_checkpoint_epochs_training/training_settings.json"
+    },
+    "checkpoint_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/test_experiment/train_stats/BasicLinear_best_checkpoint_epochs_training/checkpoints/BasicLinear_step_3.pt"
+}

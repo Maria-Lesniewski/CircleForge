@@ -1,0 +1,46 @@
+{
+    "Trainer": {
+        "device": "<device>",
+        "model_config": {
+            "model_meta": {
+                "src_config_file": "New",
+                "src_previous_data": null
+            },
+            "model_type": "BasicLinear",
+            "model": "BasicLinear(\n  (flatten): Flatten(start_dim=1, end_dim=-1)\n  (f1): Linear(in_features=2500, out_features=1, bias=True)\n)"
+        },
+        "optimizer": {
+            "__class__": "Adam",
+            "param_groups": [
+                {
+                    "lr": 0.001,
+                    "betas": [
+                        0.9,
+                        0.999
+                    ],
+                    "eps": 1e-08,
+                    "weight_decay": 0,
+                    "amsgrad": false,
+                    "maximize": false,
+                    "foreach": null,
+                    "capturable": false,
+                    "differentiable": false,
+                    "fused": null,
+                    "decoupled_weight_decay": false
+                }
+            ]
+        },
+        "loss_fn": "<MSELoss>",
+        "train_loader": "<DataLoader>",
+        "val_loader": "<DataLoader>",
+        "logger": {
+            "root_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/test_experiment/train_stats/BasicLinear_best_checkpoint_epochs_training",
+            "torchwriter": "<torch.utils.tensorboard.writer.SummaryWriter object at 0x73c0d69df640>",
+            "grace_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/test_experiment/train_stats/BasicLinear_best_checkpoint_epochs_training/grace",
+            "checkpoint_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/test_experiment/train_stats/BasicLinear_best_checkpoint_epochs_training/checkpoints",
+            "meta_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/test_experiment/train_stats/BasicLinear_best_checkpoint_epochs_training/cpt_meta_data"
+        },
+        "epoch_routine": "<function>",
+        "step0": 0
+    }
+}

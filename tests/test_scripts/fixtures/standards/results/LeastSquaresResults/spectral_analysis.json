@@ -1,0 +1,12 @@
+{
+    "Model": "BasicLinear",
+    "spectral_properties": {
+        "largest_singular_value": 26.015550054050355,
+        "smallest_singular_value": 16.822536676959118,
+        "largest_hessian_eigenvalue": 225.60294820493314,
+        "condition_number": 1.5464701045759877
+    },
+    "optimization": {
+        "maximum_theoretical_learning_rate": 0.008865132374880317
+    }
+}

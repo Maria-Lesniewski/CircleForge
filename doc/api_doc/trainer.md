@@ -46,7 +46,7 @@ The training process is started using `Trainer.train()`, which executes the sele
 
     </details>
 
-- Trainer.\_\_init\_\_(model : torch.nn.Module , optimizer : torch.optim.Optimizer, loss_fn : torch.nn.Module , train_loader : DataLoader, val_loader : DataLoader, logger : Logger, epoch_style : str)
+- Trainer.\_\_init\_\_(model_config : [ModelConfig](model_config.md) , optimizer : torch.optim.Optimizer, loss_fn : torch.nn.Module , train_loader : DataLoader, val_loader : DataLoader, logger : Logger, epoch_style : str)
 
     <details> 
     <summary>Initializes a trainer with the required training components and selects an epoch routine.</summary>
@@ -70,7 +70,7 @@ The training process is started using `Trainer.train()`, which executes the sele
 
     ```
     trainer = Trainer(
-        model=model,
+        model_config=model_config,
         optimizer=optimizer,
         loss_fn=loss_fn,
         train_loader=train_loader,
@@ -227,10 +227,10 @@ The training process is started using `Trainer.train()`, which executes the sele
 
 |Registry Key| Method | Description |
 |---|---|---|
-|"best_checkpoint_epochs"|	best_checkpoint_epochs|	Trains for a specified number of epochs, periodically evaluates validation loss, and saves checkpoints when validation performance improves.|
+|"best_checkpoint_epochs"|	best_checkpoint_epochs|	Trains for a specified number of epochs, periodically evaluates validation loss, and saves checkpoints when validation performance improves. |
 
 **Design Notes**
-
+- Each epoch routine generates its own data. See the [epoch_data_list](epoch_data_list.md) description for interpretting output. 
 - Epoch routines are registered in the class-level _epoch_registry dictionary.
 - Each epoch routine must be registered using @Trainer.register_epoch("routine_name").
 - The registered routine must accept the Trainer instance as its first argument.

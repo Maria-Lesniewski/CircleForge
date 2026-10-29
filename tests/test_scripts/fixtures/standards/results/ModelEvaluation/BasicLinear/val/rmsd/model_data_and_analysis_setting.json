@@ -1,0 +1,21 @@
+{
+    "AnalysisRunner": {
+        "model": "<BasicLinear>",
+        "evaluate_against": "ncircles",
+        "off_target": {
+            "nbig": 1,
+            "nsmall": 2
+        },
+        "dataloader": "<DataLoader>",
+        "datadict": {
+            "ncircles": 0,
+            "nbig": 1,
+            "nsmall": 2
+        },
+        "file_writer_root_path": "/home/maria/Documents/Coding_Space/Image_Generator_Project/artifacts/101test_experiment101/ModelEvaluation/BasicLinear",
+        "schedule": "<dict>",
+        "schedule_options": "<dict>",
+        "streamer": "<StreamingState>",
+        "loggers": "<dict>"
+    }
+}

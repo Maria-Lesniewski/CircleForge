@@ -414,11 +414,38 @@ Its contents are formatted as follows:
 
 **Notes:**
 - Parent directories are created automatically.
-- Existing files at the specified path are overwritten.
+- Existing files at the specified path are copied to the stem filename with "backup" appended via `copy_json` 
 - JSON output is indented by four spaces.
 - The `default=str` argument allows otherwise non-serializable values to be converted to strings.
 - The method does not enforce that `rel_filepath` remains within `root_path`. Absolute paths or paths containing `..` may resolve outside the experiment directory.
 - JSON object keys must satisfy the requirements of Python's JSON encoder.
+
+---
+
+### `copy_json()`
+
+```python
+copy_json(abs_filepath : Path)
+```
+
+Loads a JSON file from the specified path, writes a copy in the same location with the word "backup" appended to the filename stem. 
+
+**Parameters**
+- `abs_filepath` : Path - The path of the JSON file to be copied
+
+**Returns:**
+- None
+
+**Example**
+```python
+logger.copy_json(Path("./myjson.json"))
+
+# Creates file "./myjson.backup.json"
+```
+
+**Notes:**
+- If the ".backup" appended path exists, this function will call itself recursively such that the oldest files are backed-up with the word backup the most times. (e.g. write(0) write(1) write(2), .backup.backup contains 0, .backup contains 1 etc.)
+- This function is called during `write_json` to avoid overwriting data
 
 ---
 

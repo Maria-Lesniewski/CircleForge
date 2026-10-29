@@ -32,7 +32,8 @@ from ... import DiagnosticsRunner
 
 runner = DiagnosticsRunner(
     dataset=my_dataset,
-    filewriter_root_path="artifacts"
+    filewriter_root_path=io.artifact_path("DiagnosticsRoot"),
+    batchsize=32
 )
 
 runner.obtain_schedule()
@@ -48,7 +49,7 @@ Use AnalysisRunner to evaluate a trained model against a dataset. It runs the mo
 
 Basic usage:
 
-1.    Provide a trained model and dataset.
+1.    Provide a trained model (bundled as a ModelConfig) and dataset.
 2.    Specify the target label the model predicts.
 3.   Select the analyses you want to perform.
 4.    Run the analyses.
@@ -58,10 +59,11 @@ Basic usage:
 from ... import AnalysisRunner
 
 runner = AnalysisRunner(
-    model=my_model,
+    model_config=bundled_model_info,
     dataset=my_dataset,
-    filewriter_root_path="artifacts",
-    evaluate_against="target_name"
+    filewriter_root_path=io.artifact_path("AnalysisRoot"),
+    evaluate_against="target_name",
+    batch_size=32
 )
 
 runner.obtain_schedule()
