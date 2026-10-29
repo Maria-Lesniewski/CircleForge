@@ -79,15 +79,25 @@ class ScriptTestRunner:
     @classmethod
     def compare_csv(cls, actual: Path, expected: Path, tol : float=1e-12) -> None:
         """Compare two CSV files by their parsed contents."""
-        if (actual.stat().st_size <= 1) and (expected.stat().st_size <= 1):
-            assert True
-            return
-        if (actual.stat().st_size <=1) != (expected.stat().st_size <= 1):
-            print(f"Error: One file in the comparison is empty, while the other is not")
-            assert False
 
-        actual_df = pd.read_csv(actual).drop(columns=["access_filename", "image_filename"], errors="ignore")
-        expected_df = pd.read_csv(expected).drop(columns=["access_filename", "image_filename"], errors="ignore")
+        empty_act = False
+        empty_exp = False
+        actual_df = None
+        expected_df = None
+
+        try:
+            actual_df = pd.read_csv(actual).drop(columns=["access_filename", "image_filename"], errors="ignore")
+        except pd.errors.EmptyDataError:
+            empty_act = True
+            actual_df = pd.DataFrame({"Dummy" : [0]}) # Provide dummy value to compare if both are empty
+
+        try:
+            expected_df = pd.read_csv(expected).drop(columns=["access_filename", "image_filename"], errors="ignore")
+
+        except pd.errors.EmptyDataError:
+            empty_exp = True
+            expected_df = pd.DataFrame({"Dummy" : [0]})
+        assert empty_exp == empty_act
         
         try: 
             assert_frame_equal(
