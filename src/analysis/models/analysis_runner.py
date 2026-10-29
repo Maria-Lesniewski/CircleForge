@@ -39,7 +39,7 @@ class AnalysisRunner:
         self.model : nn.Module = model_config.model
         self.evaluate_against = evaluate_against
         self.off_target : dict[str,int] = {}
-        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=1)
+        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=0)
         self.datadict : dict[str, int] = {} 
         self.init_loader_dict()
         model_name = model_config.model_type

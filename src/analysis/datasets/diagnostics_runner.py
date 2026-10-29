@@ -30,7 +30,7 @@ class DiagnosticsRunner:
     """
     def __init__(self, dataset : Dataset, filewriter_root_path : str, batchsize : int = 32):
     
-        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=1)
+        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=0)
         self.datadict : dict[str, int] = {} 
         self.init_loader_dict()
         self.filewriter_root_path : str = filewriter_root_path
