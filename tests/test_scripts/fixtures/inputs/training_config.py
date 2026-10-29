@@ -9,7 +9,7 @@ CONFIG = {
             "target_columns" : ["ncircles"], # list["str"]
             "feature_transform" : lambda x: x/256, # function obj
             "batch_size" : 6, # int
-            "num_workers" : 1, # int, adjust to num procs available
+            "num_workers" : 0, # int, adjust to num procs available
             },
         "training" : {
             "loss" : nn.MSELoss(), # instance constructor call,
