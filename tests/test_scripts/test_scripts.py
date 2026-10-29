@@ -147,8 +147,6 @@ def test_analyze_data_splits_w_config(test_artifact_dir, ct, shuffled_db):
             )
 
 def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, shuffled_db):
-    pass
-    """
     target_files = [
             "spectral_analysis.json",
             "cpt_meta_data/BasicLinear_step_0.json",
@@ -167,9 +165,9 @@ def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, sh
             output_files=output_files,
             standard_files=standard_files,
             inp=None,
-            tol=1e-10
+            tol=5e-6 # Models are cast to single precision, then loss is sqrt'd
             )
-    """
+
 def test_eval_models_w_config_and_CL_model(test_artifact_dir, ct, shuffled_db):
     """
     This is a minimal version of this test as I expand coverage and rework other structures

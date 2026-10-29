@@ -33,12 +33,13 @@ class ScriptTestRunner:
             )
 
             for key in e:
-                ScriptTestRunner.compare_values(
-                    a[key],
-                    e[key],
-                    f"{path}.{key}",
-                    tol,
-                )
+                if "path" not in key: # We don't want to check dictionary keys containing CPU paths
+                    ScriptTestRunner.compare_values(
+                        a[key],
+                        e[key],
+                        f"{path}.{key}",
+                        tol,
+                    )
 
         elif isinstance(e, list):
             assert isinstance(a, list), (
