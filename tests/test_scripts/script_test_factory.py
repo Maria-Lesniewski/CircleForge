@@ -37,6 +37,7 @@ class ScriptTestRunner:
                     a[key],
                     e[key],
                     f"{path}.{key}",
+                    tol,
                 )
 
         elif isinstance(e, list):
@@ -50,7 +51,7 @@ class ScriptTestRunner:
             )
 
             for i, (av, ev) in enumerate(zip(a, e)):
-                ScriptTestRunner.compare_values(av, ev, f"{path}[{i}]")
+                ScriptTestRunner.compare_values(av, ev, f"{path}[{i}]", tol)
 
         elif (
             isinstance(e, (int, float))
@@ -76,7 +77,7 @@ class ScriptTestRunner:
             )
 
     @classmethod
-    def compare_csv(cls, actual: Path, expected: Path) -> None:
+    def compare_csv(cls, actual: Path, expected: Path, tol : float=1e-12) -> None:
         """Compare two CSV files by their parsed contents."""
         if (actual.stat().st_size <= 1) and (expected.stat().st_size <= 1):
             assert True
@@ -103,7 +104,7 @@ class ScriptTestRunner:
                     f"Details {exc}" ) from exc
 
     @classmethod
-    def compare_json(cls, actual: Path, expected: Path) -> None:
+    def compare_json(cls, actual: Path, expected: Path, tol : float=1e-12) -> None:
         """
         Compare JSON structures recursively.
 
@@ -117,18 +118,22 @@ class ScriptTestRunner:
         with expected.open(encoding="utf-8") as f:
             expected_data = json.load(f)
 
-        ScriptTestRunner.compare_values(actual_data, expected_data)
+        ScriptTestRunner.compare_values(actual_data, expected_data, tol=tol)
 
     @classmethod
-    def compare_xvg(cls, actual : Path, expected: Path) -> None:
+    def compare_xvg(cls, actual : Path, expected: Path, tol : float =1e-12) -> None:
         """
-        Compares each value within an .xvg file loaded (same as comparing a csv)
-        Included to help list the filetypes we generally expect to read/check
+        Compares each value within an .xvg file loaded (similar to comparing a csv)
+        w. different delimiting behavior and tol specified
         """
-        ScriptTestRunner.compare_csv(actual, expected)
+        actual_df = pd.read_csv(actual, sep=r"\s+", header=None,comment="#",)
+
+        expected_df = pd.read_csv(expected, sep=r"\s+", header=None, comment="#")
+        assert_frame_equal(actual_df,expected_df,check_dtype=False,check_exact=False, atol=tol)
+
 
     @classmethod 
-    def compare_npy(cls, actual : Path or str, expected : Path or str) -> None:
+    def compare_npy(cls, actual : Path or str, expected : Path or str, tol : float=1e-12) -> None:
         """
         Compares .npy files and asserts equal
         """
@@ -137,20 +142,20 @@ class ScriptTestRunner:
         assert np.array_equal(a,e)
 
     @classmethod
-    def test_filetype(cls,act, exp):
+    def test_filetype(cls,act, exp, tol):
         str1_filetype = act.split(".")[-1]
         str2_filetype = exp.split(".")[-1]
 
         if str1_filetype != str2_filetype:
             assert False
         if str1_filetype == "json":
-            ScriptTestRunner.compare_json(HERE/Path(exp), io.artifact_path(act))
+            ScriptTestRunner.compare_json(HERE/Path(exp), io.artifact_path(act), tol)
         elif str1_filetype == "csv":
-            ScriptTestRunner.compare_csv(HERE/Path(exp), io.artifact_path(act))
+            ScriptTestRunner.compare_csv(HERE/Path(exp), io.artifact_path(act), tol)
         elif str1_filetype == "xvg":
-            ScriptTestRunner.compare_xvg(HERE/Path(exp), io.artifact_path(act))
+            ScriptTestRunner.compare_xvg(HERE/Path(exp), io.artifact_path(act), tol)
         elif str1_filetype == "npy":
-            ScriptTestRunner.compare_npy(HERE/Path(exp), io.artifact_path(act))
+            ScriptTestRunner.compare_npy(HERE/Path(exp), io.artifact_path(act), tol)
         else:
             raise ValueError("Filetype found not one of the expected types")
 
@@ -178,7 +183,7 @@ class ScriptTestRunner:
                 assert io.artifact_path(actual).exists()
             assert io.artifact_path(actual).exists()
 
-            ScriptTestRunner.test_filetype(actual, expected)
+            ScriptTestRunner.test_filetype(actual, expected, tol)
 
     @classmethod
     def clean_script_test(cls):

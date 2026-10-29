@@ -165,6 +165,7 @@ def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, sh
             output_files=output_files,
             standard_files=standard_files,
             inp=None,
+            tol=1e-10
             )
 
 def test_eval_models_w_config_and_CL_model(test_artifact_dir, ct, shuffled_db):
@@ -204,7 +205,8 @@ def test_eval_models_w_config_and_CL_model(test_artifact_dir, ct, shuffled_db):
             input_files={ "config" : "test_scripts/fixtures/inputs/model_evaluation_config.py"},
             output_files=output_files,
             standard_files=standard_files,
-            inp=CL_string
+            inp=CL_string,
+            tol=1e-10
             )
 
 

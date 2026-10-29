@@ -8,7 +8,7 @@ CONFIG = {
             "meta_path" : "Ask", # meta_data written by Trainer class. or "Ask" for prompt (generally put your last latest which will vary dependent on data gen process)
             },
         "data" : {
-            "annotations_path" : "../tests/test_scripts/fixtures/standards/results/final_data/" + "train_val_test_split_annotations.csv",
+            "annotations_path" : "101test_experiment101/final_data/" + "train_val_test_split_annotations.csv",
             "target_columns" : ["ncircles", "nbig", "nsmall"],
             "feature_transform" : lambda x: x/256
             },
