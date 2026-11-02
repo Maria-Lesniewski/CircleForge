@@ -92,16 +92,17 @@ print("Finding max eigenvalue of the MSE Hessian")
 
 n = aug_X.shape[0]
 
+### SPECTRAL ANALYSIS AND SOLUTION BLOCK
 spectral_analysis = {"Model" : choice}
-spectral_analysis["spectral_properties"] = {}
+spectral_analysis["torch.linalg.svd"] = {}
 sigma_max = torch.linalg.svdvals(aug_X).max()
 sigma_min = torch.linalg.svdvals(aug_X).min()
 lambda_max = 2.0 * sigma_max.square() / n
 condition_number = sigma_max / sigma_min
-spectral_analysis["spectral_properties"]["largest_singular_value"] = sigma_max.item()
-spectral_analysis["spectral_properties"]["smallest_singular_value"] = sigma_min.item()
-spectral_analysis["spectral_properties"]["largest_hessian_eigenvalue"] = lambda_max.item()
-spectral_analysis["spectral_properties"]["condition_number"]  = condition_number.item()
+spectral_analysis["torch.linalg.svd"]["largest_singular_value"] = sigma_max.item()
+spectral_analysis["torch.linalg.svd"]["smallest_singular_value"] = sigma_min.item()
+spectral_analysis["torch.linalg.svd"]["largest_hessian_eigenvalue"] = lambda_max.item()
+spectral_analysis["torch.linalg.svd"]["condition_number"]  = condition_number.item()
 eta_max = 2.0 / lambda_max
 spectral_analysis["optimization"] = {}
 spectral_analysis["optimization"]["maximum_theoretical_learning_rate"] = eta_max.item()
@@ -113,11 +114,19 @@ print(f"Largest Hessian eigenvalue: {lambda_max.item():.6e}")
 print(f"Maximum theoretical learning rate (Basic Gradient Descent): {eta_max.item():.6e}")
 
 
-logger.write_json("spectral_analysis.json", spectral_analysis)
 
 print(f"Solving LLS for {choice}")
 S = torch.linalg.lstsq(aug_X,Y,rcond=None, driver="gelsd")
 W = S.solution
+print(f"Solved least squares with rank: {S.rank}")
+spectral_analysis["torch.linalg.lstq"] = {}
+spectral_analysis["torch.linalg.lstq"]["condition_number"] = (S.singular_values.max() / S.singular_values.min()).item()
+spectral_analysis["torch.linalg.lstq"]["max_value"] = S.singular_values.max().item()
+spectral_analysis["torch.linalg.lstq"]["min_value"] = S.singular_values.min().item()
+spectral_analysis["torch.linalg.lstq"]["rank"] = S.rank.item()
+logger.write_json("spectral_analysis.json", spectral_analysis)
+
+
 #W, _, _, _ = np.linalg.lstsq(aug_X,Y,rcond=None)
 
 print(f"Loading to Torch")

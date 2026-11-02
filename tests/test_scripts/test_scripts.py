@@ -165,7 +165,7 @@ def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, sh
             output_files=output_files,
             standard_files=standard_files,
             inp=None,
-            tol=5e-6 # Models are cast to single precision, then loss is sqrt'd
+            tol=5e-11 # Models are cast to single precision, then loss is sqrt'd
             )
 
 def test_eval_models_w_config_and_CL_model(test_artifact_dir, ct, shuffled_db):
