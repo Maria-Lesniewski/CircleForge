@@ -158,14 +158,19 @@ def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, sh
         output_files.append(f"{test_artifact_dir}/LeastSquaresResults/" + f"{ele}")
 
     ScriptTestRunner.test_script(
-            driver_script="direct_linear_model_solver2.py",
+            driver_script="direct_linear_model_solver.py",
             input_files={ "config" : "test_scripts/fixtures/inputs/least_squares_config.py", 
                          "model" : "BasicLinear"
                          },
             output_files=output_files,
             standard_files=standard_files,
             inp=None,
-            tol=5e-6 # Models are cast to single precision, then loss is sqrt'd
+            tol=1.6e-5  # Cross-platform tolerance for float32 model evaluation.
+          # The analytical least-squares solution is computed in float64,
+          # but model parameters are cast to float32. Different CPU
+          # execution paths introduce small differences in the resulting
+          # residual. This larger tolerance accommodates observed variation
+          # but is meant to be tight enough to detect meaningful accuracy differences
             )
 
 def test_eval_models_w_config_and_CL_model(test_artifact_dir, ct, shuffled_db):
