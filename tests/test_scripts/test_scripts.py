@@ -158,7 +158,7 @@ def test_direct_linear_model_solver_w_config_and_model(test_artifact_dir, ct, sh
         output_files.append(f"{test_artifact_dir}/LeastSquaresResults/" + f"{ele}")
 
     ScriptTestRunner.test_script(
-            driver_script="direct_linear_model_solver.py",
+            driver_script="direct_linear_model_solver2.py",
             input_files={ "config" : "test_scripts/fixtures/inputs/least_squares_config.py", 
                          "model" : "BasicLinear"
                          },
