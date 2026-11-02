@@ -39,5 +39,5 @@ jobs:
             - name: Run tests
               run: |
                     cd tests
-                    pytest
+                    python run_tests.py
             
