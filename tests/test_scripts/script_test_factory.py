@@ -160,13 +160,13 @@ class ScriptTestRunner:
         if str1_filetype != str2_filetype:
             assert False
         if str1_filetype == "json":
-            ScriptTestRunner.compare_json(HERE/Path(exp), io.artifact_path(act), tol)
+            ScriptTestRunner.compare_json(io.artifact_path(act), HERE/Path(exp), tol)
         elif str1_filetype == "csv":
-            ScriptTestRunner.compare_csv(HERE/Path(exp), io.artifact_path(act), tol)
+            ScriptTestRunner.compare_csv(io.artifact_path(act), HERE/Path(exp), tol)
         elif str1_filetype == "xvg":
-            ScriptTestRunner.compare_xvg(HERE/Path(exp), io.artifact_path(act), tol)
+            ScriptTestRunner.compare_xvg(io.artifact_path(act), HERE/Path(exp), tol)
         elif str1_filetype == "npy":
-            ScriptTestRunner.compare_npy(HERE/Path(exp), io.artifact_path(act), tol)
+            ScriptTestRunner.compare_npy(io.artifact_path(act), HERE/Path(exp), tol)
         else:
             raise ValueError("Filetype found not one of the expected types")
 
