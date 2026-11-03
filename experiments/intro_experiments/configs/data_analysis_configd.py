@@ -1,0 +1,10 @@
+# This is a file for holding custom data analysis configuration
+# (for configurating scripts/analyze_data_splits.py)
+# paths are relative to the artifact directories 
+
+CONFIG = {
+        "annotations_path" : "intro_experiment/set_d/final_data/" + "train_val_test_split_annotations.csv",
+        "target_columns" : ["ncircles", "nbig", "nsmall"],
+        "analysis_write_path" : "intro_experiment/set_d/DataDiagnostics",
+        "feature_transform" : None
+        } # Training schedule and configs are piped through input files

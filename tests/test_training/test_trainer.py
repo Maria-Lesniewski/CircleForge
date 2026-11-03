@@ -5,18 +5,20 @@ import torch.optim as optim
 from test_utils.spy_logger import SpyLogger
 from training.trainer import Trainer
 from torch.utils.data import DataLoader, TensorDataset
-
-
+from models.model_config import ModelConfig
+from utils.serialize_object import serialize_object
 
 ## SET UP ### 
 ## Making these tiny pieces fixtures to use the stronger "is" check
 @pytest.fixture
 def model():
-    return nn.Linear(2,1)
+    dummy_config = ModelConfig("Constant")
+    dummy_config.model = nn.Linear(2,1)
+    return dummy_config
 
 @pytest.fixture
 def optimizer(model):
-    return optim.SGD(model.parameters(), lr=0.01)
+    return optim.SGD(model.model.parameters(), lr=0.01)
 
 @pytest.fixture
 def loss_fn():
@@ -50,7 +52,7 @@ def trainer(model, optimizer, loss_fn, logger):
     val_loader = DataLoader(dataset, batch_size=1)
 
     return Trainer(
-            model=model,
+            model_config=model,
             optimizer=optimizer,
             loss_fn=loss_fn,
             train_loader=tr_loader,
@@ -62,7 +64,7 @@ def trainer(model, optimizer, loss_fn, logger):
 ### TESTS ### 
 
 def test_init(trainer, model, loss_fn, optimizer, logger):
-    assert trainer.model is model
+    assert trainer.model_config is model
     assert trainer.optimizer is optimizer
     assert trainer.loss_fn is loss_fn
     assert len(trainer.train_loader) == 4
@@ -109,7 +111,7 @@ def test_trainer_register(trainer):
 def test_logging_in_train_routine(trainer):
     """ verifies logger saved metadata for training routing""" 
     trainer.train({"n_epochs" : 0, "validation_interval" : 0})
-    assert trainer.logger.write_json_calls["training_settings.json"]["dictionary"] == vars(trainer)
+    assert trainer.logger.write_json_calls["training_settings.json"]["dictionary"] == serialize_object(trainer)
 
 
 ## Other halves of trainer.train -> routines
@@ -127,7 +129,7 @@ def test_best_checkpoints_epoch_train_logging(trainer):
      trainer.train({"n_epochs": 1, "validation_interval": 4})
 
      # Check total number of calls
-     assert len(trainer.logger.add_scalars_calls) == 6
+     assert len(trainer.logger.add_scalars_calls) == 7
 
      # Check training loss was logged for every batch
      training_set_calls = { key : value for key, value in trainer.logger.add_scalars_calls.items() if key.startswith("training_set")}
@@ -138,4 +140,4 @@ def test_best_checkpoints_epoch_train_logging(trainer):
      assert len(trainer.logger.add_scalars_calls["model_checkpoints"]["scalars"]) == 3
 
      # Check the best model was savee
-     assert len(trainer.logger.save_model_calls) == 1
+     assert len(trainer.logger.save_model_calls) == 2

@@ -1,0 +1,28 @@
+import utils.io as io
+import sys
+from launcher.experiment_runner import run_job
+
+# This is a pipeline template for after the data has been generated and any feature engineering complete
+
+scripts_directory = io.find_project_root() / "scripts"
+here = io.find_here()
+
+# Training
+
+if not (len(sys.argv) > 1):
+    ### (New Model)
+    training_CL_args = [str(scripts_directory / "train_models.py"), "--config","configs/training_config.py"]
+    training_cmd = [sys.executable, *training_CL_args] 
+    run_job(training_cmd, inp="4\n") # train model asks for what kind of model when no --model is passed
+    #   Current 0. BasicLinear 1. RotatedLinear 2. Constant 3. ConvRotatedLinear 4. ConvRotatedReLU 
+else:
+    ### (Continuation w. presupplied model) (pass path to this script)
+    training_CL_args = [str(scripts_directory / "train_models.py"), "--config","configs/training_config.py", "--model", (sys.argv[1])]
+    training_cmd = [sys.executable, *training_CL_args]
+    run_job(training_cmd, inp=None)
+
+
+#### Alternatively, the linear least squares script can be used for some models (BasicLinear, RotatedLinear, Constant) as a baseline
+# training_CL_args = [str(scripts_directory / "direct_linear_model_solver.py"), "--config", "configs/least_squares_config.py", "--model", "BasicLinear"]
+# training_cmd = [sys.executable, *training_CL_args]
+# run_job(training_cmd, inp=None)

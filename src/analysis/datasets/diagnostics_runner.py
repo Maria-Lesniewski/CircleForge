@@ -15,7 +15,7 @@ from ..streaming_state import StreamingState
 import utils.io as io
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-
+from pathlib import Path
 class DiagnosticsRunner:
     """
     Coordinates modular analysis routines for a dataset
@@ -30,7 +30,7 @@ class DiagnosticsRunner:
     """
     def __init__(self, dataset : Dataset, filewriter_root_path : str, batchsize : int = 32):
     
-        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=1)
+        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=0)
         self.datadict : dict[str, int] = {} 
         self.init_loader_dict()
         self.filewriter_root_path : str = filewriter_root_path
@@ -75,10 +75,13 @@ class DiagnosticsRunner:
         options = DiagnosticsRegistry.available()
         self.schedule_options = options
 
-        choices = io.compounding_multiple_choice_q(intro_context, list(options.keys()))
+        choices = sorted(io.compounding_multiple_choice_q(intro_context, list(options.keys())))
         # register calc reqs to schedule, create working dir for analysis and loggers
-        a_path = io.make_artifact_dir(f"DataDiagnostics")
-        a_sub_path = io.make_artifact_dir(a_path / f"{self.dataloader.dataset.split_tag}")
+        a_path = Path(self.filewriter_root_path)
+        a_sub_path = a_path / f"{self.dataloader.dataset.split_tag}"
+
+        a_sub_path.mkdir(parents=True, exist_ok=True)
+
         for ele in choices:
             self.schedule[ele] = DiagnosticsRegistry.create(ele, {"keys" : list(self.datadict.keys())})
             if hasattr(self.schedule[ele], "config"):

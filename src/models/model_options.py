@@ -79,6 +79,82 @@ class Constant(nn.Module):
     def forward(self, x):
         return self.bias.expand(x.shape[0]) # Return constant across batch size
 
+@ModelFactory.register("ConvRotatedLinear")
+class ConvRotatedLinear(nn.Module):
+    """
+    The fanciest linear model that accounts for invariance under rotation and adds a convolutional layer
+    """
+
+    def __init__(self):
+        super(ConvRotatedLinear, self).__init__()
+        self.conv = nn.Conv2d(
+            in_channels=1,
+            out_channels=3,
+            kernel_size=5,
+            padding=2,
+            bias=False,
+        )
+        self.flatten = nn.Flatten() # We flatten from dim 1 on so that batches are handled
+        self.f1 = nn.Linear(3*50*50,1)
+
+    def forward(self, x):
+        # X (Nbatch, 50, 50)
+        x = 1/4*(x + torch.rot90(x, 1, dims=(1,2)) + torch.rot90(x, 2, dims=(1,2)) + torch.rot90(x,3, dims=(1,2)))
+        # CircleData does not return a channel dimension, so we need to add one 
+        x = x.unsqueeze(1) 
+        # X (Nbatch, 1, 50, 50)
+        x = self.conv(x)
+        # (Batch, 3, 50, 50)
+        x = self.flatten(x)
+        # (Batch, 1500)
+        x = self.f1(x)
+        return x
+
+@ModelFactory.register("ConvRotatedLinearReLU")
+class ConvRotatedLinearReLU(nn.Module):
+    """
+    Rotation-averaged convolutional model with a nonlinear
+    ReLU activation before the final linear regression layer.
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self.conv = nn.Conv2d(
+            in_channels=1,
+            out_channels=3,
+            kernel_size=5,
+            padding=2,
+            bias=False,
+        )
+
+        self.relu = nn.ReLU()
+        self.flatten = nn.Flatten()
+        self.f1 = nn.Linear(3 * 50 * 50, 1)
+
+    def forward(self, x):
+        # Average the four right-angle rotations.
+        x = 0.25 * (
+            x
+            + torch.rot90(x, 1, dims=(1, 2))
+            + torch.rot90(x, 2, dims=(1, 2))
+            + torch.rot90(x, 3, dims=(1, 2))
+        )
+
+        # Add the channel dimension.
+        x = x.unsqueeze(1)
+
+        # Convolution and nonlinear activation.
+        x = self.conv(x)
+        x = self.relu(x)
+
+        # Linear regression output.
+        x = self.flatten(x)
+        x = self.f1(x)
+
+        return x
+
+
 
 """ TO DO 
 class PoissonLinear(nn.Module):

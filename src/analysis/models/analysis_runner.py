@@ -13,9 +13,11 @@ from utils.model_logger import Logger
 from .analysis_registry import AnalysisRegistry
 from ..streaming_state import StreamingState
 import utils.io as io
+from utils.serialize_object import serialize_object
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-
+from models.model_config import ModelConfig
+from pathlib import Path
 class AnalysisRunner:
     """
     Coordinates modular analysis routines for a trained model.
@@ -26,21 +28,22 @@ class AnalysisRunner:
             evaluate_against - name of target for inference (i.e. what does the model predict)
             dataloader - iterator over passed data set used for evaluation
             datadict - index map for when dataset contains multiple off target labels
-            filewriter_root_path - root path for saving all analysis (subfolders created dependent on analysis)
+            filewriter_root_path - root path for saving all analysis (subfolders created dependent on analysis) (This should be an absolute path)
             schedule - list of analysis routines to be executed
             streamer - streaming object holding the model and label states while running through dataset
             loggers - writing objects for recording each of the scheduled analyses
 
     """
-    def __init__(self, model : nn.Module , dataset : Dataset, filewriter_root_path : str, evaluate_against : str, batchsize : int = 32):
+    def __init__(self, model_config : ModelConfig , dataset : Dataset, filewriter_root_path : str, evaluate_against : str, batchsize : int = 32):
         
-        self.model : nn.Module = model
+        self.model : nn.Module = model_config.model
         self.evaluate_against = evaluate_against
         self.off_target : dict[str,int] = {}
-        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=1)
+        self.dataloader : DataLoader = DataLoader(dataset, batchsize, shuffle=False, num_workers=0)
         self.datadict : dict[str, int] = {} 
         self.init_loader_dict()
-        self.filewriter_root_path : str = filewriter_root_path
+        model_name = model_config.model_type
+        self.file_writer_root_path : str = str(Path(filewriter_root_path) / Path(model_name))
         self.schedule : dict[str,Any] = {} # Holds instances of analysis functions with analysis state variables
         self.schedule_options : dict[str,Any] = {}
         self.check_evaluation_request()
@@ -85,10 +88,9 @@ class AnalysisRunner:
             options = AnalysisRegistry.available()
             self.schedule_options = options
 
-        choices = io.compounding_multiple_choice_q(intro_context, list(options.keys()))
+        choices = sorted(io.compounding_multiple_choice_q(intro_context, list(options.keys())))
         # register calc reqs to schedule, create working dir for analysis and loggers
-        a_path = io.make_artifact_dir(f"Analysis_{self.model.__class__.__name__}")
-        a_sub_path = io.make_artifact_dir(a_path / f"{self.dataloader.dataset.split_tag}")
+        a_sub_path = Path(self.file_writer_root_path) / f"{self.dataloader.dataset.split_tag}"
         for ele in choices:
             self.schedule[ele] = AnalysisRegistry.create(ele, {"keys" : list(self.off_target.keys())})
             if hasattr(self.schedule[ele], "config"):
@@ -124,6 +126,7 @@ class AnalysisRunner:
 
     def close(self):
         for logger in self.loggers:
+            self.loggers[logger].write_json("model_data_and_analysis_setting.json", serialize_object(self))
             self.loggers[logger].close()
 
 
