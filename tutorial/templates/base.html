@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}CircleForge Tutorials{% endblock %}</title>
+
+    <meta name="description"
+          content="{% block description %} CircleForge tutorials site {% endblock %}">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="static/style.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+
+            <div class="site-title">
+                <a href="{{ url_for('home') }}">
+                    {% block site_name %}CircleForge Tutorials{% endblock %}
+                </a>
+            </div>
+
+            <nav class="site-nav">
+                {% block navigation %}
+                    <a href="{{ url_for('home') }}">Home</a>
+                {% endblock %}
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- Main Page Container -->
+    <div class="page-container">
+
+        {% block page_heading %}{% endblock %}
+
+        <div class="page-layout">
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                {% block sidebar %}
+                    <h3>Navigation</h3>
+
+                    <ul>
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                    </ul>
+                {% endblock %}
+            </aside>
+
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="callout {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}
+                {% endblock %}
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        {% block footer %}
+            <p>&copy; {{ current_year | default('2026') }} Maria-Lesniewski:CircleForge</p>
+            <p>All rights reserved.</p>
+        {% endblock %}
+    </footer>
+
+
+    <!-- JavaScript -->
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

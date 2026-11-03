@@ -1,29 +1,31 @@
+
 /* ==========================================================
-   Theme: Clean, Professional, Accessible
+   Theme: CircleForge - GitHub Inspired Dark Mode
+   Blue and Red Accent Palette
    ========================================================== */
 
-/* (This is Generated Code, not code written by Me) */
+/* 1. CSS Variables */
 
-/* 1. CSS Variables — Dark Theme */
 :root {
-    --color-primary: #6b9bc7;
-    --color-primary-dark: #2445bc;
-    --color-accent: #5ba3d6;
+    --color-primary: #58a6ff;
+    --color-primary-dark: #388bfd;
+    --color-accent: #7338fd;
+    --color-accent-blue: #79c0ff;
 
-    --color-background: #111827;
-    --color-surface: #1e293b;
-    --color-surface-alt: #27364a;
+    --color-background: #0d1117;
+    --color-surface: #161b22;
+    --color-surface-alt: #21262d;
 
-    --color-text: #e2e8f0;
-    --color-text-muted: #94a3b8;
-    --color-border: #354459;
+    --color-text: #e6edf3;
+    --color-text-muted: #8b949e;
+    --color-border: #30363d;
 
-    --color-code-bg: #0b1220;
-    --color-code-text: #dbeafe;
+    --color-code-bg: #0d1117;
+    --color-code-text: #e6edf3;
 
-    --color-success: #4ade80;
-    --color-warning: #fbbf24;
-    --color-error: #f87171;
+    --color-success: #3fb950;
+    --color-warning: #d29922;
+    --color-error: #f85149;
 
     --font-body: "Inter", "Segoe UI", Arial, sans-serif;
     --font-code: "JetBrains Mono", "Fira Code", monospace;
@@ -35,8 +37,8 @@
     --radius-medium: 9px;
     --radius-large: 14px;
 
-    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.2);
-    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.3);
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.25);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 /* 2. Global Reset */
@@ -64,16 +66,10 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-
 /* 3. Typography */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: var(--color-primary-dark);
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-text);
     line-height: 1.3;
     font-weight: 650;
     margin-top: 1.8em;
@@ -94,6 +90,7 @@ h2 {
 
 h3 {
     font-size: 1.35rem;
+    color: var(--color-primary);
 }
 
 h4 {
@@ -110,38 +107,37 @@ small {
 }
 
 strong {
-    color: var(--color-primary-dark);
+    color: var(--color-accent-blue);
 }
-
 
 /* 4. Links */
 
 a {
-    color: var(--color-accent);
+    color: var(--color-primary);
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 a:hover {
-    color: var(--color-primary-dark);
+    color: var(--color-accent);
     text-decoration: underline;
 }
 
 a:focus-visible,
 button:focus-visible {
-    outline: 3px solid #78aee0;
+    outline: 3px solid var(--color-primary);
     outline-offset: 3px;
 }
-
 
 /* 5. Header */
 
 .site-header {
-    background: var(--color-primary-dark);
-    color: #ffffff;
+    background: var(--color-surface);
+    color: var(--color-text);
 
     padding: 1.1rem 2rem;
 
+    border-bottom: 1px solid var(--color-border);
     box-shadow: var(--shadow-medium);
 }
 
@@ -156,7 +152,7 @@ button:focus-visible {
 }
 
 .site-title {
-    color: #ffffff;
+    color: var(--color-primary);
     font-size: 1.25rem;
     font-weight: 650;
     margin: 0;
@@ -173,14 +169,13 @@ button:focus-visible {
 }
 
 .site-nav a {
-    color: #e5edf5;
+    color: var(--color-text-muted);
     font-size: 0.92rem;
 }
 
 .site-nav a:hover {
-    color: #ffffff;
+    color: var(--color-primary);
 }
-
 
 /* 6. Page Layout */
 
@@ -196,7 +191,6 @@ button:focus-visible {
     gap: 2.5rem;
     align-items: start;
 }
-
 
 /* 7. Sidebar Navigation */
 
@@ -243,6 +237,9 @@ button:focus-visible {
     color: var(--color-primary);
 }
 
+.sidebar a.active {
+    border-left: 3px solid var(--color-primary);
+}
 
 /* 8. Main Content */
 
@@ -266,7 +263,6 @@ button:focus-visible {
     margin-bottom: 0;
 }
 
-
 /* 9. Intro / Hero Section */
 
 .hero {
@@ -275,16 +271,17 @@ button:focus-visible {
 
     background: linear-gradient(
         135deg,
-        #edf3f9,
-        #f7f9fc
+        #161b22,
+        #21262d
     );
 
-    border-left: 4px solid var(--color-accent);
+    border-left: 4px solid var(--color-primary);
     border-radius: var(--radius-medium);
 }
 
 .hero h1 {
     margin-bottom: 0.8rem;
+    color: var(--color-text);
 }
 
 .hero p {
@@ -302,7 +299,6 @@ button:focus-visible {
     margin-bottom: 0.6rem;
 }
 
-
 /* 10. Code Blocks */
 
 pre {
@@ -312,6 +308,7 @@ pre {
     padding: 1.3rem 1.5rem;
     margin: 1.5rem 0;
 
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-medium);
     overflow-x: auto;
 
@@ -329,7 +326,7 @@ code {
 
 :not(pre) > code {
     background: var(--color-surface-alt);
-    color: #315d83;
+    color: var(--color-accent-blue);
 
     padding: 0.15rem 0.35rem;
     border-radius: 4px;
@@ -348,15 +345,15 @@ pre code {
 
     padding: 0.5rem 1rem;
 
-    background: #e8edf3;
+    background: var(--color-surface-alt);
     color: var(--color-text-muted);
 
     font-family: var(--font-code);
     font-size: 0.78rem;
 
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-small) var(--radius-small) 0 0;
 }
-
 
 /* 11. Mathematical Equations */
 
@@ -366,7 +363,7 @@ pre code {
     padding: 1.5rem;
     margin: 1.5rem 0;
 
-    border-left: 3px solid var(--color-accent);
+    border-left: 3px solid var(--color-accent-blue);
     border-radius: var(--radius-small);
 
     text-align: center;
@@ -381,7 +378,6 @@ pre code {
     font-size: 0.85rem;
     text-align: center;
 }
-
 
 /* 12. Tables */
 
@@ -399,8 +395,7 @@ table {
     font-size: 0.92rem;
 }
 
-th,
-td {
+th, td {
     padding: 0.85rem 1rem;
     border-bottom: 1px solid var(--color-border);
     text-align: left;
@@ -408,14 +403,13 @@ td {
 
 th {
     background: var(--color-surface-alt);
-    color: var(--color-primary-dark);
+    color: var(--color-primary);
     font-weight: 650;
 }
 
 tr:hover td {
-    background: #f8fafc;
+    background: #21262d;
 }
-
 
 /* 13. Figures and Visualisations */
 
@@ -423,7 +417,7 @@ figure {
     margin: 2rem 0;
     padding: 1rem;
 
-    background: #ffffff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-medium);
 }
@@ -444,7 +438,6 @@ figcaption {
     font-size: 0.85rem;
 }
 
-
 /* 14. Information Callouts */
 
 .callout {
@@ -452,9 +445,9 @@ figcaption {
     margin: 1.5rem 0;
 
     border-radius: var(--radius-small);
-    border-left: 4px solid var(--color-accent);
+    border-left: 4px solid var(--color-primary);
 
-    background: #edf4fa;
+    background: #161f2b;
 }
 
 .callout p:last-child {
@@ -465,29 +458,27 @@ figcaption {
     display: block;
     margin-bottom: 0.4rem;
     font-weight: 700;
-    color: var(--color-primary-dark);
+    color: var(--color-primary);
 }
 
 .callout.success {
-    background: #edf7f0;
+    background: #12261a;
     border-color: var(--color-success);
 }
 
 .callout.warning {
-    background: #fff8e9;
+    background: #2a2112;
     border-color: var(--color-warning);
 }
 
 .callout.error {
-    background: #fdf0f0;
+    background: #2d1719;
     border-color: var(--color-error);
 }
 
-
 /* 15. Lists */
 
-ul,
-ol {
+ul, ol {
     padding-left: 1.5rem;
     margin-bottom: 1.3rem;
 }
@@ -497,9 +488,8 @@ li {
 }
 
 li::marker {
-    color: var(--color-accent);
+    color: var(--color-primary);
 }
-
 
 /* 16. Buttons */
 
@@ -508,7 +498,7 @@ li::marker {
 
     padding: 0.7rem 1.5rem;
 
-    background: var(--color-primary);
+    background: var(--color-primary-dark);
     color: #ffffff;
 
     border: none;
@@ -530,6 +520,7 @@ li::marker {
 
 .button:hover {
     background: var(--color-accent);
+    color: #ffffff;
     transform: translateY(-1px);
     box-shadow: var(--shadow-medium);
 }
@@ -561,13 +552,13 @@ li::marker {
     padding: 0.25rem 0.65rem;
 
     background: var(--color-surface-alt);
-    color: var(--color-text-muted);
+    color: var(--color-accent-blue);
 
+    border: 1px solid var(--color-border);
     border-radius: 20px;
     font-size: 0.78rem;
     font-weight: 600;
 }
-
 
 /* 18. Footer */
 
@@ -575,21 +566,22 @@ li::marker {
     margin-top: 3rem;
     padding: 2rem;
 
-    background: var(--color-primary-dark);
-    color: #dce6ef;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+
+    border-top: 1px solid var(--color-border);
 
     text-align: center;
     font-size: 0.88rem;
 }
 
 .site-footer a {
-    color: #ffffff;
+    color: var(--color-primary);
 }
 
 .site-footer p {
     margin: 0.3rem 0;
 }
-
 
 /* 19. Responsive Design */
 
@@ -612,7 +604,6 @@ li::marker {
         flex-wrap: wrap;
         justify-content: center;
     }
-
 }
 
 @media (max-width: 600px) {
@@ -650,9 +641,7 @@ li::marker {
     h2 {
         font-size: 1.5rem;
     }
-
 }
-
 
 /* 20. Accessibility and Reduced Motion */
 
@@ -666,9 +655,7 @@ li::marker {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
     }
-
 }
-
 
 /* 21. Print Styles */
 
@@ -701,6 +688,8 @@ li::marker {
         border: none;
         box-shadow: none;
         padding: 0;
+        background: #ffffff;
+        color: #000000;
     }
 
     pre {
@@ -715,6 +704,4 @@ li::marker {
         color: #000000;
         text-decoration: underline;
     }
-
 }
-
