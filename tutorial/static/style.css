@@ -4,26 +4,26 @@
 
 /* (This is Generated Code, not code written by Me) */
 
-/* 1. CSS Variables */
+/* 1. CSS Variables — Dark Theme */
 :root {
-    --color-primary: #24476b;
-    --color-primary-dark: #193653;
-    --color-accent: #3678a8;
+    --color-primary: #6b9bc7;
+    --color-primary-dark: #2445bc;
+    --color-accent: #5ba3d6;
 
-    --color-background: #f5f7fa;
-    --color-surface: #ffffff;
-    --color-surface-alt: #edf2f7;
+    --color-background: #111827;
+    --color-surface: #1e293b;
+    --color-surface-alt: #27364a;
 
-    --color-text: #253447;
-    --color-text-muted: #64748b;
-    --color-border: #dce3eb;
+    --color-text: #e2e8f0;
+    --color-text-muted: #94a3b8;
+    --color-border: #354459;
 
-    --color-code-bg: #172536;
-    --color-code-text: #e2eaf3;
+    --color-code-bg: #0b1220;
+    --color-code-text: #dbeafe;
 
-    --color-success: #26734d;
-    --color-warning: #956515;
-    --color-error: #a33d3d;
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-error: #f87171;
 
     --font-body: "Inter", "Segoe UI", Arial, sans-serif;
     --font-code: "JetBrains Mono", "Fira Code", monospace;
@@ -35,10 +35,9 @@
     --radius-medium: 9px;
     --radius-large: 14px;
 
-    --shadow-subtle: 0 2px 8px rgba(30, 50, 70, 0.06);
-    --shadow-medium: 0 4px 16px rgba(30, 50, 70, 0.09);
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
-
 
 /* 2. Global Reset */
 
@@ -507,13 +506,13 @@ li::marker {
 .button {
     display: inline-block;
 
-    padding: 0.65rem 1.2rem;
+    padding: 0.7rem 1.5rem;
 
     background: var(--color-primary);
     color: #ffffff;
 
     border: none;
-    border-radius: var(--radius-small);
+    border-radius: 999px;
 
     font-family: inherit;
     font-size: 0.9rem;
@@ -522,21 +521,29 @@ li::marker {
     cursor: pointer;
     text-decoration: none;
 
-    transition: background 0.2s ease;
+    transition: background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+
+    box-shadow: var(--shadow-subtle);
 }
 
 .button:hover {
-    background: var(--color-primary-dark);
-    color: #ffffff;
-    text-decoration: none;
+    background: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+}
+
+.button:active {
+    transform: translateY(0);
 }
 
 .button.secondary {
     background: var(--color-surface-alt);
     color: var(--color-primary);
     border: 1px solid var(--color-border);
+    border-radius: 999px !important;
 }
-
 
 /* 17. Metadata / Tags */
 
