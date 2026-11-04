@@ -18,6 +18,23 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
+@app.route("/manual")
+def manual():
+    return render_template("manual.html")
+
+@app.route("/experiment1")
+def exp1():
+    return render_template("experiment1.html")
+
+@app.route("/experiment2")
+def exp2():
+    return render_template("experiment2.html")
+
+@app.route("/experiment3")
+def exp3():
+    return render_template("experiment3.html")
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 
